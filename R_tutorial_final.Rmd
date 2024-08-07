@@ -159,11 +159,9 @@ median(neurites$condition_1)
 
 ##### *Exercise1 : Write code that prints the mean and standard deviation for condition_2 and condition_3*
 
-<br>
-<br>
-<br>
-<br>
-<br>
+```{r, code="'\n\n\n\n'", results=F}
+```
+
 ---
 
 ### 2. Visualization
