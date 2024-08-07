@@ -410,9 +410,9 @@ In order to perform statistical hypothesis testing, which test should we use ? (
 
 ### Perform single t.test of 2 conditions
 
-We use function t.test. By default t.test assumes equal variance, so we need to set the parameter var.equal=FALSE.
+We use function t.test(). By default t.test assumes equal variance, so we need to set the parameter var.equal=FALSE.
 
-T.test with unequal vairance is also called Welch t-test
+T.test with unequal variance is also called Welch t-test
 
 ```{r}
 test_1vs2 <- t.test(neurites$condition_1, neurites$condition_2,var.equal = FALSE)
