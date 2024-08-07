@@ -122,7 +122,9 @@ Column names in our case are: "condition_1", "condition_2", condition_3"
 head(neurites$condition_1)
 # This returns a vector of values from condition_1 column
 # vector is a basic data structure often used in R
+```
 
+```{r}
 head(neurites$condition_2)
 head(neurites$condition_3)
 
@@ -343,12 +345,12 @@ shapiro.test(neurites$condition_3)
 
 ### Example of **not** normally distributed data
 
-If we merge several normal distribution we typically don't get normally distributed data. We can look at such examples by mixing the data from our 3 conditions together
+If we merge several normal distributions we typically don't get normally distributed data. We can look at such example by mixing the data from our 3 conditions together
 
 ```{r}
-# Merges the data 
-mixed.data <- unlist(neurites)
-
+# Merge the data from all columns into single vector
+mixed.data <- unname(unlist(neurites))
+head(mixed.data)
 
 # QQ-plot and shapiro test for all data merged together
 ggqqplot(mixed.data)
@@ -373,7 +375,9 @@ var.test(neurites$condition_2,neurites$condition_3)
 
 ----------------------
 
-##### *Exercise 6: In summary our dataset has samples with: *
+##### *Exercise 6: Answer the following questions: * 
+
+In summary our dataset contains samples with: 
 
 Choose one: 
 
