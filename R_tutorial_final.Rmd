@@ -60,7 +60,7 @@ Data import from csv file is done typically using "read.csv" function. We will s
 <br>
 <br>
 
-#### First download the data from the github repository at [link](https://github.com/bartosovic-lab/R-teaching.github.io/blob/main/data/03_neurites_synthetic.csv)
+#### First download the data from the github repository at [link](data/03_neurites_synthetic.csv)
 
 Then run the following: 
 
