@@ -27,7 +27,7 @@ The power of R lies in many packages (or libraries) that are written by the comm
 Analysis in R is typically done in an IDE (Integrated Desktop Environment) - the most common for R is called RStudio
 https://posit.co/products/open-source/rstudio/
 
-![](img/rsutio_logo.jpeg)
+![](img/rstudio_logo.jpeg)
 
 <br>
 
