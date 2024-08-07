@@ -65,11 +65,10 @@ Data import from csv file is done typically using "read.csv" function. We will s
 Then run the following: 
 
 ```{r}
-# Check which folder is the current working directory:
-getwd()
-
 # Then load the data into the neurites object. Fill in the correct path do your downloaded .csv file
 neurites <- read.csv(file="~/Downloads/03_neurites_synthetic.csv") # Adjust the path if necessary, use <TAB> for autocompletion of paths
+
+# Hint: if you can't locate the file use function getwd() to figure out where is your local working directory
 ```
 
 We can look what is now stored in "neurites" variable. Because we do not know how many lines does the file contain, we can just print the first few lines using head() funtion. 
@@ -121,6 +120,9 @@ Column names in our case are: "condition_1", "condition_2", condition_3"
 ```{r}
 # First check the first few items in each column
 head(neurites$condition_1)
+# This returns a vector of values from condition_1 column
+# vector is a basic data structure often used in R
+
 head(neurites$condition_2)
 head(neurites$condition_3)
 
