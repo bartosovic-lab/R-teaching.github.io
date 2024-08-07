@@ -1,0 +1,417 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+---
+title: "Basics of statistical analysis in R for neurochemists"
+output:
+  html_notebook: default
+  pdf_document: default
+---
+# KN7001 neurochemistry with molecular neurobiology
+
+R is an free open-source programming language, used often for data science, statistical analysis of small or large datasets and for data visualisation.
+
+R is free to use
+
+R is very versatile and can be used for anything from basic ploting of a few data points, to advanced analysis of transcriptomic and genomic data. In this tutorial we will demonstrate basic usage of R for data analysis, statistics and visualisation.
+
+The power of R lies in many packages (or libraries) that are written by the community and make our lives easier when we analyze or visualize data. In addition there is active community and many forums posts dealing with error messages exist. It's also easy to ask on forums about a specific problem. 
+  
+## Interface
+
+Analysis in R is typically done in an IDE (Integrated Desktop Environment) - the most common for R is called RStudio
+https://posit.co/products/open-source/rstudio/
+
+![](Figures/rstudio_logo.jpeg)
+
+<br>
+
+#### *Prerequirement: Have installed R and Rstudio on your computer*
+
+<br>
+
+## Example 1: Statistical analysis of neurite outgrowth
+
+In this experiment we performed measurements of neurite outgrowth upon 3 different treatments with differentiation factors in cell culture. Neurite outgrowth was measured using automated analysis pipeline and results were exported in a csv file. 
+
+We will perform data import, basic QC, visualization and statistical testing of significance. 
+
+The tutorial has instructions shown as regular text and code shown in a grey box. You can copy-paste the code from the grey box into your RStudio session. Some code blocks might require minor edits to work for you. 
+
+```{r}
+# This is code.
+# Line that starts with a "#" is called commend and is not executed as code
+```
+
+
+### Task 1: Import the csv file into R
+
+In order to analyze the data it needs first to be imported and stored in computer memory (RAM). Then we can manipulate, reformat, clean, visualize the data and perform statistical analysis. 
+
+Data import from csv file is done typically using "read.csv" function. We will store the contents of the file in a object called neurites. 
+
+"<-" operator assignes the output of the function "read.csv" with parameter specifying file name to a variable "neurites"
+
+<br>
+<br>
+
+#### First download the data from the github repository at [link]()
+
+Then run the following: 
+
+```{r}
+# Check which folder is the current working directory:
+getwd()
+
+# Then load the data into the neurites object. Fill in the correct path do your downloaded .csv file
+neurites <- read.csv(file="~/Downloads/03_neurites_synthetic.csv") # Adjust the path if necessary, use <TAB> for autocompletion of paths
+```
+
+We can look what is now stored in "neurites" variable. Because we do not know how many lines does the file contain, we can just print the first few lines using head() funtion. 
+
+```{r}
+head(neurites)
+```
+Another way how to investigate the data (in case it is not too big ~couple thousand lines is typically ok)
+
+```{r}
+View(neurites)
+```
+
+
+To check how many rows and columns are in this file 
+
+```{r}
+# Prints number of rows
+nrow(neurites)
+
+# Prints number of columns
+ncol(neurites)
+
+# Prints the dimensions of the data (both rows and columns)
+dim(neurites)
+```
+
+By default the data output of 'read.csv' function is stored as 'data.frame'. We can check this by doing following:
+
+Other classes include vectors, matrix etc. We will not go much into detail regarding other classes. 
+
+```{r}
+class(neurites)
+```
+
+
+In addition, data can be stored in several basic data types. These include for example:
+  
+* integer (whole numbers - 1, 2, 100, 21)
+* numeric (e.g. 1, 2, 4.5, 22.6 etc)
+* character (strings, e.g. "a","dog","house")
+* logical (TRUE, FALSE)
+
+
+What is the data type present in our data.frame ? In a data.frame, this can be different in each column. We have 3 columns in our data. In order to check this, we first need to extract the data from the columns one by one. This can be done using "$" operator. 
+
+Column names in our case are: "condition_1", "condition_2", condition_3"
+
+```{r}
+# First check the first few items in each column
+head(neurites$condition_1)
+head(neurites$condition_2)
+head(neurites$condition_3)
+
+
+class(neurites$condition_1)
+class(neurites$condition_2)
+class(neurites$condition_3)
+```
+
+## Task 2: Calculate descriptive statistics for our data 
+
+All three columns are numeric in our case. This means the data is continuous. Therefore we can calculate descriptive statistical parameters such as mean, quantiles or standard deviation. 
+
+We can next look at the summary of our data which prints out statistics about data distribution.
+
+```{r}
+summary(neurites)
+```
+
+we can calculate the mean, standard deviation, quantiles and median for condition_1
+
+```{r}
+mean(neurites$condition_1)
+sd(neurites$condition_1)
+```
+
+```{r}
+quantile(neurites$condition_1,0.25)
+quantile(neurites$condition_1,0.75)
+median(neurites$condition_1)
+```
+
+---
+
+##### *Exercise1 : Write code that prints the mean and standard deviation for condition_2 and condition_3*
+
+<br>
+<br>
+<br>
+<br>
+<br>
+---
+
+### 2. Visualization
+
+<br>
+
+We can easily visualize the mean of samples on barplot
+
+```{r}
+# First calculate means for all 3 conditions
+mean1 <- mean(neurites$condition_1)
+mean2 <- mean(neurites$condition_2)
+mean3 <- mean(neurites$condition_3)
+
+# Then plot the means using a barplot
+barplot(c(mean1,mean2,mean3),names.arg = c('condition_1','condition_2','condition_3'))
+
+# We can also plot each single observation (on the y-axis) against the index of the observation (Y-axis) 
+# Note: This only works because the data is sorted in columns, if it would not be sorted/grouped the points would have random inedexes and plot would be a mess
+
+plot(unlist(neurites))
+
+```
+
+
+Any plot can be saved into a pdf file
+<br> 
+```{r}
+# First open a pdf file
+pdf(file = 'Neurites_plot.pdf',width=3, height=6)
+
+# Plot into the open file
+barplot(c(mean1,mean2,mean3),names.arg = c('condition_1','condition_2','condition_3'))
+
+# Close the file
+dev.off()
+
+# Plot is saved in the folder below:
+getwd()
+```
+
+----------------------
+
+##### *Exercise2 :  Open and examine the pdf that was saved using the above commands in File Explorer*
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+---------------------
+
+Visualize the data as a box and whiskers plot: 
+
+```{r}
+boxplot(neurites)
+```
+#### Advanced: More fancy way how to visualize the data using ggplot2 package
+
+```{r}
+# Density ridge histogram
+library(ggplot2)
+library(ggridges)
+
+ggplot(data=reshape2::melt(neurites)) + geom_density_ridges(aes(x=value,y=variable,fill=variable)) + theme_bw()
+```
+
+
+```{r}
+# Violin plot
+ggplot(data=reshape2::melt(neurites)) + geom_violin(aes(y=value,x=variable,fill=variable)) + theme_bw()
+```
+
+```{r}
+ggplot(data=reshape2::melt(neurites)) + geom_jitter(aes(x=variable,y=value,col=variable),size=0.5) + theme_bw() + xlab('condition') + ylab('neurite length')
+
+```
+
+
+
+## Task 3: Which statistical test should I use to compare the groups ? 
+
+### Is my data normally distributed ? 
+
+Many statistical tests, especially parametric tests like the t-test, ANOVA, and linear regression, assume that the data follows a normal distribution. These tests rely on the properties of the normal distribution to calculate probabilities and critical values
+
+### 1. Visual inspection
+
+We can plot histogram of the data using function hist()
+
+```{r}
+hist(neurites$condition_1)
+hist(neurites$condition_2)
+hist(neurites$condition_3,breaks=5)
+```
+
+----------------------
+
+##### *Exercise 3 :  Function histogram() uses parameter 'breaks=' to specify the numbers of bins to plot. Experiment with changing this parameter and see if you can get nicer looking histogram *
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+---------------------
+
+### QQ plot 
+
+Q-Q plots (quantile-quantile plots) are useful way how to estimate normality of a data 
+
+The data is first fitted with normal distribution, and then compared to observed data.
+
+If the data is normally distributed all the data points should be exactly on the fitted line
+
+For more details on qqplot see here: [link](http://www.sthda.com/english/wiki/qq-plots-quantile-quantile-plots-r-base-graphs)
+
+```{r}
+library(ggpubr)
+ggqqplot(neurites$condition_1,title = 'QQ condition_1')
+ggqqplot(neurites$condition_2,title = 'QQ condition_2')
+ggqqplot(neurites$condition_3,title = 'QQ condition_3')
+```
+### Numerical methods
+
+If the data is normaly distributed median and mean of the measurements should be vey close to each other
+
+Let's calculate the median and mean of our data
+
+----------------------
+
+##### *Exercise 4 :  Calculate and compare median and mean for each column of our dataset neurites *
+
+Hint: Use functions median() and mean()
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+---------------------
+
+
+```{r echo=FALSE,results='hide'}
+median(neurites$condition_1)
+mean(neurites$condition_1)
+```
+
+### Shapiro test of normality
+
+There are several methods for normality test such as Kolmogorov-Smirnov (K-S) normality test and Shapiro-Wilk’s test.
+
+Shapiro-Wilk’s method is widely recommended for normality test and it provides better power than K-S. It is based on the correlation between the data and the corresponding normal scores.
+
+For more details on shapiro test see here [link](http://www.sthda.com/english/wiki/normality-test-in-r)
+
+```{r}
+shapiro.test(neurites$condition_1)
+shapiro.test(neurites$condition_2)
+shapiro.test(neurites$condition_3)
+```
+
+----------------------
+
+##### *Exercise 5 :  Discuss: Is the data normaly distributed ? 
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+---------------------
+
+
+
+### Example of **not** normally distributed data
+
+If we merge several normal distribution we typically don't get normally distributed data. We can look at such examples by mixing the data from our 3 conditions together
+
+```{r}
+# Merges the data 
+mixed.data <- unlist(neurites)
+
+
+# QQ-plot and shapiro test for all data merged together
+ggqqplot(mixed.data)
+shapiro.test(mixed.data)
+
+```
+
+
+### F test to compare sample variance
+
+Comparing two variances is useful in several cases, including:
+
+* When you want to perform a two samples t-test to check the equality of the variances of the two samples
+* When you want to compare the variability of a new measurement method to an old one. Does the new method reduce the variability of the measure?
+
+```{r}
+# To check the equality of variance between our conditions in a pairwise manner do the following: 
+var.test(neurites$condition_1,neurites$condition_2)
+var.test(neurites$condition_1,neurites$condition_3)
+var.test(neurites$condition_2,neurites$condition_3)
+```
+
+----------------------
+
+##### *Exercise 6: In summary our dataset has samples with: *
+
+Choose one: 
+
+* Normal distribution
+* Not normal distribution
+
+<br>
+
+Choose one: 
+
+* Equal variance 
+* Not equal variance
+
+<br>
+
+In order to perform statistical hypothesis testing, which test should we use ? (Choose one)
+
+* Student's t-test
+* Kolmogorovov-Smirnov test (K-S test)
+* Welch t-test
+* ANOVA
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+---------------------
+
+### Perform single t.test of 2 conditions
+
+We use function t.test. By default t.test assumes equal variance, so we need to set the parameter var.equal=FALSE.
+
+T.test with unequal vairance is also called Welch t-test
+
+```{r}
+test_1vs2 <- t.test(neurites$condition_1, neurites$condition_2,var.equal = FALSE)
+test_1vs2
+
+test_1vs2$p.value
+```
+
