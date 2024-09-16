@@ -8,3 +8,5 @@
 [02. Visualisation](/Notebooks/02.Visualisation.html)
 
 [03. Statistical analysis](/Notebooks/03.statistical_analysis.html)
+
+[04. MMSE dementia analysis](/Notebooks/04.mmse_tasks.html)
