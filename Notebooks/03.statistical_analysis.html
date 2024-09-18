@@ -1624,21 +1624,27 @@ display: none;
 </div>
 
 
-<div id="task-3-which-statistical-test-should-i-use-to-compare-the-groups" class="section level2">
-<h2>Task 3: Which statistical test should I use to compare the groups
-?</h2>
-<div id="is-my-data-normally-distributed" class="section level3">
-<h3>Is my data normally distributed ?</h3>
+<div id="statistical-analysis" class="section level2">
+<h2>03. Statistical analysis</h2>
+<div id="task-which-statistical-test-should-i-use-to-compare-the-groups" class="section level3">
+<h3>Task: Which statistical test should I use to compare the groups
+?</h3>
+<p>In order to know about which statistical test to use (e.g. parametric
+or non-parametric), we first need to check it the data is normaly
+distributed.</p>
+<div id="is-my-data-normally-distributed" class="section level4">
+<h4>Is my data normally distributed ?</h4>
 <p>Before applying statistical tests, especially parametric tests such
 as the t-test, ANOVA, or linear regression, it is important to assess
 whether your data follows a normal distribution. These tests rely on the
 assumption of normality for accurate results.</p>
 </div>
-<div id="visual-inspection" class="section level3">
-<h3>1. Visual inspection</h3>
+<div id="visual-inspection" class="section level4">
+<h4>Visual inspection</h4>
 <pre class="r"><code># In order to start a new notebook, let&#39;s re-import the data
 
 neurites &lt;- read.csv(file=&quot;/Users/marek/SU drive/Teaching/2024/statistical analysis in R/Data/03_neurites_synthetic.csv&quot;) </code></pre>
+</div>
 <div id="plot-histograms-of-data" class="section level4">
 <h4>Plot Histograms of Data</h4>
 <p>A quick way to check if data is normally distributed is by visually
@@ -1663,11 +1669,11 @@ curve, the data might be normally distributed.</p>
 function to see how changing the number of bins affects the appearance
 of the histogram.</em></p>
 <hr />
-<ol start="2" style="list-style-type: decimal">
-<li>QQ Plot (Quantile-Quantile Plot) A more formal visual inspection for
-normality is the Q-Q plot, which compares the observed data to a
-theoretical normal distribution.</li>
-</ol>
+</div>
+<div id="qq-plot-quantile-quantile-plot" class="section level4">
+<h4>QQ Plot (Quantile-Quantile Plot)</h4>
+<p>A more formal visual inspection for normality is the Q-Q plot, which
+compares the observed data to a theoretical normal distribution.</p>
 <p>If the data is normally distributed, the points will lie along a
 straight line.</p>
 <pre class="r"><code># Load ggpubr library for creating QQ plots
@@ -1690,14 +1696,14 @@ suggest departures from normality.</p>
 </colgroup>
 <tbody>
 <tr class="odd">
-<td>### Numerical methods</td>
+<td>#### Numerical methods</td>
 </tr>
 <tr class="even">
 <td>Numerically, a normal distribution typically has its mean and median
 very close to each other. Let’s calculate and compare these values.</td>
 </tr>
 <tr class="odd">
-<td><em>Exercise 4: Calculate the median and mean for each column of the
+<td><em>Exercise: Calculate the median and mean for each column of the
 neurites dataset.</em></td>
 </tr>
 <tr class="even">
@@ -1707,7 +1713,7 @@ neurites dataset.</em></td>
 </table>
 </div>
 <div id="shapiro-wilk-test-for-normality" class="section level4">
-<h4>4. Shapiro-Wilk Test for Normality</h4>
+<h4>Shapiro-Wilk Test for Normality</h4>
 <p>A formal statistical test for normality is the Shapiro-Wilk test. It
 is widely recommended for small sample sizes and is based on the
 correlation between the data and a normal distribution.</p>
@@ -1738,9 +1744,9 @@ normality might lead to significant results.</p>
 </div>
 </div>
 </div>
-<div id="exercise-5-based-on-all-of-the-above-tests-discuss-whether-the-data-is-normally-distributed." class="section level2">
-<h2>##### *Exercise 5 : Based on all of the above tests, discuss whether
-the data is normally distributed.</h2>
+<div id="exercise-based-on-all-of-the-above-tests-discuss-whether-the-data-is-normally-distributed." class="section level2">
+<h2><em>Exercise: Based on all of the above tests, discuss whether the
+data is normally distributed.</em></h2>
 <div id="example-of-non-normally-distributed-data" class="section level4">
 <h4>Example of Non-Normally Distributed Data</h4>
 <p>If you mix several normal distributions, the result is often a
@@ -1764,8 +1770,8 @@ non-normal. You can use the Q-Q plot and the Shapiro-Wilk test to
 confirm this.</p>
 <hr />
 </div>
-<div id="f-test-to-compare-variances" class="section level3">
-<h3>F-Test to Compare Variances</h3>
+<div id="f-test-to-compare-variances" class="section level4">
+<h4>F-Test to Compare Variances</h4>
 <p>Comparing variances between groups is useful when checking if the
 variability in one group is significantly different from another. For
 instance, it’s important to check for equal variance before performing a
@@ -1811,8 +1817,7 @@ var.test(neurites$control, neurites$condition_1)</code></pre>
 between two groups are equal. If the p-value is less than 0.05, it
 suggests the variances are significantly different.</p>
 <hr />
-<div id="exercise-6-answer-the-following-questions" class="section level4">
-<h4>Exercise 6: Answer the following questions:</h4>
+<p><em>Exercise: Answer the following questions:</em></p>
 <p>Does the dataset have a normal distribution or a non-normal
 distribution?</p>
 <p>Are the variances between groups equal or not equal?</p>
@@ -1820,9 +1825,8 @@ distribution?</p>
 Student’s t-test, Welch t-test, or ANOVA?</p>
 <hr />
 </div>
-</div>
-<div id="perform-single-t.test-of-2-conditions" class="section level3">
-<h3>Perform single t.test of 2 conditions</h3>
+<div id="perform-single-t.test-of-2-conditions" class="section level4">
+<h4>Perform single t.test of 2 conditions</h4>
 <p>We use function t.test(). Use parameter var.equal to set if there is
 equal variance between the two samples</p>
 <p>T.test with unequal variance is also called Welch t-test</p>
@@ -1842,9 +1846,8 @@ test_1vs2</code></pre>
 <pre class="r"><code>test_1vs2$p.value</code></pre>
 <pre><code>## [1] 2.242894e-06</code></pre>
 <hr />
-<div id="exercise-7-perform-t-test-to-obtain-p-value-for-condition_2-vs-control" class="section level4">
-<h4>Exercise 7: Perform t-test to obtain p-value for condition_2 vs
-control</h4>
+<p><em>Exercise: Perform t-test to obtain p-value for condition_2 vs
+control</em></p>
 <pre class="r"><code># Code to perform t-test between Condition 2 and Control</code></pre>
 <hr />
 </div>
@@ -1855,10 +1858,8 @@ ratio. It’s often used in biology to quantify changes in gene expression
 or treatment effects.</p>
 <pre class="r"><code># Code to compute fold change (mean difference between conditions)
 # For fold change calculation refer back to notebook 01.Import_basics</code></pre>
-</div>
-<div id="exercise-8-compare-the-fold-change-between-condition-1-vs-control-and-condition-2-vs-control." class="section level4">
-<h4>Exercise 8: Compare the fold change between Condition 1 vs Control
-and Condition 2 vs Control.</h4>
+<p><em>Exercise: Compare the fold change between Condition 1 vs Control
+and Condition 2 vs Control.</em></p>
 <ul>
 <li>Which of the comparisons has lower p-value ?</li>
 <li>What is the fold change between the samples (advanced: What is the
@@ -1866,7 +1867,6 @@ log2 of fold change) ?</li>
 <li>Which treatment shows higher effect on neurite outgrowth ?</li>
 <li>What can you tell about variability between the treatments ?</li>
 </ul>
-</div>
 </div>
 </div>
 
