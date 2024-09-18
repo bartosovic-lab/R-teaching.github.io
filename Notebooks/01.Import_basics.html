@@ -402,14 +402,16 @@ computer before proceeding.</h3>
 <hr />
 </div>
 </div>
-<div id="example-1-statistical-analysis-of-neurite-outgrowth" class="section level2">
-<h2>Example 1: Statistical Analysis of Neurite Outgrowth</h2>
-<p>In this experiment, we measured neurite outgrowth in cell cultures
-after two different treatments with differentiation factors, along with
-a control group. The measurements were taken using an automated analysis
-pipeline, and the results were exported into a CSV file.</p>
+<div id="example-statistical-analysis-of-neurite-outgrowth" class="section level2">
+<h2>Example: Statistical Analysis of Neurite Outgrowth</h2>
+<p>Neurites are any type of projection/process from the cell body of a
+neuron and can be differentiated into either dendrites or axons. In this
+experiment, we measured neurite outgrowth in cell cultures after two
+different treatments with differentiation factors, along with a control
+group. The measurements were taken using an automated analysis pipeline,
+and the results were exported into a CSV file.</p>
 <p>We will go through the steps of importing the data, performing basic
-quality control (QC), visualizing it, and testing for statistical
+quality control (QC), visualizing it, and test the data for statistical
 significance.</p>
 <p>In this tutorial: - Instructions are provided as regular text. - Code
 is shown inside grey boxes, which you can copy and paste directly into
@@ -425,11 +427,7 @@ clean, visualize, and perform statistical analysis on the data.</p>
 <div id="steps-to-get-started" class="section level4">
 <h4>Steps to Get Started</h4>
 <ol style="list-style-type: decimal">
-<li><p><strong>Download the data:</strong> First, download the CSV data
-file from the GitHub repository by clicking the <a href="https://github.com/bartosovic-lab/R-teaching.github.io/tree/main/data">link</a>.
-Downlaod all 3 files in the folder by clicking the file and pressin
-download in upper right corner.</p></li>
-<li><p><strong>Organize your project:</strong></p>
+<li><strong>Organize your project:</strong>
 <ul>
 <li>Create an empty folder on your desktop (or any preferred location)
 and name it <code>statistical_analysis_R</code>.</li>
@@ -440,6 +438,14 @@ and name it <code>statistical_analysis_R</code>.</li>
 downloaded.</li>
 </ul></li>
 </ul></li>
+</ol>
+<p><strong>Note:</strong> General rule for data analysis is to keep the
+data and code/notebooks separated in different folders.</p>
+<ol start="2" style="list-style-type: decimal">
+<li><strong>Download the data:</strong> Download the data file from the
+GitHub repository by clicking the <a href="https://github.com/bartosovic-lab/R-teaching.github.io/tree/main/data">link</a>.
+Download all 3 files in the folder by clicking the file and pressing
+download in upper right corner.</li>
 </ol>
 </div>
 <div id="import-the-csv-file-into-r" class="section level4">
@@ -453,12 +459,24 @@ object.</p>
 <p>Now, use the following code to load the data into the
 <code>neurites</code> object. Make sure to replace the file path with
 the correct path to where you saved the CSV file.</p>
+<p><strong>Note:</strong> It is also possible to import the data to
+Rstudio using the <code>Import dataset</code> button, but it’s not
+recommended as a good practice. For reproducibility it’s better to use
+written code (it’s impossible to record what was done by clicking
+buttons).</p>
 <pre class="r"><code># Load the data into the &#39;neurites&#39; object.
 # Replace the file path below with the actual path to your CSV file.
 
-# neurites &lt;- read.csv(file = &quot;/path_to_your_folder/data/03_neurites_synthetic.csv&quot;)
+# In order to find out what folder you are working use function getwd()
+getwd()</code></pre>
+<pre><code>## [1] &quot;/Users/marek/SU drive/Teaching/2024/statistical analysis in R/notebooks&quot;</code></pre>
+<pre class="r"><code># In my case the working directory is 
+# &quot;/Users/marek/SU drive/Teaching/2024/statistical analysis in R/notebooks&quot;
 
-# In my case:
+# The data is in directory:
+# &quot;/Users/marek/SU drive/Teaching/2024/statistical analysis in R/Data&quot;
+
+# Therefore I will use this command to load the data: 
 neurites &lt;- read.csv(file = &quot;~/SU drive/Teaching/2024/statistical analysis in R/Data/03_neurites_synthetic.csv&quot;)
 
 # Tip: If you’re unsure of the file path, use the getwd() function in R to check your current working directory.
@@ -539,11 +557,11 @@ class(neurites$control)</code></pre>
 </tr>
 <tr class="even">
 <td>You can also load data directly from Excel files using the
-<code>r</code>eadxl` package. However, frequent shuffling between Excel
+<code>readxl</code> package. However, frequent shuffling between Excel
 and R is not recommended for large datasets.</td>
 </tr>
 <tr class="odd">
-<td><code>r library(readxl) excel_data &lt;- read_excel(&#39;../Data/Data sets for statistical analysis.xlsx&#39;,sheet = 1, skip = 4) excel_data</code></td>
+<td><code>r library(readxl) excel_data &lt;- read_excel(&#39;../Data/excel_data.xlsx&#39;,sheet = 1, skip = 4) excel_data</code></td>
 </tr>
 <tr class="even">
 <td><code>## # A tibble: 10 × 2 ##    Healthy    AD ##      &lt;dbl&gt; &lt;dbl&gt; ##  1      29    12 ##  2      27    10 ##  3      30    11 ##  4      27     7 ##  5      28     8 ##  6      28     9 ##  7      27    10 ##  8      30    12 ##  9      28     5 ## 10      27     6</code></td>
