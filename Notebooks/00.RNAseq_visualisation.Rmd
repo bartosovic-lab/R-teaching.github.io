@@ -6,14 +6,14 @@ output:
 ---
 
 
-
-
-
 ```{r fig.width=12,fig.height=12}
 library(dplyr)
 library(readxl)
 library(purrr)
 library(matrixStats)
+library(R.utils)
+library(pheatmap)
+
 
 unlink('~/Desktop/test/',recursive=TRUE)
 unlink('~/Desktop/test.tar')
@@ -24,7 +24,7 @@ setwd("~/Desktop/test")
 untar('~/Desktop/test.tar')
 
 
-f.ls <- list.files(path = '~/Desktop/test/',pattern = '*.xls*')
+f.ls <- list.files(path = '~/Desktop/test/',pattern = '*.xls.gz')
 lapply(f.ls,gunzip)
 
 f.ls <- list.files(path = '~/Desktop/test/',pattern = '*.xls*')
@@ -43,7 +43,7 @@ rownames(df.merge) <- df.merge$gene.symbol
 df.merge$gene.symbol <- NULL
 
 
-top_variable <- head(order(rowVars(as.matrix(log10(df.merge))),decreasing=TRUE),n=200)
+top_variable <- head(order(rowVars(as.matrix(log10(df.merge))),decreasing=TRUE),n=100)
 
 df.merge.small <- df.merge[top_variable,]
 df.merge.small <- log10(df.merge.small)
@@ -53,9 +53,10 @@ pheatmap(df.merge.small)
 
 
 
+
 ```
 
-```{r, fig.width=9,fig.height=9}
+```{r, fig.width=5,fig.height=5}
 pca <- prcomp(df.merge.small)
 
 pca.plot <- as.data.frame(pca$rotation[,1:2])
@@ -67,29 +68,3 @@ library(ggrepel)
 ggplot(data=pca.plot,aes(x=PC1,y=PC2)) + geom_point(aes(col=cell_type)) + geom_text_repel(aes(label=cell_type))
 
 ```
-
-```{r}
-expression_data
-```
-
-
-
-```{r}
-BiocManager::install("GEOquery")
-library(GEOquery)
-```
-
-```{r}
-gse <- getGEO("GSE52564", GSEMatrix = TRUE)
-
-gse
-```
-
-```{r}
-brain_data <- gse[[1]]
-brain_data
-
-expr_matrix <- exprs(brain_data)
-expr_matrix
-```
-
