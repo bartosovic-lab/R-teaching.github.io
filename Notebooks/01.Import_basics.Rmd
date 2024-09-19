@@ -1,0 +1,323 @@
+-----
+title: "01. Data Import and Basics"
+output:
+  html_document:
+-----
+
+# KN7001 Neurochemistry with Molecular Neurobiology
+
+R is a **free** and **open-source** programming language frequently used for **data science, statistical analysis, and data visualization**. Whether you are working with small or large datasets, R offers powerful tools for processing and analyzing data.
+
+R is versatile and can be applied to a wide range of tasks—from **plotting** a few data points to performing advanced analyses on **transcriptomic** and **genomic data**. In this tutorial, we will demonstrate basic usage of R for **data analysis, statistics, and visualization**.
+
+One of R's strengths comes from its vast ecosystem of **packages** (or libraries) written by the R community. These packages make many data analysis and visualization tasks easier. Additionally, R has an active **community** and numerous forums where you can find solutions to common issues or ask questions about specific problems.
+
+-----
+
+## Interface
+
+Data analysis in R is typically done in an IDE (Integrated Development Environment). The most widely used IDE for R is RStudio, which can be downloaded here: [RStudio IDE](https://posit.co/products/open-source/rstudio/).
+
+![RStudio Logo](../Figures/rstudio_logo.jpeg)
+
+-----
+
+### **Prerequisite:** Install both R and RStudio on your computer before proceeding.
+
+For detailed instruction follow the guide [here](https://rstudio-education.github.io/hopr/starting.html)
+
+-----
+
+## Notebook 1: Importing the data and basics
+
+### Example: Statistical Analysis of Neurite Outgrowth
+
+Neurites are any type of projection/process from the cell body of a neuron and can be differentiated into either dendrites or axons. In this experiment, we measured neurite outgrowth in cell cultures after two different treatments with differentiation factors, along with a control group. The measurements were taken using an automated analysis pipeline, and the results were exported into a CSV file.
+
+We will go through the steps of importing the data, performing basic quality control (QC), visualizing it, and test the data for statistical significance.
+
+In this tutorial:
+- Instructions are provided as regular text.
+- Code is shown inside grey boxes, which you can copy and paste directly into your RStudio session.
+
+**Note:** Some code blocks might require minor edits based on your file paths or environment.
+
+```{r}
+# Lines that start with "#" are comments in R. These lines are ignored when the code is executed.
+```
+
+### Import the CSV file into R
+
+Before we can analyze the data, we need to import it into R and store it in the computer's memory (RAM). Once imported, we can manipulate, clean, visualize, and perform statistical analysis on the data.
+
+#### Steps to Get Started
+
+
+1. **Organize your project:**
+   - Create an empty folder on your desktop (or any preferred location) and name it `statistical_analysis_R`.
+   - Inside this folder, create two subfolders:
+     - `notebooks`: to store your R scripts.
+     - `data`: where you will store the CSV file you just downloaded.
+
+**Note:** General rule for data analysis is to keep the data and code/notebooks separated in different folders.
+
+2. **Download the data:**
+   Download the  data file from the GitHub repository by clicking the [link](https://github.com/bartosovic-lab/R-teaching.github.io/tree/main/data). Download all 3 files in the folder by clicking the file and pressing download in upper right corner. 
+
+
+#### Import the CSV file into R
+
+To import data from a CSV file, we typically use the `read.csv()` function in R. The data will be stored in an object (a variable in R) called `neurites`.
+
+The `<-` operator in R is used to assign the output of the `read.csv()` function to the `neurites` object.
+
+
+Now, use the following code to load the data into the `neurites` object. Make sure to replace the file path with the correct path to where you saved the CSV file.
+
+**Note:** It is also possible to import the data to Rstudio using the `Import dataset` button, but it's not recommended as a good practice. For reproducibility it's better to use written code (it's impossible to record what was done by clicking buttons).
+
+```{r}
+# Load the data into the 'neurites' object.
+# Replace the file path below with the actual path to your CSV file.
+
+# In order to find out what folder you are working use function getwd()
+getwd()
+```
+
+```{r}
+# In my case the working directory is 
+# "/Users/marek/SU drive/Teaching/2024/statistical analysis in R/notebooks"
+
+# The data is in directory:
+# "/Users/marek/SU drive/Teaching/2024/statistical analysis in R/Data"
+
+# Therefore I will use this command to load the data: 
+neurites <- read.csv(file = "/Users/marek/SU drive/Teaching/2024/statistical analysis in R/Data/03_neurites_synthetic.csv")
+
+# Tip: If you’re unsure of the file path, use the getwd() function in R to check your current working directory.
+# Tip: Use the <TAB> key for auto-completion of file paths in RStudio.
+```
+
+Once the data is imported, we can inspect the first few rows of the dataset using the `head()` function to ensure everything was loaded correctly:
+
+
+```{r}
+head(neurites)
+```
+
+Alternatively, you can view the entire dataset in a tabular format using View() (works well for smaller datasets). This will open a new tab in your scripts viewer. 
+
+```{r}
+View(neurites)
+```
+
+
+#### Checking the Data Structure:
+
+To find out how many rows and columns the dataset contains, you can use the following functions:
+
+
+```{r}
+# Number of rows
+nrow(neurites)
+
+# Number of columns
+ncol(neurites)
+
+# Dimensions (both rows and columns)
+dim(neurites)
+
+```
+
+By default, the data imported using `read.csv()` is stored as a data frame in R. We can confirm this with the `class()` function.
+
+
+Other classes include vectors, matrix etc. 
+
+```{r}
+class(neurites)
+```
+
+
+#### Data Types in R
+
+In R, data can be of several types:
+
+   - Integer (whole numbers, e.g., 1, 2, 100)
+   - Numeric (real numbers, e.g., 1.5, 22.6)
+   - Character (text strings, e.g., "cat", "hello")
+   - Logical (Boolean values: TRUE, FALSE)
+
+In a data frame, each column can contain data of a different type. Let’s check the data types in our dataset by extracting each column using the `$` operator. The columns in our dataset are "control", "condition_1", and "condition_2" (as we previously saw using `head()` function)
+
+
+```{r}
+# Display the first few values from the 'control' column
+head(neurites$control)
+
+# Check the data type of the 'control' column
+class(neurites$control)
+
+```
+
+Repeat this for the other columns:
+
+```{r}
+head(neurites$condition_1)
+head(neurites$condition_2)
+
+class(neurites$condition_1)
+class(neurites$condition_2)
+```
+
+All 3 individual columns of our data frame are numeric vectors
+
+-----
+
+#### Loading data from Excel
+
+You can also load data directly from Excel files using the `readxl` package. However, frequent shuffling between Excel and R is not recommended for large datasets.
+
+
+```{r}
+library('readxl')
+
+excel_data <- as.data.frame(read_excel('../Data/excel_data.xlsx',sheet = 1, skip = 4))
+excel_data
+
+# If the 'readxl' package isn't installed, use the command below to install it:
+# install.packages('readxl')
+```
+
+
+-----
+
+### Calculate Descriptive Statistics
+
+Since all the columns in our dataset are numeric, we can calculate descriptive statistics such as the **mean**, **standard deviation**, **quantiles**, and **median**.
+
+We can use the `summary()` function to display a quick summary of the data, including common statistics like minimum, maximum, and median values.
+
+
+```{r}
+summary(neurites)
+```
+
+Let’s calculate specific statistics for the **control** group:
+
+```{r}
+mean(neurites$control)
+sd(neurites$control)
+quantile(neurites$control, 0.25)
+quantile(neurites$control, 0.75)
+median(neurites$control)
+```
+
+You can also calculate statistics for other columns by replacing `neurites$control` with `neurites$condition_1` or `neurites$condition_2`.
+
+```{r}
+# Your code here
+```
+
+-----
+
+### Basic Arithmetic in R
+
+We can also perform arithmetic operations on the data. For example, let’s calculate the fold change between the average neurite outgrowth for `condition_1` and the `control` group.
+
+
+
+```{r}
+# What is the average fold and log fold change between control and condition_1 ? 
+# Calculate fold change
+fch <- mean(neurites$condition_1) / mean(neurites$control)
+print(fch)
+
+# Calculate log2 fold change
+log2fch <- log2(fch)
+print(log2fch)
+
+# Chaining functions together in one line
+log2(mean(neurites$condition_1) / mean(neurites$control))
+
+```
+
+You can compare the control group’s neurite lengths to the mean or quantile values like this:
+
+```{r}
+# Compare control observations with the mean of all controls
+neurites$control > mean(neurites$control)
+```
+
+-----
+
+#### Advanced Data Frame Manipulations
+
+In many cases, we need to work with specific subsets of data or reformat the dataset. Below are examples of how to index and manipulate data in R.
+
+```{r}
+# Index by rows - row 3
+neurites[3,]
+
+# Index by rows - row 1-5
+neurites[1:5,]
+
+# Index by columns - column 1
+neurites[,1]
+
+# Index by columns - column 1 and 2
+neurites[,1:2]
+neurites[,c(1,2)]
+
+# Index with TRUE/FALSE vector
+neurites[,c(TRUE,TRUE,FALSE)]
+
+# First row and first column
+neurites[1,1]
+
+# We can also index based on value being >=< then, for example:
+
+neurites$control > 0.5
+neurites[neurites$control > 0.5,] # Shows only rows in which control value > 0.5, note we also filter the condition_1 and condition_2 columns
+```
+
+-----
+
+### Categorical variables
+
+```{r}
+# For categoric variables, we can't do arithmetics, but can easily summarize the data
+# Let's create a fake vector with categoric variable
+
+colors <- c('red','blue','blue','green','red','blue','yellow','red','orange','green','purple','grey','orange')
+
+# Categorical variables in R are called factors
+# Convert the vector to a factor
+colors <- as.factor(colors)
+colors
+
+# Function table counts how many times do we have each categorical variable in our vector
+table(colors)
+
+# We can also categorise continuous variables, for example using greater or less then as cutoff
+# How many neurites are longer than the average in control sample ?
+table(neurites$control > mean(neurites$control))
+
+# How many neurites are longer than 90% quantile of neurites distribution ? 
+table(neurites$control > quantile(neurites$control,0.9))
+
+
+```
+
+
+-----
+
+##### *Exercise1:* 
+
+Write code that prints the `mean`, `standard deviation`, and `20th and 80th quantiles` for both `condition_1` and `condition_2` in the neurites dataset.
+
+```{r, code="'\n\n\n\n'", results=F}
+```
+
+
+-----

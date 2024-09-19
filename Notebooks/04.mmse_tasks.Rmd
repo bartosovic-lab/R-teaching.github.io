@@ -1,0 +1,81 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+
+# MMSE dataset
+   - Group --> Class
+   - Age --> Age
+   - EDUC --> Years of Education
+   - SES --> Socioeconomic Status / 1-5
+   - MMSE --> Mini Mental State Examination
+   - CDR --> Clinical Dementia Rating
+   - eTIV --> Estimated total intracranial volume
+   - nWBV --> Normalize Whole Brain Volume
+   - ASF --> Atlas Scaling Factor
+
+
+
+## Import the dataset 
+
+```{r}
+mmse <- read.csv(file='../Data/alzheimer.csv',header = TRUE,comment.char = '#')
+```
+
+------
+
+## Data exploration 
+
+Q1: How many rows and columns does the dataset have ? 
+Q1.1 What are the names of the columns ? 
+
+Q2: Which of the columns are ordinal and which are categorical ? 
+
+Q3: Are there any missing values in the dataset ? 
+
+*Hint: There might be a missing value in the socio-economi status column - function `is.na()` can be usefule here*
+
+------
+
+## Descriptive statistics 
+
+Q4.1: How many male and females are there in the dataset ? 
+
+Q4.2: How many Demented/Nondemented are there in the dataset ? 
+
+Q5: What is the mean age overall ? 
+
+Q5.1 What is the mean age of demented group ? 
+
+Q5.2 What is the mean age of nondemented group ? 
+
+Q5.3 What is the mean age of demented males group ? 
+
+Q6: What is the minimum and maximum value of MMSE score ? 
+
+-----
+
+## Visualisation
+
+Q7: Plot a boxplot of mmse score in demented vs non-demented individuals using either base plotting or ggplot
+
+Q7.1: Add jitterplot of individual observations into the boxplot.
+
+-----
+
+## Statistical analysis
+
+Q8: Does the MMSE column follow normal distribution ? Check with QQ-plot and Shapiro-Wilk test. 
+
+
+
+
+
+
+
+
+
+

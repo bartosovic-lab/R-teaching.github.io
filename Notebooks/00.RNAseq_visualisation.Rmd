@@ -1,0 +1,95 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+
+
+
+
+```{r fig.width=12,fig.height=12}
+library(dplyr)
+library(readxl)
+library(purrr)
+library(matrixStats)
+
+unlink('~/Desktop/test/',recursive=TRUE)
+unlink('~/Desktop/test.tar')
+
+download.file(url = 'https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE52564&format=file',destfile='~/Desktop/test.tar')
+dir.create('~/Desktop/test')
+setwd("~/Desktop/test")
+untar('~/Desktop/test.tar')
+
+
+f.ls <- list.files(path = '~/Desktop/test/',pattern = '*.xls*')
+lapply(f.ls,gunzip)
+
+f.ls <- list.files(path = '~/Desktop/test/',pattern = '*.xls*')
+df.ls <- lapply(f.ls,function(x){
+  df <- read_excel(x)
+  return(df)
+})
+
+
+df.merge <- df.ls  %>% reduce(left_join,by='gene.symbol')
+colnames(df.merge)[-1] <- unlist(lapply(strsplit(unlist(lapply(strsplit(f.ls,'_'),'[',2)),'\\.'),'[',1))
+
+
+df.merge <- as.data.frame(df.merge)
+rownames(df.merge) <- df.merge$gene.symbol
+df.merge$gene.symbol <- NULL
+
+
+top_variable <- head(order(rowVars(as.matrix(log10(df.merge))),decreasing=TRUE),n=200)
+
+df.merge.small <- df.merge[top_variable,]
+df.merge.small <- log10(df.merge.small)
+df.merge.small
+
+pheatmap(df.merge.small)
+
+
+
+```
+
+```{r, fig.width=9,fig.height=9}
+pca <- prcomp(df.merge.small)
+
+pca.plot <- as.data.frame(pca$rotation[,1:2])
+pca.plot$cell_type <- rownames(pca.plot)
+pca.plot
+
+library(ggplot2)
+library(ggrepel)
+ggplot(data=pca.plot,aes(x=PC1,y=PC2)) + geom_point(aes(col=cell_type)) + geom_text_repel(aes(label=cell_type))
+
+```
+
+```{r}
+expression_data
+```
+
+
+
+```{r}
+BiocManager::install("GEOquery")
+library(GEOquery)
+```
+
+```{r}
+gse <- getGEO("GSE52564", GSEMatrix = TRUE)
+
+gse
+```
+
+```{r}
+brain_data <- gse[[1]]
+brain_data
+
+expr_matrix <- exprs(brain_data)
+expr_matrix
+```
+

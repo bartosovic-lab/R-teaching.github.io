@@ -1,0 +1,178 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+## 03. Statistical analysis
+
+### Task: Which statistical test should I use to compare the groups ? 
+
+In order to know about which statistical test to use (e.g. parametric or non-parametric), we first need to check it the data is normaly distributed.
+
+#### Is my data normally distributed ? 
+
+Before applying statistical tests, especially parametric tests such as the t-test, ANOVA, or linear regression, it is important to assess whether your data follows a normal distribution. These tests rely on the assumption of normality for accurate results.
+
+
+#### Visual inspection
+
+```{r}
+# In order to start a new notebook, let's re-import the data
+
+neurites <- read.csv(file="/Users/marek/SU drive/Teaching/2024/statistical analysis in R/Data/03_neurites_synthetic.csv") 
+```
+
+#### Plot Histograms of Data
+
+A quick way to check if data is normally distributed is by visually inspecting histograms.
+
+```{r}
+neurites
+hist(neurites$control)
+hist(neurites$condition_1)
+hist(neurites$condition_2,breaks=5)
+```
+
+**Explanation:** Histograms allow us to visually assess the shape of the data. If the distribution resembles a bell-shaped curve, the data might be normally distributed.
+
+-----
+
+*Exercise: Experiment with the breaks= parameter in the hist() function to see how changing the number of bins affects the appearance of the histogram.*
+
+-----
+
+#### QQ Plot (Quantile-Quantile Plot)
+A more formal visual inspection for normality is the Q-Q plot, which compares the observed data to a theoretical normal distribution.
+
+If the data is normally distributed, the points will lie along a straight line.
+
+```{r}
+# Load ggpubr library for creating QQ plots
+library(ggpubr)
+
+# Create QQ plots for each condition
+ggqqplot(neurites$control,title = 'QQ control')
+ggqqplot(neurites$condition_1,title = 'QQ condition_1')
+ggqqplot(neurites$condition_2,title = 'QQ condition_2')
+```
+
+Explanation: The Q-Q plot helps visualize how closely the data matches the normal distribution. Deviations from the straight line suggest departures from normality.
+
+For more details on Q-Q plots, refer to this [resource](http://www.sthda.com/english/wiki/qq-plots-quantile-quantile-plots-r-base-graphs)
+
+-----
+#### Numerical methods
+
+Numerically, a normal distribution typically has its mean and median very close to each other. Let's calculate and compare these values.
+
+*Exercise: Calculate the median and mean for each column of the neurites dataset.*
+
+```{r}
+# Your code here
+```
+
+-------
+
+#### Shapiro-Wilk Test for Normality
+
+A formal statistical test for normality is the Shapiro-Wilk test. It is widely recommended for small sample sizes and is based on the correlation between the data and a normal distribution.
+
+```{r}
+shapiro.test(neurites$control)
+shapiro.test(neurites$condition_1)
+shapiro.test(neurites$condition_2)
+```
+
+**Explanation:** If the p-value is less than 0.05, it suggests that the data is not normally distributed. However, this test is sensitive to large sample sizes, where small deviations from normality might lead to significant results.
+
+For more details on the Shapiro-Wilk test, see this resource [link](http://www.sthda.com/english/wiki/normality-test-in-r)
+
+-----
+
+*Exercise:  Based on all of the above tests, discuss whether the data is normally distributed.*
+-----
+
+#### Example of Non-Normally Distributed Data
+
+If you mix several normal distributions, the result is often a non-normal distribution. Let’s test this concept by merging the three conditions together.
+
+```{r}
+# Merge data from all conditions into one vector
+mixed.data <- unname(unlist(neurites))
+head(mixed.data)
+
+# Plot QQ plot and perform Shapiro-Wilk test on the merged data
+ggqqplot(mixed.data)
+shapiro.test(mixed.data)
+
+```
+
+Explanation: By mixing distributions, we create data that is likely non-normal. You can use the Q-Q plot and the Shapiro-Wilk test to confirm this.
+
+-----
+
+#### F-Test to Compare Variances
+
+Comparing variances between groups is useful when checking if the variability in one group is significantly different from another. For instance, it’s important to check for equal variance before performing a t-test.
+
+```{r}
+# Compare variances between conditions using F-test
+var.test(neurites$control, neurites$condition_1)
+var.test(neurites$control, neurites$condition_2)
+var.test(neurites$condition_1, neurites$condition_2)
+
+```
+
+**Explanation:** The F-test checks whether the variances between two groups are equal. If the p-value is less than 0.05, it suggests the variances are significantly different.
+
+----------------------
+
+*Exercise: Answer the following questions:*
+
+Does the dataset have a normal distribution or a non-normal distribution?
+
+Are the variances between groups equal or not equal?
+
+Based on your findings, which test should be used to compare means: Student’s t-test, Welch t-test, or ANOVA?
+
+---------------------
+
+#### Perform single t.test of 2 conditions
+
+We use function t.test(). Use parameter var.equal to set if there is equal variance between the two samples
+
+T.test with unequal variance is also called Welch t-test
+
+```{r}
+test_1vs2 <- t.test(neurites$control, neurites$condition_1,var.equal = TRUE)
+test_1vs2
+test_1vs2$p.value
+```
+
+------
+
+*Exercise: Perform t-test to obtain p-value for condition_2 vs control*
+
+```{r}
+# Code to perform t-test between Condition 2 and Control
+```
+
+------
+
+#### Fold Change Between Conditions
+
+Fold change measures the difference between groups in terms of a ratio. It’s often used in biology to quantify changes in gene expression or treatment effects.
+
+```{r}
+# Code to compute fold change (mean difference between conditions)
+# For fold change calculation refer back to notebook 01.Import_basics
+```
+
+*Exercise: Compare the fold change between Condition 1 vs Control and Condition 2 vs Control.*
+
+   - Which of the comparisons has lower p-value ? 
+   - What is the fold change between the samples (advanced: What is the log2 of fold change) ? 
+   - Which treatment shows higher effect on neurite outgrowth ? 
+   - What can you tell about variability between the treatments ? 

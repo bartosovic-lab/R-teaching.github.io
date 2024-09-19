@@ -480,7 +480,7 @@ getwd()</code></pre>
 # &quot;/Users/marek/SU drive/Teaching/2024/statistical analysis in R/Data&quot;
 
 # Therefore I will use this command to load the data: 
-neurites &lt;- read.csv(file = &quot;~/SU drive/Teaching/2024/statistical analysis in R/Data/03_neurites_synthetic.csv&quot;)
+neurites &lt;- read.csv(file = &quot;/Users/marek/SU drive/Teaching/2024/statistical analysis in R/Data/03_neurites_synthetic.csv&quot;)
 
 # Tip: If you’re unsure of the file path, use the getwd() function in R to check your current working directory.
 # Tip: Use the &lt;TAB&gt; key for auto-completion of file paths in RStudio.</code></pre>
@@ -550,30 +550,31 @@ class(neurites$control)</code></pre>
 <pre class="r"><code>class(neurites$condition_2)</code></pre>
 <pre><code>## [1] &quot;numeric&quot;</code></pre>
 <p>All 3 individual columns of our data frame are numeric vectors</p>
-<table style="width:8%;">
-<colgroup>
-<col width="8%" />
-</colgroup>
-<tbody>
-<tr class="odd">
-<td>#### Loading data from Excel</td>
-</tr>
-<tr class="even">
-<td>You can also load data directly from Excel files using the
+<hr />
+</div>
+<div id="loading-data-from-excel" class="section level4">
+<h4>Loading data from Excel</h4>
+<p>You can also load data directly from Excel files using the
 <code>readxl</code> package. However, frequent shuffling between Excel
-and R is not recommended for large datasets.</td>
-</tr>
-<tr class="odd">
-<td><code>r library(readxl) excel_data &lt;- read_excel(&#39;../Data/excel_data.xlsx&#39;,sheet = 1, skip = 4) excel_data</code></td>
-</tr>
-<tr class="even">
-<td><code>## # A tibble: 10 × 2 ##    Healthy    AD ##      &lt;dbl&gt; &lt;dbl&gt; ##  1      29    12 ##  2      27    10 ##  3      30    11 ##  4      27     7 ##  5      28     8 ##  6      28     9 ##  7      27    10 ##  8      30    12 ##  9      28     5 ## 10      27     6</code></td>
-</tr>
-<tr class="odd">
-<td><code>r # If the &#39;readxl&#39; package isn&#39;t installed, use the command below to install it: # install.packages(&#39;readxl&#39;)</code></td>
-</tr>
-</tbody>
-</table>
+and R is not recommended for large datasets.</p>
+<pre class="r"><code>library(&#39;readxl&#39;)
+
+excel_data &lt;- as.data.frame(read_excel(&#39;../Data/excel_data.xlsx&#39;,sheet = 1, skip = 4))
+excel_data</code></pre>
+<pre><code>##    Healthy AD
+## 1       29 12
+## 2       27 10
+## 3       30 11
+## 4       27  7
+## 5       28  8
+## 6       28  9
+## 7       27 10
+## 8       30 12
+## 9       28  5
+## 10      27  6</code></pre>
+<pre class="r"><code># If the &#39;readxl&#39; package isn&#39;t installed, use the command below to install it:
+# install.packages(&#39;readxl&#39;)</code></pre>
+<hr />
 </div>
 </div>
 <div id="calculate-descriptive-statistics" class="section level3">

@@ -1,0 +1,245 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+### Notebook 2. Data visualization
+
+<br>
+
+```{r}
+# Let's re-import the data to start a new session
+neurites <- read.csv(file="/Users/marek/SU drive/Teaching/2024/statistical analysis in R/Data/03_neurites_synthetic.csv")
+
+# It's a good routine to display the first few rows to see if you data has imported properly
+head(neurites)
+
+```
+
+
+#### Visualizing the Mean of Samples
+
+Now, we will calculate and visualize the mean of neurite lengths for each condition using a barplot. Barplots are useful for comparing central tendencies across different groups.
+
+
+```{r}
+# First calculate means for all 3 conditions and store it in variables mean1, mean2 and mean3 
+# Calculate means for the three conditions and store them in separate variables
+mean_control <- mean(neurites$control)
+mean_cond1 <- mean(neurites$condition_1)
+mean_cond2 <- mean(neurites$condition_2)
+
+# Create basic barplot
+barplot(c(mean_control, mean_cond1, mean_cond2))
+
+
+# Create a barplot with axis labels and color
+barplot(c(mean_control, mean_cond1, mean_cond2), 
+        names.arg = c('Control', 'Condition 1', 'Condition 2'),
+        col = 'lightblue', 
+        main = 'Mean Neurite Length by Condition',
+        ylab = 'Mean Length [um]')
+
+# Note: The c() function is used to concatenate the three mean values into a single vector for plotting.
+```
+
+#### Plotting Individual Observations
+
+In addition to summarizing the data with means, it's helpful to look at the individual observations. We can plot each observation against its index (its row in the dataset).
+
+```{r}
+# Plot individual neurite measurements against their observation index
+plot(unlist(neurites), 
+     main = 'Individual Observations of Neurite Length', 
+     xlab = 'Observation Index', 
+     ylab = 'Neurite Length [um]', 
+     col = 'darkblue', 
+     pch = 19)
+
+# Note: This plot shows all observations in a single plot. Since the data is sorted by condition, the plot remains organized.
+# If the data were unsorted, this plot might appear disorganized.
+```
+#### Saving Plots to a PDF File
+
+To preserve your plots for use in reports or presentations, R allows you to save them to various file formats, including PDFs.
+
+```{r}
+# Open a PDF file to save the plot
+pdf(file = 'Neurites_plot.pdf', width = 6, height = 4)
+
+
+# Create the same barplot inside the PDF file
+barplot(c(mean_control, mean_cond1, mean_cond2), 
+        names.arg = c('Control', 'Condition 1', 'Condition 2'),
+        col = 'lightblue', 
+        main = 'Mean Neurite Length by Condition', 
+        ylab = 'Mean Length [um]')
+
+
+# Close the PDF device to finish saving the plot
+dev.off()
+
+# Check the current working directory to confirm where the PDF was saved
+getwd()
+
+```
+
+-----
+
+#### Exercise: Open and examine the saved PDF file in your File Explorer.
+
+-----
+
+#### Visualizing the Data with a Boxplot
+
+A boxplot provides a visual summary of the distribution of values, highlighting the median, quartiles, and potential outliers.
+
+
+```{r}
+# Create a boxplot to compare the distribution of neurite lengths across the three conditions
+boxplot(neurites) 
+
+# A nicer version of the same boxplot with colors, and axis labels
+boxplot(neurites, 
+        main = 'Boxplot of Neurite Lengths by Condition', 
+        ylab = 'Neurite Length [um]', 
+        col = c('lightblue', 'lightgreen', 'lightcoral'), 
+        names = c('Control', 'Condition 1', 'Condition 2'))
+
+# Note: Boxplots are useful for identifying the spread of the data, as well as potential outliers.
+
+```
+
+-----
+
+#### Converting Data to Long Format
+
+Wide format is useful when measurements are organized by separate variables (e.g., different conditions), but for certain analyses, it’s often necessary to reshape the data into long format.
+
+```{r}
+# Load the reshape2 library to convert the data
+library(reshape2)
+
+# Convert the dataset to long format
+neurites_long <- melt(neurites)
+
+# Display the first few rows of the long-format dataset
+head(neurites_long)
+
+# Check the dimensions of the dataset in long format
+dim(neurites_long)
+
+# Note: In long format, the 'variable' column contains the condition (Control, Condition 1, Condition 2),
+# and the 'value' column contains the neurite length measurements.
+```
+
+#### Filtering Long Format Data
+
+Once the data is in long format, we can filter for specific conditions more easily.
+
+```{r}
+# Filter only 'Control' observations
+neurites_long[neurites_long$variable == 'control',]
+
+# Filter only 'Condition 1' observations
+neurites_long[neurites_long$variable == 'condition_1',]
+
+# In fact what we are doing is asking which entry in the column variable of object neurites_long is equal to control/condition_1 and then using that vector as index to subsed the whole data frame 
+neurites_long$variable == 'control'
+
+```
+
+#### Advanced Visualization with ggplot2
+
+ggplot2 is a powerful package for creating advanced visualizations. Here, we will reproduce some of our previous plots using ggplot2 with enhanced aesthetics.
+
+#### Basic barplot in ggplot2
+
+```{r}
+library(ggplot2)
+library(ggridges)
+library(ggthemes)
+
+# ggplot always uses long format for plotting
+# Basic bar plot using ggplot2
+ggplot(data = neurites_long) + geom_bar(aes(x=variable,y=value), stat='summary',fun.y='mean')
+
+# ggplot(data=) == initializes a ggplot object
+# geom_bar adds a layer with barplot
+# stat=summary tells it to use summary statistics and fun.y tells it to use mean as functon to calculate summary statistics
+# aes() contains information about what should be on x and y axes
+
+# Let's add some color to the plot by using fill=variable and black outline of the bars
+ggplot(data = neurites_long) + geom_bar(aes(x=variable,y=value,fill=variable), stat='summary',fun.y='mean',col='black')
+
+# We can also easily change the theme of the plot by adding theme layer - theme_base() makes it look more like a base R plot
+ggplot(data = neurites_long) + geom_bar(aes(x=variable,y=value,fill=variable), stat='summary',fun.y='mean',col='black') + theme_base()
+
+```
+
+#### Histogram in ggplot2
+
+```{r}
+# Let's plot histogram in ggplot - this histogram ignores the information about the variable. It just pools our control, and conditions into a single graph
+ggplot(data=neurites_long) + geom_histogram(aes(x=value))
+
+# To split the histograms into 3 different ones, we can use facet_wrap layer to split the plots
+ggplot(data=neurites_long) + geom_histogram(aes(x=value)) + facet_wrap(~variable) 
+
+# Let's add some color again
+ggplot(data=neurites_long) + geom_histogram(aes(x=value,fill=variable),col='black') + facet_wrap(~variable) # Creates 3 histograms for our 3 variables
+
+# And change the theme
+ggplot(data=neurites_long) + geom_histogram(aes(x=value,fill=variable),col='black') + facet_wrap(~variable) + theme_classic()
+
+
+```
+
+#### Bboxplot and jitterplot in ggplot
+
+```{r}
+# Basic boxplot
+ggplot(data=neurites_long) + geom_boxplot(aes(x=variable,y=value))
+
+# Add some color
+ggplot(data=neurites_long) + geom_boxplot(aes(x=variable,y=value,fill=variable))
+
+# Because of layer based syntax we can stack layers on top of each other
+# Let's add individual datapoints to the boxplot
+ggplot(data=neurites_long) + geom_boxplot(aes(x=variable,y=value,fill=variable)) + geom_point(aes(x=variable,y=value))
+
+# The points are all in one row, we can add some jitter to avoid overplotting 
+ggplot(data=neurites_long) + geom_boxplot(aes(x=variable,y=value,fill=variable)) + geom_jitter(aes(x=variable,y=value),width = 0.25)
+
+
+# If we skip the boxplot, we can just have a jitter plot
+ggplot(data=neurites_long) +  geom_jitter(aes(x=variable,y=value),width = 0.25)
+
+# And with some colors
+ggplot(data=neurites_long) +  geom_jitter(aes(x=variable,y=value,col=variable),width = 0.25)
+
+# Let's now fix  some axis labels
+ggplot(data=neurites_long) +  geom_jitter(aes(x=variable,y=value,col=variable),width = 0.25) + xlab("condition") + ylab("Neurite length [um]")
+```
+
+#### Density ridge histogram and violin plot
+
+Density ridge plots and violin plots provide alternative ways to visualize the distribution of data across conditions.
+
+
+```{r}
+ggplot(data=neurites_long) + geom_density_ridges(aes(x=value,y=variable,fill=variable)) + theme_bw()
+```
+
+
+```{r}
+# Violin plot
+ggplot(data = neurites_long) + geom_violin(aes(y=value,x=variable,fill=variable)) + theme_bw()
+
+# With dots
+ggplot(data = neurites_long) + geom_violin(aes(y=value,x=variable,fill=variable)) + geom_jitter(aes(x=variable,y=value),width=0.15) + theme_bw() 
+```
+
+
