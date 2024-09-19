@@ -64,10 +64,28 @@ Before we can analyze the data, we need to import it into R and store it in the 
 2. **Download the data:**
    Download the  data file from the GitHub repository by clicking the [link](https://github.com/bartosovic-lab/R-teaching.github.io/tree/main/data). Download all 3 files in the folder by clicking the file and pressing download in upper right corner. 
 
+------
+
 #### You should end up with the following folders and files:
 
-[image](../Figures/image.png)
+![image](../Figures/image.png)
 
+-----
+
+#### Create a new notebook and save it 
+
+![image](../Figures/new_notebook.png)
+R notebooks allow for mixing of notes or explanations, R code and figures in a single document and are super convenient for documentation and sharing. 
+
+You can delete lines 6-20 in the new notebook.
+
+New, empty code chunk can be created using cmd+option+I (Mac) or ctrl+alt+I (Windows)
+
+Now the notebook is ready to start our analysis
+
+![empty_notebook](../Figures/empty_notebook.png)
+
+-----
 #### Import the CSV file into R
 
 To import data from a CSV file, we typically use the `read.csv()` function in R. The data will be stored in an object (a variable in R) called `neurites`.

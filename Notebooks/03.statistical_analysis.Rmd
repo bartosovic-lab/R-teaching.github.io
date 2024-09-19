@@ -43,6 +43,19 @@ hist(neurites$condition_2,breaks=5)
 
 -----
 
+
+#### Numerical method
+
+Numerically, a normal distribution typically has its mean and median very close to each other. Let's calculate and compare these values.
+
+*Exercise: Calculate the median and mean for each column of the neurites dataset.*
+
+```{r}
+# Your code here
+```
+
+-----
+
 #### QQ Plot (Quantile-Quantile Plot)
 A more formal visual inspection for normality is the Q-Q plot, which compares the observed data to a theoretical normal distribution.
 
@@ -61,17 +74,6 @@ ggqqplot(neurites$condition_2,title = 'QQ condition_2')
 Explanation: The Q-Q plot helps visualize how closely the data matches the normal distribution. Deviations from the straight line suggest departures from normality.
 
 For more details on Q-Q plots, refer to this [resource](http://www.sthda.com/english/wiki/qq-plots-quantile-quantile-plots-r-base-graphs)
-
------
-#### Numerical methods
-
-Numerically, a normal distribution typically has its mean and median very close to each other. Let's calculate and compare these values.
-
-*Exercise: Calculate the median and mean for each column of the neurites dataset.*
-
-```{r}
-# Your code here
-```
 
 -------
 
