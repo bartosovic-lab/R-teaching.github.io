@@ -45,23 +45,6 @@ barplot(c(mean_control, mean_cond1, mean_cond2),
 # Note: The c() function is used to concatenate the three mean values into a single vector for plotting.
 ```
 
-#### Plotting Individual Observations
-
-In addition to summarizing the data with means, it's helpful to look at the individual observations. We can plot each observation against its index (its row in the dataset).
-
-```{r}
-# Plot individual neurite measurements against their observation index
-plot(unlist(neurites), 
-     main = 'Individual Observations of Neurite Length', 
-     xlab = 'Observation Index', 
-     ylab = 'Neurite Length [um]', 
-     col = 'darkblue', 
-     pch = 19)
-
-# Note: This plot shows all observations in a single plot. Since the data is sorted by condition, the plot remains organized.
-# If the data were unsorted, this plot might appear disorganized.
-```
-#### Saving Plots to a PDF File
 
 To preserve your plots for use in reports or presentations, R allows you to save them to various file formats, including PDFs.
 
@@ -177,6 +160,7 @@ ggplot(data = neurites_long) + geom_bar(aes(x=variable,y=value,fill=variable), s
 # We can also easily change the theme of the plot by adding theme layer - theme_base() makes it look more like a base R plot
 ggplot(data = neurites_long) + geom_bar(aes(x=variable,y=value,fill=variable), stat='summary',fun.y='mean',col='black') + theme_base()
 
+ggsave('neurites_ggplot.pdf')
 ```
 
 #### Histogram in ggplot2

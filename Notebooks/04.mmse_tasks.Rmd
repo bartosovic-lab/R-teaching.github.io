@@ -5,77 +5,94 @@ output:
     df_print: paged
 ---
 
+## Introduction to Data Analysis: Investigating Cognitive Decline and Brain Volume Using the MMSE Dataset
 
-# MMSE dataset
-   - Group --> Class
-   - Age --> Age
-   - EDUC --> Years of Education
-   - SES --> Socioeconomic Status / 1-5
-   - MMSE --> Mini Mental State Examination
-   - CDR --> Clinical Dementia Rating
-   - eTIV --> Estimated total intracranial volume
-   - nWBV --> Normalize Whole Brain Volume
-   - ASF --> Atlas Scaling Factor
+In this class, we will explore how to perform data analysis using a dataset centered around cognitive and brain health measurements. The dataset we will be working with includes multiple variables that provide insight into factors affecting cognitive performance and brain structure. The main focus will be on understanding how these variables are interrelated and how they might influence cognitive decline, as assessed by the Mini Mental State Examination (MMSE).
 
+Key Variables in the Dataset:
 
+-   Class (Group): This categorical variable differentiates between various groups (such as control or dementia cases) that individuals may belong to.
+-   Age: The age of each individual, a critical variable as cognitive functions often decline with age.
+-   Years of Education (EDUC): Education level can impact cognitive reserve, which in turn may affect cognitive performance later in life.
+-   Socioeconomic Status (SES): Scored on a scale from 1 to 5, this variable captures an individual's socioeconomic background, which may influence cognitive health.
+-   MMSE (Mini Mental State Examination): A widely-used measure of cognitive performance, where lower scores indicate more severe cognitive impairment.
+-   Clinical Dementia Rating (CDR): This variable quantifies the severity of dementia, providing a context for interpreting MMSE scores.
+-   Estimated Total Intracranial Volume (eTIV): A measure of the brain's overall size, which may correlate with cognitive performance or dementia severity.
+-   Normalized Whole Brain Volume (nWBV): This variable adjusts for total brain volume relative to intracranial volume and may serve as a marker for brain atrophy.
+-   Atlas Scaling Factor (ASF): A scaling factor used in brain imaging analysis to account for differences in brain sizes among individuals.
 
-## Import the dataset 
+## Import the dataset
 
 ```{r}
-mmse <- read.csv(file='../Data/alzheimer.csv',header = TRUE,comment.char = '#')
+mmse <- read.csv(file='../data/alzheimer_data.csv',header = TRUE,comment.char = '#',row.names = 1)
+mmse
+
 ```
 
-------
+------------------------------------------------------------------------
 
-## Data exploration 
+### Data exploration
 
-Q1: How many rows and columns does the dataset have ? 
-Q1.1 What are the names of the columns ? 
+Q1: How many rows and columns does the dataset have ?
 
-Q2: Which of the columns are ordinal and which are categorical ? 
+Q2: What are the names of the columns ?
 
-Q3: Are there any missing values in the dataset ? 
+Q3: Which of the columns are ordinal and which are categorical ?
 
-*Hint: There might be a missing value in the socio-economi status column - function `is.na()` can be usefule here*
+Q4: Are there any missing values in the dataset ?
 
-------
+*Hint: There might be a missing value in the socio-economic status column - function `is.na()` can be useful here*
 
-## Descriptive statistics 
+------------------------------------------------------------------------
 
-Q4.1: How many male and females are there in the dataset ? 
+### Descriptive Statistics
 
-Q4.2: How many Demented/Nondemented are there in the dataset ? 
+Q5: How many males and females are there in the dataset?
 
-Q5: What is the mean age overall ? 
+Q6: How many Demented/Non-demented individuals are there in the dataset?
 
-Q5.1 What is the mean age of demented group ? 
+Q7: What is the mean age overall?
 
-Q5.2 What is the mean age of nondemented group ? 
+Q8: What is the mean age of the demented group?
 
-Q5.3 What is the mean age of demented males group ? 
+Q9: What is the mean age of the non-demented group?
 
-Q6: What is the minimum and maximum value of MMSE score ? 
+Q10: What is the mean age of the demented male group?
 
------
+Q11: Calculate the standard deviation and median of the age variable for the entire dataset.
 
-## Visualisation
+Q12: What is the mean and standard deviation of socioeconomic status (SES) across the groups (demented vs. non-demented)?
 
-Q7: Plot a boxplot of mmse score in demented vs non-demented individuals using either base plotting or ggplot
+Q13: What is the minimum and maximum value of the MMSE score?
 
-Q7.1: Add jitterplot of individual observations into the boxplot.
+Q14: What is the standard deviation of the MMSE score in demented and non-demented groups? What does this tell us about the spread of MMSE scores?
 
------
+------------------------------------------------------------------------
+
+## Visualization
+
+Q15: Plot a barplot of mean values of mmse score of groups (demented, nondemented).
+
+Q16: Plot a boxplot of mmse score in demented vs non-demented individuals using either base plotting or ggplot
+
+Q17: Add jitterplot of individual observations into the boxplot created in Q15 (It is recommended to use ggplot for this)
+
+Q18: Plot a histogram of age, splitting it by demented vs. non-demented individuals. What does this show about the age distribution of each group?
+
+Q19: Create a scatter plot to investigate the relationship between nWBV (Normalized Whole Brain Volume) and MMSE scores. Add a regression line to the plot to show the trend.
+
+Q20: Plot the distribution of years of education (EDUC) using a boxplot for demented vs. non-demented groups. Does there appear to be any noticeable trend in educational attainment between the two groups?
+
+------------------------------------------------------------------------
 
 ## Statistical analysis
 
-Q8: Does the MMSE column follow normal distribution ? Check with QQ-plot and Shapiro-Wilk test. 
+Q21: Does the MMSE column follow normal distribution ? Check with QQ-plot and Shapiro-Wilk test.
 
+Q22: Does the age of groups (demented, non-demented) and age overall follow normal distribution ?
 
+Q22: Conduct a statistical test to compare the mean MMSE scores between demented and non-demented individuals. Decide which statistical test should be used. Is there a statistically significant difference between the two groups?
 
+Q23: Perform a correlation analysis between age and MMSE score. Plot scatterplot of Age and MMSE first. Then use function `cor` (with parameter method='spearman') to perform correlation analysis.What does the correlation coefficient suggest about the relationship between these two variables?
 
-
-
-
-
-
-
+Q24: Conduct a chi-square test to see if there is an association between gender and the dementia classification (demented vs. non-demented). Use function `chisq.test`

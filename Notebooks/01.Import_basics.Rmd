@@ -86,6 +86,7 @@ Now the notebook is ready to start our analysis
 ![empty_notebook](../Figures/empty_notebook.png)
 
 -----
+
 #### Import the CSV file into R
 
 To import data from a CSV file, we typically use the `read.csv()` function in R. The data will be stored in an object (a variable in R) called `neurites`.
@@ -186,12 +187,7 @@ Repeat this for the other columns:
 ```{r}
 head(neurites$condition_1)
 head(neurites$condition_2)
-
-class(neurites$condition_1)
-class(neurites$condition_2)
 ```
-
-All 3 individual columns of our data frame are numeric vectors
 
 -----
 
@@ -242,7 +238,7 @@ You can also calculate statistics for other columns by replacing `neurites$contr
 
 -----
 
-### Basic Arithmetic in R
+### Fold change calculation
 
 We can also perform arithmetic operations on the data. For example, let’s calculate the fold change between the average neurite outgrowth for `condition_1` and the `control` group.
 

@@ -57,14 +57,16 @@ pheatmap(df.merge.small)
 ```
 
 ```{r, fig.width=5,fig.height=5}
+library(ggplot2)
+library(ggrepel)
+
 pca <- prcomp(df.merge.small)
 
 pca.plot <- as.data.frame(pca$rotation[,1:2])
 pca.plot$cell_type <- rownames(pca.plot)
 pca.plot
 
-library(ggplot2)
-library(ggrepel)
+
 ggplot(data=pca.plot,aes(x=PC1,y=PC2)) + geom_point(aes(col=cell_type)) + geom_text_repel(aes(label=cell_type))
 
 ```
