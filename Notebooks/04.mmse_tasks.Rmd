@@ -37,7 +37,7 @@ Q1: How many rows and columns does the dataset have ?
 
 Q2: What are the names of the columns ?
 
-Q3: Which of the columns are ordinal and which are categorical ?
+Q3: Which of the columns are numeric and which are categorical ?
 
 Q4: Are there any missing values in the dataset ?
 
