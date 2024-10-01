@@ -1,0 +1,147 @@
+---
+title: "Receptor binding lab notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r}
+# First load the data into R 
+
+# Load library readxl. If the library is not installed, use install.packages('reaxl'). Installing the package only needs to be done only once. Then remove the install.packages() command from the notebook, otherwise you migth get errors
+# install.packages('readx')
+library(readxl)
+
+# In order to see what is the working directory use getwd()
+getwd()
+
+# Load the data using read_excel function (Fill in the correct path to your file)
+rec_lig <- read_excel(path = "/Users/marek/SU drive/Teaching/2024/statistical analysis in R/receptor_binding_lab/Receptor binding lab data- raw data.xlsx",skip=3)
+
+# Check if the data is properly loaded 
+head(rec_lig)
+
+# Check that the data has 3 columns with 
+# Column1 = concentration
+# Column2 = Total binding
+# Column3 = Non specific binding
+
+# Correct the column names so they do not contain blank spaces
+colnames(rec_lig) <- c('c','total','non-specific')
+
+# Check the new column names
+head(rec_lig)
+```
+
+```{r}
+# Calculate specific binding
+rec_lig$specific <- rec_lig$total - rec_lig$`non-specific`
+
+# Check the data frame
+head(rec_lig)
+```
+
+
+```{r}
+# Plot the specific binding CPM count as a function of concentration
+
+# Load the library ggplot2
+library(ggplot2)
+
+# Plot a scatter plot
+ggplot(data=rec_lig) + geom_point(aes(x=c,y=specific))
+```
+
+```{r}
+# Perform the modeling using hill equation 
+# 
+# The model is as follows:
+# specific = Bmax * c / (KD + c)
+# 
+# In our case 
+# Bmax and KD need to be estimated
+#
+# specific binding data is contained in column called 'specific'
+# c is the concentration [column 1] also called 'c'
+
+
+# Run the model
+# We will find the best fit to the model by using method called NLS - sum of least squares
+# The purpose of nls is to minimize the sum square of the vector returned by the function fn
+# For more details see this link: https://www.rdocumentation.org/packages/minpack.lm/versions/1.2-4/topics/nls.lm 
+
+# The formula in our case is as follows: 
+# specific ~ (Bmax * c) / (Kd + c)
+# ~ means is proportional to and is equivalen to '=' in equation y = (Bmax * c) / (Kd + c)
+
+# We need to initialise the models with guestimate of the paramteres. From Plot (1) we can estimate the Bmax to be ~1000 and Kd perhaps somewhere around 1.5e-10
+
+hill_model <- nls(specific ~ (Bmax * c) / (Kd + c), 
+                    data = rec_lig, 
+                    start = list(Bmax = 1000, Kd = 1.5e-10))
+
+summary(hill_model)
+
+```
+
+Note that Bmax and Kd has assigned P-value which is <0.05
+
+# Plot the fitted model
+```{r}
+
+# Let's extract the predicted parameters Kd and Bmax from the model
+hill_summary <- summary(hill_model)
+KD  <- coef(hill_model)['Kd']
+Bmax <- coef(hill_model)['Bmax']
+
+KD
+Bmax
+
+cat('KD of fitted curve is equal to ',KD)
+cat('Bmax of fitted curve is equal to ', Bmax)
+```
+
+```{r}
+# We can use the parameters to predict Hill curve based on our model
+
+# We first create a vector of measurement concentrations along the range of the actual measurements
+min_conc = min(rec_lig$c) / 2
+max_conc = max(rec_lig$c) * 2
+
+pred_conc    <- seq(from=min_conc, to= max_conc, length.out=200)
+print(pred_conc)
+
+# And then we use the hill model to predict the CPM
+pred_bind  <- predict(object=hill_model, newdata = list('c'=pred_conc))
+
+# We will create a new data frame with predicted values
+# This data frame contains predicted values based on the model, not actual measurements
+rec_lig_pred <- data.frame(pred_conc,pred_bind)
+head(rec_lig_pred)
+```
+
+
+
+```{r}
+# In order to check that the model fits the data we can plot both on the same graph
+# Predicted values from the mdoel are plotted using blue curve geom_line() layer
+# Actual measurements are plotted as black dots using geom_point() layer
+
+
+
+# We also label the Kd as blue dotted vertiacal line using geom_vline()
+# And we label Bmax as horizotnal red line using geom_hline()
+
+ggplot() +
+  geom_point(data=rec_lig,aes(x = c, y = specific)) +
+  geom_line(data=rec_lig_pred,aes(x = pred_conc, y = pred_bind), color = 'blue') +
+  labs(x = "Concentration (linear scale)", y = "Specific Binding (CPM)", title = "Hill Fit for Receptor Binding") + 
+  geom_vline(xintercept = KD,col='purple',linetype='dotted', lwd=1.5) +
+  geom_hline(yintercept = Bmax,col='red',linetype='dashed',lwd = 1.5) + 
+  coord_cartesian(ylim=c(0,Bmax*1.1)) + theme_bw() 
+
+
+
+```
+
+

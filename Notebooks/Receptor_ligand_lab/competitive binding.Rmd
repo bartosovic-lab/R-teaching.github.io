@@ -1,0 +1,153 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+# Data import from excel
+
+```{r data_loading}
+
+# Load the library first to read excel spreadsheet
+library(readxl)
+
+getwd()
+
+# Skip first 4 lines to get nicely organised data frame with column names
+# If the data frame still looks messy, try changing parameters to load the data to end up with table such as below
+competitive <- read_excel(path = "/Users/marek/SU drive/Teaching/2024/statistical analysis in R/receptor_binding_lab/Receptor binding lab data- raw data.xlsx",sheet=2,skip=4)
+head(competitive)
+
+# Make sure that we have 3 columns
+ncol(competitive) == 3
+
+# And rename the columns
+colnames(competitive) <- c('conc','CPM_rep1','CPM_rep2')
+head(competitive)
+
+# If the whole import went well, the data frame should look like the one below: 
+```
+
+# Calculate the average of CPM counts
+
+```{r}
+# Use function rowMeans to calculate mean of CPM_rep1 and CPM_rep2
+competitive$mean_CPM <- rowMeans(competitive[,c('CPM_rep1','CPM_rep2')])
+
+head(competitive)
+
+```
+
+
+# Plot the data in dose-response plots and in log scale
+
+```{r plot_data}
+library(ggplot2)
+library(reshape2)
+
+
+# Plot the mean CPM counts on y axis against the concentration
+
+# The measurements span several orders of magnitudes of concentrations, and in such case it's better to log10 transform the concentration to better capture the response in binding to the concentration
+# Let's do this in a ggplot graph by adding scale_x_log10() layer
+
+ggplot(data=competitive,aes(x=conc,y=mean_CPM)) + geom_point() +  geom_line() + scale_x_log10()
+```
+
+# Model the saturation binding using dose-response curves
+
+The formula we use is a 4-parameter logistic regression model (4PL) in a shape of sigmoid curve.
+
+![**Figure1** Formula we use for fitting of the 4PL model](./dose_response_equation.png)
+
+### The 4 parameters are:
+
+-   top - predicted maximum value of response (plateau)
+-   bottom - predicted minimum value of response
+-   EC50/IC50 - concentration when the response is at 50%
+-   h - hill slope - defines the steepness of the sigmoid curve
+
+### The measured variables are:
+
+-   Dose (X) - concentration of the ligand [conc]
+-   Response (Y) - CPM value [mean_CPM]
+
+For more details on dose-response analysis see [here](https://www.graphpad.com/support/faq/how-do-i-perform-a-dose-response-experiment/)
+
+```{r model}
+# Formula from image 1 written for CPM_rep1 measurement
+formula = mean_CPM ~ bottom + (top-bottom) / (1+ 10^((log10(EC50)-log10(conc))*h))
+
+# In order to initialise the model we can guess-timate the parameters from the curves
+# For model1 and CPM_rep1 measurements this could be:
+EC50 = 1e-8
+top  = 800
+bottom = 0
+h = -1        # -1 because sigmoid is going down / +1 if the response was going up
+
+# After initialising the parameters we can try to fit the model specified by formula with the actual measurements
+model   <- nls(formula,data=competitive,start=list(EC50=EC50,h=h,top=top,bottom=bottom))
+summary(model)
+```
+
+Note that summary(model) prints out the estimated parameters for the sigmoid curve.
+
+Perform sanity check that the values of bottom, top and EC50 roughly correspond to the expected values.This can be done graphically as follows:
+
+```{r}
+predicted_bottom <- coef(model)['bottom']
+predicted_top    <- coef(model)['top']
+predicted_EC50   <- coef(model)['EC50']
+
+# Plot the data points as before, but this time we add the values of bottom, top and EC50 as horizontal/vertial lines
+ggplot(data=competitive,aes(x=conc,y=mean_CPM)) + 
+  geom_point() +  
+  geom_line() + 
+  scale_x_log10() + 
+  geom_hline(yintercept = predicted_bottom,col='red',linetype='dashed') +
+  geom_hline(yintercept = predicted_top,col='blue',linetype='dashed') + 
+  geom_vline(xintercept = predicted_EC50,col='grey60',linetype='dashed')
+
+
+```
+
+
+
+# Calculate predicted values from the model along whole range of measurements
+
+```{r}
+# Specify range for which we want to make prediction - from half of minimum value to double the maximum value
+min_conc = min(competitive$conc) / 2
+max_conc = max(competitive$conc) * 2
+
+# Generate vector of values in between minimum nad maximum on a log scale
+pred_conc    <- 10^seq(from=log10(min_conc), to= log10(max_conc), length.out=200)
+head(pred_conc)
+
+# Predict tha data using model obtained in previous block
+pred_data      <- data.frame('conc' =pred_conc, 'replicate' = 'CPM_rep1')
+pred_data$pred <- predict(model,pred_data)
+```
+
+# Plot the data and the predictions together
+
+```{r}
+# Plot the dose-response measurements and the fitted curves together in a single plot
+ggplot() + 
+  geom_line(data=pred_data,aes(x=conc,y=pred)) + 
+  scale_x_log10() + 
+  geom_point(data=competitive,aes(x=conc,y=mean_CPM)) + 
+  ggtitle(paste0('predicted EC50 = ', predicted_EC50)) + 
+  geom_vline(xintercept = predicted_EC50,linetype='dashed',col='grey60')
+
+```
+
+
+
+
+```{r}
+cat('EC50 is: ',predicted_EC50,'\n')
+
+
+```

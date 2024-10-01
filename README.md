@@ -14,3 +14,11 @@
 #### Day 2
 
 [04. MMSE dementia analysis](/Notebooks/04.mmse_tasks.html)
+
+
+
+## Receptor ligand binding lab 
+
+[Notebook 1: Saturation binding](/Notebooks/Receptor_ligand_lab/receptor_binding_notebook.html)
+
+[Notebook 2: Competitive binding](/Notebooks/Receptor_ligand_lab/competitive-binding.html)
