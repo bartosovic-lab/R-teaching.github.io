@@ -111,7 +111,7 @@ min_conc = min(rec_lig$c) / 2
 max_conc = max(rec_lig$c) * 2
 
 pred_conc    <- seq(from=min_conc, to= max_conc, length.out=200)
-print(pred_conc)
+head(pred_conc)
 
 # And then we use the hill model to predict the CPM
 pred_bind  <- predict(object=hill_model, newdata = list('c'=pred_conc))
