@@ -41,7 +41,6 @@ rec_lig$specific <- rec_lig$total - rec_lig$`non-specific`
 head(rec_lig)
 ```
 
-
 ```{r}
 # Plot the specific binding CPM count as a function of concentration
 
@@ -84,9 +83,12 @@ summary(hill_model)
 
 ```
 
-Note that Bmax and Kd has assigned P-value which is <0.05
+![**Figure 1** Hill equation for drug-receptor binding](../../Figures/hill_equation2.webp)
+
+Note that Bmax and Kd has assigned P-value which is \<0.05
 
 # Plot the fitted model
+
 ```{r}
 
 # Let's extract the predicted parameters Kd and Bmax from the model
@@ -120,8 +122,6 @@ rec_lig_pred <- data.frame(pred_conc,pred_bind)
 head(rec_lig_pred)
 ```
 
-
-
 ```{r}
 # In order to check that the model fits the data we can plot both on the same graph
 # Predicted values from the mdoel are plotted using blue curve geom_line() layer
@@ -143,5 +143,3 @@ ggplot() +
 
 
 ```
-
-
