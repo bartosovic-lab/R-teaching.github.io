@@ -5,32 +5,59 @@ output:
     df_print: paged
 ---
 
-<style>
-body {
-  max-width: 900px; /* Set the desired width */
-  margin: 0 auto;   /* Center the document on the page */
-}
-</style>
+## Before you start with this vignette, read carefully these instructions
 
-## Download the data from GEO (if already don proceed to the next step)
+The primary goal of this transcriptomic workshop is to provide participants with a comprehensive understanding of the RNA-seq data analysis pipeline using R and Bioconductor packages such as DESeq2. You will learn about the basic concepts behind statistical analysis of transciptomic data, and be able to perform basic analysis of public RNA-seq on your own. 
+
+#### By the end of this vignette, you should be able to:
+
+ - Perform differential expression analysis using DESeq2.
+ - Generate visualizations such as PCA plots, volcano plots, and heatmaps.
+ - Interpret results in the context of biological pathways and Gene Ontology (GO) terms.
+
+#### Prepare folder for the analysis
+
+1. Before starting the analysis make sure to create a new folder for the project. Place downloaded data into this folder. 
+
+2. Create a new R notebook by going to File -> New File -> R Notebook
+
+3. Save the notebook to the project folder. 
+
+#### The most common problems: 
+In case of errors, try to figure out what is wrong with your command. Typical errors include:
+
+- Typos 
+- Your input is not what it is supposed to be (check it)
+- Missing library - Google how to install a missing library. Typically use either install.pacakges() or BiocManager::install() functions
+- File loading issues - Make sure to specifiy the correct path to your raw data files. 
+- Wrong syntax (google it or ask chatGPT)
+
+Generally, start by googling the error and use chatGPT to help you. If you do not understand, you can also ask ChatGPT to explain to you. 
+
+Ask Marek or Pepe for help and we will can also help you and explain. 
+
+## Step 1.  Download the data from GEO (if already done with this, proceed to the next step)
 
 [Link to GEO page](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE192855)
 
 [Direct link to the file](https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE192855&format=file)
 
-
-## Loading a Single File in DESeq2 Analysis
+## Step 2. Loading the files for DESeq2 Analysis
 
 #### To begin, we load a single file containing gene count data:
 
 ```{r}
 # Load a single count file
-counts1 <- read.table(file='~/SU drive/Teaching/2024/transcriptomics workshop/data/GSE192855_RAW/GSM5766873_1-sc1-D0-ctrl-A.counts.txt.gz', header=TRUE)
-
-# Preview the first few rows of the file
-head(counts1)
+raw_table <- read.table(file='~/SU drive/Teaching/2024/transcriptomics workshop/data/GSE192855_RAW/GSM5766873_1-sc1-D0-ctrl-A.counts.txt.gz', header=TRUE)
+head(raw_table)
 
 # Column 1 contains Gene IDs, and Column 7 contains raw counts.
+counts1        <- raw_table[,7]
+names(counts1) <- raw_table[,1]
+
+# Preview the first few rows of the file
+head(counts1,20)
+
 
 ```
 
@@ -66,12 +93,22 @@ counts_list <- list()
 
 # Loop through each file, read it, and extract the relevant columns
 for(file in file_list){
+  cat('Loading file',file,'\n')
   matrix <- read.table(file = gzfile(file),header = TRUE)
-  counts_list[[file]] <- setNames(object = matrix[,7],nm = matrix[,1])
+  
+  # Save the counts from each file into the list [7th column] and name the list with gene neames [1st column]
+  counts_list[[basename(file)]]        <- matrix[,7] # Vector with expression counts from column 7
+  names(counts_list[[basename(file)]]) <- matrix[,1] # Vector with gene names (ENSG codes) from column 1
 }
 
 # Preview the first item in the list
-head(counts_list[[1]])
+head(counts_list[[1]],20)
+
+# Check each of the files in the list
+lapply(counts_list,head)
+
+# counts_list is an R list, we can check the contents by indexing it using [[]]
+
 ```
 
 
@@ -92,11 +129,17 @@ knitr::kable(head(combined_counts))
 dim(combined_counts)
 
 ```
-## Creating Experimental Metadata in DESeq2 Analysis
+Count matrix is the essential input into DESeq2 analysis. Count matrix is composed of genes (rows) and samples (columns). Count matrix can be generated in different ways. 
+
+In addition to count matrix we wil need metadata (colData) to inform DESeq about what kind of sample we want to compare with each other and replicates. 
+
+## Step 3. Creating Experimental Metadata in DESeq2 Analysis
 
 To properly analyze RNA-seq data in DESeq2, you need to provide experimental metadata, which describes the experimental design and conditions for each sample. This includes information such as filenames, time points, and replicate numbers.
 
 Below is an example of creating metadata manually:
+
+Note: It is critical that the colum names of the count matrix and row names of metadata are in the same order. E.g. column 1 of count matrix corresponds to row 1 of metadata etc. 
 
 ```{r}
 # Create experimental metadata
@@ -116,6 +159,17 @@ coldata <- data.frame(
 # Preview the metadata
 coldata
 ```
+
+Let's check again how does our count matrix and metadata look like. 
+
+Make sure that the order of samples in columns of count matrix and rows of metadata matches. 
+
+```{r}
+knitr::kable(head(combined_counts))
+knitr::kable(coldata)
+```
+
+
 ## Loading the DESeq2 Library and Creating a DESeq2 Object
 
 To begin differential expression analysis, you need to load the DESeq2 library and construct a DESeqDataSet object, which is central to the DESeq2 pipeline. This object encapsulates the count matrix, metadata, and experimental design.
