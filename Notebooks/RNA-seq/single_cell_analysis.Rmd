@@ -1,0 +1,734 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+## scRNA-seq data analysis vignette
+
+## Introduction
+
+Single-cell RNA sequencing (scRNA-seq) allows us to study gene expression at the resolution of individual cells, providing insights into cellular heterogeneity. In this session, we will analyze scRNA-seq data from neuronal differentiation at different time points. 
+
+This includes: 
+ - loading data 
+ - preprocessing and QC
+ - normalization 
+ - clustering and cell type identification
+ - visualization.
+
+
+## Data download
+
+We are going to analyse single-cell RNA-seq data from the same [paper](https://www.sciencedirect.com/science/article/pii/S2589004222015516) as the bulk data.
+
+Tha data comes from single-cell RNA-seq of Day 0,7,13 and 20 of in vitro neuronal differentiation
+
+[Link to GEO page](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE192857)
+
+[Link to the paper](https://www.sciencedirect.com/science/article/pii/S2589004222015516)
+
+
+## Load Required Libraries
+
+```{r, results='hide'}
+library(Seurat)
+library(ggplot2)
+```
+
+The Seurat package is a popular tool for analyzing scRNA-seq data. It provides functions for data normalization, clustering, dimensionality reduction, and visualization.
+
+For details and help with Seurat packages visit this [website](https://satijalab.org/seurat/)
+
+Have a look at following tutorials
+
+[Basic data analysis vignette](https://satijalab.org/seurat/articles/pbmc3k_tutorial)
+
+[Data visualization vignette](https://satijalab.org/seurat/articles/visualization_vignette)
+
+[Differential expression testing](https://satijalab.org/seurat/articles/de_vignette)
+
+[Cell cycle scoring and regression](https://satijalab.org/seurat/articles/cell_cycle_vignette)
+
+[Seurat cheat sheet](https://satijalab.org/seurat/articles/essential_commands)
+
+
+## Data Import and Quality Check
+
+Each dataset represents a time point in neuronal differentiation. The data is stored in a sparse matrix format, commonly used to save memory when handling large datasets.
+
+ - The matrix file contains the expression data, where rows represent genes and columns represent cells.
+ - The barcodes file identifies individual cells.
+ - The features file provides gene names.
+
+```{r}
+# Paths to the data files for day 0
+# Note: Change the paths to these files to match the location of your data on your computer
+
+m.file    <- '~/SU drive/Teaching/2024/transcriptomics workshop/data/GSE192857_RAW/GSM5766894_sc1d0-ctrl_matrix.mtx.gz'
+bcd.file  <- '~/SU drive/Teaching/2024/transcriptomics workshop/data/GSE192857_RAW/GSM5766894_sc1d0-ctrl_barcodes.tsv.gz'
+feat.file <- '~/SU drive/Teaching/2024/transcriptomics workshop/data/GSE192857_RAW/GSM5766894_sc1d0-ctrl_features.tsv.gz'
+
+m        <- Matrix::readMM(file = m.file)
+barcodes <- read.table(file=gzfile(bcd.file))
+features <- read.table(file=gzfile(feat.file))
+
+# Let's have a look at the first 50 rows and 10 columns of the data matrix m, note that matrix indexing works as m[rows,column]
+m[1:50,1:10]
+
+# The dimensions of the matrix should be 33538 genes by 1130 cells
+dim(m)
+
+# Let's also have a look at the cell barcodes
+head(barcodes)
+dim(barcodes)
+
+# And finaly features which are the genes
+head(features)
+dim(features)
+
+# Let's name the rows and columns of matrix with cell barcodes (1st column in the barcodes data frame)
+colnames(m) <- barcodes$V1
+
+# and gene names - (2nd column in the barcodes data frame)
+rownames(m) <- features$V2 
+
+# Now let's check the matrix again, we should have rows and column names there
+m[1:50,1:10]
+```
+## Create a Seurat Object
+
+The Seurat object is a structured way to store and analyze scRNA-seq data.
+
+The CreateSeuratObject function initializes the dataset, storing the count matrix and metadata.
+	
+```{r}
+seurat_1 <- CreateSeuratObject(counts = m)
+
+# We add metadata indicating this dataset corresponds to day 0 of differentiation.
+seurat_1 <- AddMetaData(seurat_1,col.name = 'timepoint','d0')
+
+```
+
+
+#### Task 1: 
+
+Repeat this process for other time points (d7, d13, d20) and biological replicates.
+
+You can either create the objects one by one or use a similar loop as we used in the bulk RNA-seq analysis.
+
+You should have 8 separate seurat objects after loading all data or a list with 8 seurat objects. 
+
+--------
+
+After loading the data  merge the 8 objects into a single big object with 11,067 cells
+
+
+```{r, eval=FALSE}
+# Example how to merge 8 seurat objects into a single big object
+seurat <- merge(seurat1,c(seurat2,seurat3,seurat4,seurat5,seurat6,seurat7,seurat8))
+```
+
+
+
+```{r, echo=FALSE}
+seurat <- readRDS(file='data/seurat_object_big_unfiltered.Rds')
+seurat <- SetIdent(seurat,value = seurat$orig.ident)
+```
+
+
+
+```{r}
+# The information about batch (1-8) is stored in the cell name but we can explicitly add it to the metadata for later use
+batch <- unlist(lapply(strsplit(Cells(seurat),'_'),'[',2))
+names(batch) <- Cells(seurat)
+
+seurat <- AddMetaData(seurat,col.name = 'batch',batch)
+```
+
+
+Let's check how many cells and features
+```{r}
+dim(seurat)
+```
+
+## Quality Control of cells (QC)
+
+Poor quality cells are typically characterised by low number of reads, low number of genes detected and high percentage of mitochondrial reads
+
+We can check these QC metric using the following commands
+
+ - nFeature RNA -> Number of detected genes per cell
+ - nCount_RNA   -> Number of raw reads per cell
+ - percent.mt   -> Percentage of raw reads mapped to mitochondrial RNAs
+
+```{r}
+seurat[["percent.mt"]] <- PercentageFeatureSet(seurat, pattern = "^MT-")
+p_QC1 <- VlnPlot(seurat, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"))
+p_QC1
+```
+
+Percentage of mitochondrial reads is  negatively correlated with number of reads - low quality cells have a lot of mt-RNA reads and low number of total reads
+
+```{r, fig.width=12,fig.height=6}
+plot1 <- FeatureScatter(seurat, feature1 = "nCount_RNA", feature2 = "percent.mt") + NoLegend()
+plot2 <- FeatureScatter(seurat, feature1 = "nCount_RNA", feature2 = "nFeature_RNA") + NoLegend()
+plot1 + plot2
+
+```
+High mitochondrial gene expression can indicate dying or stressed cells.
+
+Cells with percent.mt > 20% are filtered out.
+
+```{r}
+# Number of cells before filterng
+unfiltered_cells <- length(Cells(seurat))
+
+# Mark cells with > 20% mitochondrial reads. This threshold needs to be adjusted for each individual experimtn
+VlnPlot(seurat, features = c("percent.mt")) + geom_hline(yintercept = 20)
+seurat$QC <- 'pass'
+
+seurat$QC[seurat$percent.mt > 20] <- 'fail'
+
+```
+
+```{r}
+# Let's also mark cells with low number of detected genes
+VlnPlot(seurat,'nFeature_RNA') + geom_hline(yintercept = 1500)
+seurat$QC[seurat$nFeature_RNA < 1500] <- 'fail'
+```
+
+```{r}
+# And finally, let's remove cells with less than 2000 reads overall
+VlnPlot(seurat,'nCount_RNA') + scale_y_log10() + geom_hline(yintercept = 2000)
+seurat$QC[seurat$nCount_RNA < 3000] <- 'fail'
+```
+
+```{r}
+# After removing low quality cells, let's check how many cells are left
+table(seurat$QC)
+
+# These rigid QC steps removed around 15% of cells which were of low quality
+VlnPlot(seurat,c('nFeature_RNA','nCount_RNA','percent.mt'),group.by = 'QC')
+
+
+```
+
+So around 1700 cells fail QC, which is around 15% of 11,000 cells that we had in the beginning
+
+We can proceed with 9302 cells for further analysis
+
+Now the cells that failed QC are only marked in metadata as failed, we now need to also remove them from the seurat object.
+
+```{r}
+# Number of cells before the removal of failed QC cells
+length(Cells(seurat) )
+
+# Keep only cells that pass the QC and remove cells that failed
+seurat <- seurat[,seurat$QC == 'pass']
+
+# Number of cells after the removal
+length(Cells(seurat) )
+
+```
+
+
+## Data Normalization
+
+Normalize raw counts to account for differences in sequencing depth across cells.
+
+Log-normalization scales data to allow comparisons between cells with different sequencing depths.
+
+Different cells can have vastly different numbers of reads or UMIs (unique molecular identifiers), leading to unequal total counts. A cell with 10,000 total counts and another with 5,000 total counts might show different raw values for the same gene. After normalization, their expression levels become directly comparable.
+
+```{r}
+seurat <- NormalizeData(seurat, normalization.method = "LogNormalize", scale.factor = 10000)
+```
+
+## Identification of Highly Variable Genes
+
+Highly variable genes drive the biological processes in scRNA-seq data.	We identify the top 2,000 most variable genes to focus on the most informative features for clustering and dimensionality reduction.
+
+```{r, fig.width=12,fig.height=6}
+# Find variable features in seurat object
+seurat <- FindVariableFeatures(seurat, selection.method = "vst", nfeatures = 2000)
+```
+
+```{r,fig.width=7,fig.height=7}
+# Let's select the top 20 most variable genes
+top20 <- head(VariableFeatures(seurat), 20)
+
+# And we can plot the MA plot (average expression ~ variance) for all genes and highlight the variable genes 
+plot1 <- VariableFeaturePlot(seurat)
+plot2 <- LabelPoints(plot = plot1, points = top20, repel = TRUE)
+plot2
+```
+
+## Scaling
+
+After normalization we need to scale the expression of all genes before the dimensionality reduction
+
+For each gene, scaling centers the expression values (subtracts the mean) and divides by the standard deviation. This ensures that each gene’s expression values have a mean of 0 and a standard deviation of 1.
+
+Why it’s important:
+
+ - Scaling is crucial for dimensionality reduction techniques like PCA, which are sensitive to the magnitude of values.
+ - By scaling, all genes contribute equally to the analysis, regardless of their original expression levels.
+ - Gene expression levels vary widely between genes and across cells. Some genes might have naturally high expression (e.g., housekeeping genes), while others are lowly expressed.
+ - Scaling ensures that genes with high variance due to technical reasons do not dominate the analysis.
+
+
+```{r}
+# Retrieves all the gene names (row names) from the Seurat object and stores them in a variable all.genes.We want to scale the data for all genes in the dataset, so we create a list of all gene names.
+all.genes <- rownames(seurat)
+
+# Scales the gene expression values in the dataset for the genes listed in all.genes.
+seurat    <- ScaleData(seurat, features = all.genes)
+```
+
+
+## Dimensionality reduction - Principal component analysis (PCA)
+
+Performs PCA on the scRNA-seq dataset using the most variable genes identified in earlier steps.
+
+PCA reduces the dataset to a smaller number of dimensions (principal components, or PCs) while retaining the most important variance in the data.
+
+Instead of analyzing thousands of genes, the analysis focuses on a reduced number of PCs, each representing a combination of gene expression patterns.
+
+Using only highly variable genes (rather than all genes) improves the efficiency of PCA and ensures that the retained variance reflects biological differences rather than noise
+
+Why is PCA Important in scRNA-seq Analysis?
+
+ - Reduces Data Complexity: scRNA-seq data is high-dimensional because of the thousands of genes measured in each cell.
+ - PCA simplifies the dataset by identifying key axes of variation (principal components) that capture the majority of meaningful differences in gene expression.
+ - PCA helps uncover underlying biological processes (e.g., cell types, states, or trajectories) by focusing on genes with high variability.
+ - PCA results are used for clustering, visualization (e.g., UMAP, t-SNE), and identifying significant groups of cells.
+ 
+```{r}
+seurat <- RunPCA(seurat, features = VariableFeatures(object = seurat))
+```
+
+Now we can visualize which genes drive the main principal components by looking at PC loading per gene
+
+A high positive or negative loading for a gene indicates that it strongly contributes to the variation captured by the PC. Genes with near-zero loadings contribute little to the PC.
+
+```{r fig.width=6,fig.height=6}
+VizDimLoadings(seurat, dims = 1:2, reduction = "pca")
+
+```
+
+We can also visualize the contributions of genes to the other principal components. The plots help us to identify which genes are driving the variation captured by specific PCs and also how many principal components should we use in downstream analysis. 
+
+The first principal components carry the majority of variation in the data and as we go to higher numbers, the variation is lower and we also see more noise. For downstream analysis we will need to make a decision how many principal components to use.
+
+
+```{r, fig.width=15,fig.height=25}
+DimHeatmap(seurat, dims = 1:30, cells = 500, balanced = TRUE)
+
+```
+
+The variation captured in PCs can also be visualised in so-called elbow plot. We can again see that the variation captured goes down with latter PCs. 
+
+```{r}
+ElbowPlot(seurat,ndims = 50)
+```
+
+In PCA, each principal component captures a fraction of the variance in the data. The first few PCs usually capture the most biologically relevant signal, while higher PCs may represent noise.
+
+
+At this point we need to decide with how many PCs do we continue. Choosing too few PCs risks missing important biological variation, while choosing too many may introduce noise or overfit the data.
+
+At this point we can experiment and do the analysis with 10-40 principal components and evaluate the differences we see in visualizations. 
+
+Let's start with using 20 PCs for downstream steps
+
+## Nearest-Neighbor Graph Construction
+
+We will build a nearest neighbours graph that represents the relationships between cells based on their similarity in the selected dimensions (PCs 1 to 20 in this case).
+
+Cells that are close in PC space are assumed to have similar gene expression profiles, potentially corresponding to the same cell type or state.
+
+After constructing the NN graph, we will cluster similar cells into clusters that may represent individual cell types. 
+
+```{r}
+seurat <- FindNeighbors(seurat, dims = 1:20)
+seurat <- FindClusters(seurat, resolution = 0.2)
+```
+## Second dimensionality reduction using UMAP
+
+UMAP reduces the high-dimensional data to 2D or 3D for visualization, making it easier to explore and interpret clusters.
+
+UMAP Algorithm - Uniform Manifold Approximation and Projection (UMAP) is a non-linear dimensionality reduction technique.
+
+It projects the data into a lower-dimensional space (usually 2D or 3D) while preserving the structure of the high-dimensional relationships.
+
+In the UMAP plot:
+ - Each point represents a single cell.
+ - Cells are positioned based on their gene expression profiles, with similar cells appearing closer together.
+ - Clusters of points often correspond to cell types or states.
+
+```{r}
+seurat <- RunUMAP(seurat, dims = 1:20)
+```
+
+## Visualization of UMAP
+
+After doing the dimensionality reduction and clustering, we can visualize the results in 2D UMAP plot. Each cell is represented as a single point in the UMAP
+
+x any y axis represent the two components of UMAP. Cells expression profile (~33,000 genes) was reduced into a 2D coordinate that represents the cell state
+
+Cells that are similar to each other are close to each other on the plot, different cells are far from each other. 
+
+Results of clustering is visualized using different colors. Clusters may represent different cell types or transitional cell states. 
+
+```{r}
+DimPlot(seurat, group.by = 'seurat_clusters',label=TRUE)
+```
+
+We can also color the cells by the timepoint they come from by changing the group.by parameter
+
+```{r}
+DimPlot(seurat, group.by = 'timepoint',label=TRUE)
+```
+
+Because we have the original gene expression profiles for each cell, we can now project gene expression onto the UMAP plot. This is a core visualization technique in single-cell RNA-seq. 
+
+```{r}
+# Let's plot marker of iPS cells - transcription factor OCT4 also called POU5F1
+FeaturePlot(seurat,'POU5F1',max.cutoff = 50)+ scale_color_viridis_c()
+
+# Neural progentor cell markers PAX6 and Vimentin
+FeaturePlot(seurat,'PAX6',max.cutoff = 5)+ scale_color_viridis_c()
+FeaturePlot(seurat,'VIM',max.cutoff = 100) + scale_color_viridis_c()
+FeaturePlot(seurat,'ID2',max.cutoff=10) + scale_color_viridis_c()
+
+
+
+# Early marker of migrating neurons - Doublecortin (DCX) 
+FeaturePlot(seurat,'DCX',max.cutoff=15) + scale_color_viridis_c()
+
+# Neuronal markers MAP2, SYT1 and TUBA1A
+FeaturePlot(seurat,'MAP2',max.cutoff=20) + scale_color_viridis_c()
+FeaturePlot(seurat,'TUBA1A',max.cutoff=100) + scale_color_viridis_c()
+FeaturePlot(seurat,'SYT1',max.cutoff=20) + scale_color_viridis_c()
+
+# Inhibitory neuron marker DLX5
+FeaturePlot(seurat,'DLX5',max.cutoff=10) + scale_color_viridis_c()
+FeaturePlot(seurat,'GAD1',max.cutoff = 2) + scale_color_viridis_c()
+
+# Marker of the forebrain
+FeaturePlot(seurat,'FOXG1',max.cutoff=15) + scale_color_viridis_c()
+
+# ASCL1 is a transient marker of cells exiting cell cycle and starting differentiation
+FeaturePlot(seurat,'ASCL1',max.cutoff = 3) + scale_color_viridis_c()
+
+```
+
+### The effect of cell cycle in single-cell transcriptomic data
+
+Dozens of genes change their expression as the cells go through cell cycle and divide. 
+
+We can also visualize these markers of cell cycle - specifically markers of G2/M phase and markers of S phase
+
+
+```{r}
+# Markers of actively dividing cells G2/M - TOP2A
+FeaturePlot(seurat,'TOP2A',max.cutoff = 30) + scale_color_viridis_c()
+FeaturePlot(seurat,'MKI67',max.cutoff = 20) + scale_color_viridis_c()
+
+# S phase markers
+FeaturePlot(seurat,'PCNA',max.cutoff = 10) + scale_color_viridis_c()
+FeaturePlot(seurat,'TYMS',max.cutoff = 10) + scale_color_viridis_c()
+```
+
+Based on cell cycle markers we can also score each cell, in which phase of cell cycle it is 
+
+```{r}
+s.genes <- cc.genes.updated.2019$s.genes
+g2m.genes <- cc.genes.updated.2019$g2m.genes
+
+seurat <- CellCycleScoring(seurat, s.features = s.genes, g2m.features = g2m.genes)
+
+
+FeaturePlot(seurat,'S.Score') + scale_color_viridis_c()
+FeaturePlot(seurat,'G2M.Score') + scale_color_viridis_c()
+
+DimPlot(seurat,group.by = 'timepoint')
+DimPlot(seurat,group.by = 'Phase')
+
+```
+## Batch correction
+
+Single-cell RNA-seq is known for batch effects, meaning that experiments done in a different day, or sequenced on a different sequencing run can have technical artifacts.
+
+Removing or mitigating batch effects in single-cell RNA-seq (scRNA-seq) experiments is essential for ensuring the biological insights derived from the data are accurate and reliable. Batch effects are systematic differences between datasets introduced by technical rather than biological factors, such as differences in sample preparation, sequencing platforms, or sequencing runs.
+
+We usually want to remove batch effects for these reasons: 
+ 
+ - To Avoid Misinterpreting Technical Variation as Biological Signals
+ - To Enable Integration of Datasets
+ - To Facilitate Reproducibility and Comparability
+
+Luckily computational tools to mitigate batch effects have been developed. In this case we will use batch effect correction tool called [Harmony](https://www.nature.com/articles/s41592-019-0619-0)
+
+
+```{r}
+# First let's check if cells with similar identity from different batch mingle together on UMAP plot
+p_UMAP_before_harmony <- DimPlot(seurat,group.by = 'batch',label=TRUE)
+p_UMAP_before_harmony
+```
+
+The batch effect is not very strong, but probably we see some effect especially in late time points of differentiation (D13 and D20)
+
+```{r}
+# Let's use harmony to correct for the batch effect
+# Note: Install library harmony if needed according to the instructions [here](https://github.com/immunogenomics/harmony)
+
+library(harmony)
+
+# Run Harmony batch effect correction
+seurat <- RunHarmony(seurat,group.by.vars = 'batch')
+
+# After harmony, we need to run again UMAP and clustering on batch corrected embedding, we specify this by using reduction = 'harmony'
+seurat <- RunUMAP(seurat, reduction = "harmony", dims = 1:30)
+seurat <- FindNeighbors(seurat,reduction = 'harmony', dims = 1:30)
+seurat <- FindClusters(seurat, reduction='harmony', resolution = 0.2)
+
+
+# And let's now check how the results differ from the uncorrected clustering and UMAP
+DimPlot(seurat,group.by='timepoint',label=TRUE)
+DimPlot(seurat, group.by = "batch",label=TRUE)
+DimPlot(seurat, group.by = "seurat_clusters",label=TRUE)
+```
+Let's plot the cell cycle scores in the batch corrected UMAP
+
+```{r}
+FeaturePlot(seurat,'G2M.Score') + scale_color_viridis_c()
+FeaturePlot(seurat,'S.Score') + scale_color_viridis_c()
+FeaturePlot(seurat,'DCX') + scale_color_viridis_c()
+FeaturePlot(seurat,'STMN2') + scale_color_viridis_c()
+```
+
+### Identify Marker Genes
+
+ - Identifies marker genes for all clusters in the dataset.
+ - For each cluster, it performs differential expression analysis to find genes that are expressed more highly in that cluster compared to all other clusters.
+ - We can use the identified marker for visualizing cluster-specific expression with tools like FeaturePlot.
+ 
+Output of this function is markers data frame 
+ - Each row corresponds to a marker gene.
+ - Columns include the gene name, the cluster it’s a marker for, statistical significance (e.g., p-value), and the log fold-change in expression.
+
+
+```{r}
+# Make sure the active identity is the seurat clusters
+seurat  <- SetIdent(seurat,value = 'seurat_clusters')
+
+# Identify markers for all clusters - wilcoxon non-parametric test is performed to obtain significance
+markers <- FindAllMarkers(seurat)
+```
+
+### Exploring the markers
+
+We can either view the markers, or also export them to a .csv file, that we can open in e.g. excel
+
+```{r}
+# View the m  arkers
+View(markers)
+
+# Export the table with differential expression of marker genes into csv 
+write.csv(markers,file = 'markers_table.csv')
+
+```
+
+We can visualize markers of all clusters on one heatmap 
+
+```{r, fig.width=12,fig.height=12}
+library(dplyr)
+
+# Let's select top10 genes for each cluster using dplyr command below
+markers %>%
+    group_by(cluster) %>%
+    dplyr::filter(avg_log2FC > 1) %>%
+    slice_head(n = 10) %>%
+    ungroup() -> top10
+
+# And plot the heatmap
+DoHeatmap(seurat, features = top10$gene) + NoLegend() #+ scale_fill_viridis_c()
+
+
+```
+
+
+Let's have a look at the gene expression markers of each cluster
+
+Note: The number and order of clusters can differ in each analysis, depending on paramteres of dimensionality reduction and clustering.
+
+```{r}
+head(markers[markers$cluster == 0,],20)
+head(markers[markers$cluster == 1,],20)
+head(markers[markers$cluster == 2,],20)
+head(markers[markers$cluster == 3,],20)
+head(markers[markers$cluster == 4,],20)
+head(markers[markers$cluster == 5,],20)
+head(markers[markers$cluster == 6,],20)
+```
+```{r}
+# Proliferating progenitor cells markers 
+FeaturePlot(seurat,'TOP2A') + scale_color_viridis_c()
+VlnPlot(seurat,'TOP2A') 
+
+FeaturePlot(seurat,'MKI67') + scale_color_viridis_c()
+VlnPlot(seurat,'MKI67') 
+
+```
+
+```{r}
+# Stem cell markers
+FeaturePlot(seurat,'GAL') + scale_color_viridis_c()
+VlnPlot(seurat,'GAL') 
+
+FeaturePlot(seurat,'POU5F1') + scale_color_viridis_c()
+VlnPlot(seurat,'POU5F1') 
+
+```
+
+
+```{r}
+# Early neuronal progenitor cells markers
+FeaturePlot(seurat,'IGFBP5') + scale_color_viridis_c()
+VlnPlot(seurat,'IGFBP5') 
+
+FeaturePlot(seurat,'PTN') + scale_color_viridis_c()
+VlnPlot(seurat,'PTN') 
+
+FeaturePlot(seurat,'PAX6') + scale_color_viridis_c()
+VlnPlot(seurat,'PAX6') 
+
+```
+
+
+```{r}
+# Late neuronal progenitors markers
+FeaturePlot(seurat,'ID4') + scale_color_viridis_c()
+VlnPlot(seurat,'ID4') 
+
+FeaturePlot(seurat,'HES5') + scale_color_viridis_c()
+VlnPlot(seurat,'HES5') 
+
+FeaturePlot(seurat,'VIM') + scale_color_viridis_c()
+VlnPlot(seurat,'VIM') 
+
+```
+
+
+```{r}
+# Neuronal markers
+FeaturePlot(seurat,'STMN2') + scale_color_viridis_c()
+VlnPlot(seurat,'STMN2') 
+
+FeaturePlot(seurat,'CDKN1C') + scale_color_viridis_c()
+VlnPlot(seurat,'CDKN1C') 
+
+FeaturePlot(seurat,'GAP43') + scale_color_viridis_c()
+VlnPlot(seurat,'GAP43') 
+
+```
+
+
+```{r}
+# Neuronal markers- likely inhibitory neurons or progenitors
+FeaturePlot(seurat,'DLX5',max.cutoff=3) + scale_color_viridis_c()
+VlnPlot(seurat,'DLX5') 
+
+FeaturePlot(seurat,'DLX6',max.cutoff=2) + scale_color_viridis_c()
+VlnPlot(seurat,'DLX6') 
+
+FeaturePlot(seurat,'MAFB',max.cutoff=1.5) + scale_color_viridis_c()
+VlnPlot(seurat,'MAFB') 
+
+```
+
+
+### Saving the seurat object for later use
+
+```{r}
+# Save the seurat object so it can be at any time re-loaded and used
+saveRDS(seurat,file='data/seurat_object_big.Rds')
+
+```
+
+## GO term analysis of markers of specific cluster 
+
+```{r,fig.width=12,fig.height=6}
+p1 <- DimPlot(seurat,label=TRUE)
+p2 <- DimPlot(seurat,group.by='timepoint',label=TRUE)
+
+p1+p2
+```
+
+To identify which cell types or functions correspond to the clusters, we can perform GO term analysis on top markers of each cluster. 
+
+```{r, fig.width=7,fig.height=10}
+# Load libraries needed for GO term analysis
+library(clusterProfiler)
+library(org.Hs.eg.db)
+
+# Specify which cluster we will analyze
+cluster = 4
+
+# Extract genes specifically expressed in this cluster
+markers_cl <- markers[markers$cluster == cluster,]
+genes_cl <- markers_cl[markers_cl$p_val_adj < 0.05 & markers_cl$avg_log2FC > 0.5,]
+
+# Check how many genes we filtered
+dim(genes_cl)
+
+# Perform GO analysis
+go_enrichment_cl <- enrichGO(
+  gene          = genes_cl$gene,  # Gene symbols for upregulated genes
+  OrgDb         = org.Hs.eg.db,      # Annotation database for human genes
+  keyType       = "SYMBOL",          # Type of input IDs (gene symbols in this case)
+  ont           = "BP",              # Ontology: Biological Process (can also be "MF" or "CC")
+  pAdjustMethod = "BH",              # Adjust p-values for multiple testing (Benjamini-Hochberg) - we are testing gene set against many different GO terms
+  pvalueCutoff  = 0.05,              # Significance threshold for raw p-values
+  qvalueCutoff  = 0.2                # Significance threshold for adjusted p-values
+)
+
+# Plot the results
+dotplot(go_enrichment_cl, showCategory = 20, title = "GO Biological Process for cluster")
+
+```
+
+
+Let's repeat the GO term analysis for another cluster
+
+```{r,fig.width=7,fig.height=10}
+cluster = 0
+
+markers_cl <- markers[markers$cluster == cluster,]
+genes_cl <- markers_cl[markers_cl$p_val_adj < 0.05 & markers_cl$avg_log2FC > 0.5,]
+dim(genes_cl)
+
+go_enrichment_cl <- enrichGO(
+  gene          = genes_cl$gene,  # Gene symbols for upregulated genes
+  OrgDb         = org.Hs.eg.db,      # Annotation database for human genes
+  keyType       = "SYMBOL",          # Type of input IDs (gene symbols in this case)
+  ont           = "BP",              # Ontology: Biological Process (can also be "MF" or "CC")
+  pAdjustMethod = "BH",              # Adjust p-values for multiple testing (Benjamini-Hochberg) - we are testing gene set against many different GO terms
+  pvalueCutoff  = 0.05,              # Significance threshold for raw p-values
+  qvalueCutoff  = 0.2                # Significance threshold for adjusted p-values
+)
+
+dotplot(go_enrichment_cl, showCategory = 20, title = "GO Biological Process for cluster")
+
+```
+
+## Tasks for the students independent work
+
+ - Visualize genes from the original [paper](https://www.sciencedirect.com/science/article/pii/S2589004222015516) from figure 4F as violin plots and on UMAP
+ - Perform GO term analysis with marker genies of additional one cluster
+ - Pick 10 differential expressed genes from the analysis of **bulk** D13 vs D0 data. Plot their expression using the single-cell dataset. Can you reveal additional heterogeneity that was not clear in the bulk data but can be found in the single-cell data ? 
+
+

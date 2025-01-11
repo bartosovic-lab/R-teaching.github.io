@@ -1,0 +1,94 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+## Part 3 - Independent project work
+
+### Analysis of bulk or single-cell RNA-seq data. 
+
+#### Choose one of the following datasets and perform bulk or single-cell RNA-seq data analysis. Perform analysis using DESeq2 (bulk) or Seurat (single-cell). The results of analysis should include:
+
+------------------- 
+
+#### Bulk 
+
+ - volcano plot
+ - PCA plot
+ - MA plot
+ - List of DE genes between two samples/conditions
+ - Heatmap visualisation of top 50 upregulated and 50 downregulated genes
+ - GO terms analysis of upregulated genes in one of the conditions (you choose)
+ 
+
+#### Single-cell
+
+ - QC plots with number of genes pre cell, reads per cell and percentage of mitochondrial reads
+ - Dimensionality reduction and clustering analysis - UMAP plot with colored clusters
+ - List of  markers for all clusters exported in csv format
+ - Heatmap of gene expression for top10 markers of each cluster identified. 
+ - Feature plot (on UMAP) and violin plot of expression of 2 marker genes for each cluster
+ - GO terms analysis of cluster-specific markers (single-cell) for two clusters
+
+
+----------------------------
+
+
+## Datasets to choose from 
+
+#### [Transcriptional Convergence of Oligodendrocyte Lineage Progenitors during Development](https://doi.org/10.1016/j.devcel.2018.07.005)
+
+Bulk RNA-seq of mouse oligodendrocytes sorted from Brain and spinal cord at embryonic day 13.5 (E13.5) and postnatal day 7 (P7)
+
+12 samples together in 3 replicates focusing on glia development in mouse. 
+
+Download the count table from supplemntary files in GEO and load it using base function read.table with parameter header=1, and row.names=1
+
+[Link to GEO](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE95093)
+
+--------------------
+
+#### [Atlas of the aging mouse brain reveals white matter as vulnerable foci](https://www.sciencedirect.com/science/article/pii/S009286742300805X)
+ 
+There is 847 RNA-seq samples across 8 brain regions and multiple time points. Choose 2 regions and 2 time points and perform the analysis. Include replicates in the analysis. 
+ 
+Recommended is to compare DGE of Motor cortex and Cerebellum across two time points -3months and 21 months.
+ 
+[link to GEO](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE212336)
+ 
+Load the data using base function read.table with parameter header=1.
+ 
+Subselect the matrix containing GE data for all experiments for the regions and timepoints you wish to analyze. 
+ 
+---------------------
+
+#### [Human prefrontal cortex gene regulatory dynamics from gestation to adulthood at single-cell resolution](https://www.sciencedirect.com/science/article/pii/S0092867422012582)
+ 
+Single-cell RNA-seq analysis of human cortex across multiple time points. Choose 3 different timepoints and download processed data from GEO database
+ 
+I recommend downloaded these 3 timepoints:
+ 
+ - [gestation week 22 snRNA-seq](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM5138509)
+ - [gestation week 34 snRNA-seq](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM5138513)
+ - [1 month old snRNA-seq](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM5138514)
+ 
+Download the snRNAseq_filtered_feature_bc_matrix.h5.gz file for each entry, unzip it.
+ 
+For loading into R use function Read10X_h5 from the Seurat package. 
+ 
+------------------------- 
+ 
+#### [scRNA-seq analysis of Sox10-CRE/GFP positive cells from adolescent mouse brain](https://www.nature.com/articles/s41587-021-00869-9)
+
+scRNA-seq analysis of Sox10+ cells from P21 mouse brain. The cell populations should include astrocytes, oligodendrocytes, and vascular cells
+
+ - [replicate 1 scRNA-seq](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM4979874)
+ - [replicate 2 scRNA-seq](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM4979875) 
+ 
+ 
+ 
+ 
+ 
+

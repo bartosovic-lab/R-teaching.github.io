@@ -9,6 +9,10 @@ output:
 
 The primary goal of this transcriptomic workshop is to provide participants with a comprehensive understanding of the RNA-seq data analysis pipeline using R and Bioconductor packages such as DESeq2. You will learn about the basic concepts behind statistical analysis of transciptomic data, and be able to perform basic analysis of public RNA-seq on your own. 
 
+We are going to analyse bulk RNA-seq data from this [paper](https://www.sciencedirect.com/science/article/pii/S2589004222015516) 
+
+Tha data comes from bulk RNA-seq of Day 0,7,13 and 20 of in vitro neuronal differentiation
+
 #### By the end of this vignette, you should be able to:
 
  - Perform differential expression analysis using DESeq2.
@@ -67,9 +71,7 @@ Instead of writing 19 separate commands, you can automate the process with a loo
 	
 1.	Prepare a List of File Paths: Gather all file names into a vector. This can be done manually or by scanning the directory for all count files.
 
-2.	Read Files in a Loop: Use a loop to read each file and extract relevant columns.
 
-Here’s an example:
 
 ```{r}
 # Define the directory containing the files
@@ -85,6 +87,7 @@ head(file_list)
 # If file_list is something like "character(0)", you have the wrong path
 # Fix the data_dir path to point to the actual folder with the data on your computer
 ```
+2.	Read Files in a Loop: Use a loop to read each file and extract relevant columns.
 
 
 ```{r}
@@ -185,7 +188,7 @@ DESeq2 is part of the Bioconductor project, so you’ll need BiocManager to inst
 library(DESeq2)
 ```
 
-#### Creating a DESeq2 Dataset
+#### Creating a DESeq2 object
 
 The DESeqDataSetFromMatrix() function constructs a DESeq2 dataset using:
 
@@ -212,11 +215,11 @@ dds <- DESeqDataSetFromMatrix(countData = combined_counts,  # Raw count matrix
 dds
 ```
 
-## Performing DESeq2 Analysis in Three Simple Steps
+## Step 4. Performing DESeq2 Analysis in Three Simple Steps
 
 The DESeq2 analysis pipeline is designed to handle RNA-seq count data efficiently. It involves three core steps: normalization, dispersion estimation, and statistical modeling. Each step builds upon the previous one.
 
-### Step 1. Estimate size factors 
+### Step 4a. Estimate size factors 
 
 ```{r}
 # Estimate size factors for normalization
@@ -233,7 +236,7 @@ dds <- estimateSizeFactors(dds)
 
 This normalization step does not account for biological factors or experimental design—it purely adjusts for library size differences.
 
-### Step 2. Estimate the dispersion
+### Step 4b. Estimate the dispersion
 
 ```{r}
 # Second step is to estimate the dispersion for each gene 
@@ -265,7 +268,7 @@ plotDispEsts(dds)
 ```
 
 
-### Step 3: Fit the Model and Perform Wald Test
+### Step 4c: Fit the Model and Perform Wald Test
 
 
 ```{r}
@@ -307,7 +310,9 @@ Troubleshooting Tips:
 resultsNames(dds) # lists the coefficients
 ```
 
-## MA plot
+## Step 5. QC of DESeq2 model and differential expression
+
+### MA plot
 
 An MA plot is a key visualization used in RNA-seq differential expression analysis, including the DESeq2 pipeline. It provides an overview of the relationship between the mean expression levels (average expression strength) and the log-fold changes (LFC) of genes between two conditions. Here’s how it is useful and what to pay attention to:
 
@@ -334,7 +339,7 @@ plotMA(dds)
 ```
 
 
-## Extracting and Inspecting DESeq2 Results
+## Step 6. Extracting and Inspecting DESeq2 Results
 
 In this step, we extract and examine the results of the differential expression analysis for the comparison of D13 against D0 timepoints. This provides information on genes that are differentially expressed between these two time points.
 
@@ -349,7 +354,19 @@ res <- as.data.frame(results(dds, name="timepoint_D13_vs_D0"))
 # For some genes expression test can't be done - e.g. if there is not counts in any of the samples or baseMean == 0.00000
 head(res)
 dim(res)
+
 ```
+
+#### Exporting differential gene expression table into csv file and open it in excel
+
+We can export the table with differentially expressed genes so we can share it with collaborators
+
+```{r}
+# Export data frame using write.csv function
+
+write.csv(res,file = 'D13_D0_DEGs.csv')
+```
+
 
 The resulting data frame (res) contains 33,694 rows (one for each gene) and 6 columns, which include the following:
 
@@ -360,7 +377,7 @@ The resulting data frame (res) contains 33,694 rows (one for each gene) and 6 co
  - **pvalue**	         - Raw p-value for the test.
  - **padj**	           - Adjusted p-value using the Benjamini-Hochberg method to control the false discovery rate (FDR).
 
-## Creating a Volcano Plot with ggplot2
+## Step 7. Creating a Volcano Plot with ggplot2
 
 A volcano plot is a key visualization for differential expression analysis. It combines fold-change (x-axis) and statistical significance (y-axis) to highlight genes of interest.
 
@@ -368,9 +385,10 @@ Remember to always use p-value corrected for multiple hypothesis testing
 
 ```{r}
 # Volcano plot
+library(ggplot2)
+
 
 # Load the required library
-library(ggplot2)
 
 # Add a new column to mark significant genes
 res$sig <- FALSE                            # Default: not significant
@@ -392,7 +410,7 @@ ggplot(data = res, aes(x = log2FoldChange, y = -log10(padj), color = sig)) +
   )
 ```
 
-## Principal Component Analysis (PCA) Plot with DESeq2
+## Step 8. Principal Component Analysis (PCA) Plot with DESeq2
 
 A PCA plot is a powerful visualization for understanding variability in RNA-seq data. It reduces high-dimensional count data into principal components (PCs) that summarize major sources of variation.
 
@@ -445,7 +463,7 @@ plotPCA():
 # Generate PCA plot using transformed and normalized data with timepoint as the grouping factor
 plotPCA(vsd, intgroup = c("timepoint"))
 ```
-## GO terms analysis
+## Step 9. GO terms analysis
 
 #### Convert ENSG names to actual gene names and to entrez ids for GO term analysis
 
@@ -563,15 +581,6 @@ cnetplot(go_enrichment,
          foldChange = NULL,showCategory = 5)
 ```
 
-The emapplot function from the enrichplot package creates an enrichment map, which visually represents the relationships between enriched terms based on their shared genes. This is particularly useful for understanding the functional connections between enriched GO terms.
- 
-```{r,fig.width=12,fig.height=12}
-library(enrichplot)
-
-emapplot(pairwise_termsim(go_enrichment), 
-         showCategory = 20, 
-         layout = "kk")
-```
 
 **What Does the Enrichment Map Show?**
 1.	Nodes: Represent enriched GO terms. The size of each node may correspond to the significance (e.g., p-value) or gene count.
@@ -607,7 +616,7 @@ cnetplot(go_enrichment_MF,
 ```
 
 
-## Heatmap visualization of  top up- and down-regulated genes using pheatmap
+## Step 10. Heatmap visualization of  top up- and down-regulated genes using pheatmap
 
 Heatmaps are powerful visualizations to explore gene expression patterns. This code generates a heatmap for the top 50 upregulated genes using normalized RNA-seq data. The heatmap shows the expression levels across different samples and groups them by experimental conditions.
 
@@ -668,4 +677,25 @@ ggplot(data=zeb1_expression) +
   geom_jitter(aes(x=timepoint,y=zeb1_expression,col=timepoint),size=2) + 
   theme_bw()
 ```
+
+
+## Step 11. Independent tasks for students
+
+Perform the following analysis independently
+
+ 1.Perform differential gene expression analysis between timepoints D20 and D0. Plot volcano plot and export differential gene expression table as csv file. 
+
+ 2.Reproduce three of the boxplots in figure 2a of the [paper](https://www.sciencedirect.com/science/article/pii/S2589004222015516) 
+
+ 3.Reproduce the heatmap in figure 2c of the [paper](https://www.sciencedirect.com/science/article/pii/S2589004222015516)
+
+ 4.Bonus task (Advanced): Focused analysis of genes related to a specific biological process or pathway
+ 
+ - Choose one GO term enriched in analysis of D13 vs D0 (for example: GO:0021953  Central nervous system neuron differentiation). 
+ - Extract the list of genes associated with the GO term from org.Hs.eg.db database or another resource 
+ - Extract these genes from the count matrix and visualize their expression across time points using a heatmap.
+ - Extract a list of the top 5 upregulated and downregulated genes in this subset.
+ - Write a short explanation of the trends observed.
+
+ 
 
