@@ -48,6 +48,8 @@ Ask Marek or Pepe for help and we will can also help you and explain.
 
 ## Step 2. Loading the files for DESeq2 Analysis
 
+For detail explanation of DESeq2 workflow refer to the full DESeq2 [vignette](https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html)
+
 #### To begin, we load a single file containing gene count data:
 
 ```{r}
