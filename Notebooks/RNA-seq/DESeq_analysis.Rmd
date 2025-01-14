@@ -11,6 +11,8 @@ The primary goal of this transcriptomic workshop is to provide participants with
 
 We are going to analyse bulk RNA-seq data from this [paper](https://www.sciencedirect.com/science/article/pii/S2589004222015516) 
 
+![](screenshot_paper_1.png)
+
 Tha data comes from bulk RNA-seq of Day 0,7,13 and 20 of in vitro neuronal differentiation
 
 #### By the end of this vignette, you should be able to:
@@ -53,8 +55,15 @@ For detail explanation of DESeq2 workflow refer to the full DESeq2 [vignette](ht
 #### To begin, we load a single file containing gene count data:
 
 ```{r}
+# Set a working directory to the folder with notebook and data
+setwd("~/SU drive/Teaching/2024/transcriptomics workshop/data/GSE192855_RAW/") # Fill in the directory where you have your data
+
+# Validate that the workind directory is correct
+getwd()
+
 # Load a single count file
-raw_table <- read.table(file='~/SU drive/Teaching/2024/transcriptomics workshop/data/GSE192855_RAW/GSM5766873_1-sc1-D0-ctrl-A.counts.txt.gz', header=TRUE)
+# Here you will need to change the correct name of your file
+raw_table <- read.table(file='GSM5766873_1-sc1-D0-ctrl-A.counts.txt.gz', header=TRUE)
 head(raw_table)
 
 # Column 1 contains Gene IDs, and Column 7 contains raw counts.
