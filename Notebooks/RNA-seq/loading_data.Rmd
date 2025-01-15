@@ -1,0 +1,158 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+## I commented all CreateSeurat lines, please uncomment
+
+```{r}
+data_dir <- '~/SU drive/Teaching/2024/transcriptomics workshop/data/GSE192857_RAW/'
+
+m.file    <- 'GSM5766894_sc1d0-ctrl_matrix.mtx.gz'
+bcd.file  <- 'GSM5766894_sc1d0-ctrl_barcodes.tsv.gz'
+feat.file <- 'GSM5766894_sc1d0-ctrl_features.tsv.gz'
+
+setwd(data_dir)
+m        <- Matrix::readMM(file = m.file)
+barcodes <- read.table(file=gzfile(bcd.file))
+features <- read.table(file=gzfile(feat.file))
+
+# Let's have a look at the first 50 rows and 10 columns of the data matrix m, note that matrix indexing works as m[rows,column]
+m[1:10,1:10]
+rownames(m) <- features$V2
+colnames(m) <- barcodes$V1 
+
+# seurat_1 <- CreateSeuratObject(counts = m)
+
+
+```
+
+
+```{r}
+data_dir <- '~/SU drive/Teaching/2024/transcriptomics workshop/data/GSE192857_RAW/'
+
+m.file    <- 'GSM5766895_sc2d0-ctrl_matrix.mtx.gz'
+bcd.file  <- 'GSM5766895_sc2d0-ctrl_barcodes.tsv.gz'
+feat.file <- 'GSM5766895_sc2d0-ctrl_features.tsv.gz'
+
+setwd(data_dir)
+m        <- Matrix::readMM(file = m.file)
+barcodes <- read.table(file=gzfile(bcd.file))
+features <- read.table(file=gzfile(feat.file))
+
+# Let's have a look at the first 50 rows and 10 columns of the data matrix m, note that matrix indexing works as m[rows,column]
+m[1:10,1:10]
+rownames(m) <- features$V2
+colnames(m) <- barcodes$V1 
+
+m[1:10,1:10]
+
+# seurat_2 <- CreateSeuratObject(counts = m)
+
+
+```
+
+```{r}
+data_dir <- '~/SU drive/Teaching/2024/transcriptomics workshop/data/GSE192857_RAW/'
+
+m.file    <- 'GSM5766896_sc1d7-ctrl_matrix.mtx.gz'
+bcd.file  <- 'GSM5766896_sc1d7-ctrl_barcodes.tsv.gz'
+feat.file <- 'GSM5766896_sc1d7-ctrl_features.tsv.gz'
+
+setwd(data_dir)
+m        <- Matrix::readMM(file = m.file)
+barcodes <- read.table(file=gzfile(bcd.file))
+features <- read.table(file=gzfile(feat.file))
+
+# Let's have a look at the first 50 rows and 10 columns of the data matrix m, note that matrix indexing works as m[rows,column]
+m[1:10,1:10]
+rownames(m) <- features$V2
+colnames(m) <- barcodes$V1 
+
+m[1:10,1:10]
+
+# seurat_3 <- CreateSeuratObject(counts = m)
+
+
+```
+
+```{r}
+read_seurat <- function(m.file, bcd.file,feat.file){
+  
+m        <- Matrix::readMM(file = m.file)
+barcodes <- read.table(file=gzfile(bcd.file))
+features <- read.table(file=gzfile(feat.file))
+
+colnames(m) <- barcodes$V1
+rownames(m) <- features$V2 
+
+# Uncomment this line, it does not work 
+# seurat <- CreateSeuratObject(counts = m)
+# return(seurat)
+}
+
+m.file    <- '~/SU drive/Teaching/2024/transcriptomics workshop/data/GSE192857_RAW/GSM5766894_sc1d0-ctrl_matrix.mtx.gz'
+bcd.file  <- '~/SU drive/Teaching/2024/transcriptomics workshop/data/GSE192857_RAW/GSM5766894_sc1d0-ctrl_barcodes.tsv.gz'
+feat.file <- '~/SU drive/Teaching/2024/transcriptomics workshop/data/GSE192857_RAW/GSM5766894_sc1d0-ctrl_features.tsv.gz'
+seurat1 <- read_seurat(m.file,bcd.file,feat.file)
+
+m.file    <- '~/SU drive/Teaching/2024/transcriptomics workshop/data/GSE192857_RAW/GSM5766895_sc2d0-ctrl_matrix.mtx.gz'
+bcd.file  <- '~/SU drive/Teaching/2024/transcriptomics workshop/data/GSE192857_RAW/GSM5766895_sc2d0-ctrl_barcodes.tsv.gz'
+feat.file <- '~/SU drive/Teaching/2024/transcriptomics workshop/data/GSE192857_RAW/GSM5766895_sc2d0-ctrl_features.tsv.gz'
+seurat2 <- read_seurat(m.file,bcd.file,feat.file)
+
+
+```
+
+
+```{r}
+setwd(data_dir)
+
+barcodes.files <- list.files(pattern="*barcodes.tsv.gz")
+features.files <- list.files(pattern="*features.tsv.gz")
+matrix.files   <- list.files(pattern="*matrix.mtx.gz")
+
+seurat.list <- list()
+
+for(i in 1:8){
+  matrix   <- Matrix::readMM(file = matrix.files[i])
+  barcodes <- read.table(file=gzfile(barcodes.files[i]))
+  features <- read.table(file=gzfile(features.files[i]))
+  
+  colnames(matrix) <- barcodes$V1
+  rownames(matrix) <- features$V2
+  
+  # seurat.ls[[i]] <- CreateSeuratObject(counts = matrix)
+}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
