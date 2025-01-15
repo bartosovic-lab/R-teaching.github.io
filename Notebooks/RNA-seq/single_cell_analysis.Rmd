@@ -66,10 +66,13 @@ Each dataset represents a time point in neuronal differentiation. The data is st
 # Paths to the data files for day 0
 # Note: Change the paths to these files to match the location of your data on your computer
 
-m.file    <- '~/SU drive/Teaching/2024/transcriptomics workshop/data/GSE192857_RAW/GSM5766894_sc1d0-ctrl_matrix.mtx.gz'
-bcd.file  <- '~/SU drive/Teaching/2024/transcriptomics workshop/data/GSE192857_RAW/GSM5766894_sc1d0-ctrl_barcodes.tsv.gz'
-feat.file <- '~/SU drive/Teaching/2024/transcriptomics workshop/data/GSE192857_RAW/GSM5766894_sc1d0-ctrl_features.tsv.gz'
+data_dir <- '~/SU drive/Teaching/2024/transcriptomics workshop/data/GSE192857_RAW/'
 
+m.file    <- 'GSM5766894_sc1d0-ctrl_matrix.mtx.gz'
+bcd.file  <- 'GSM5766894_sc1d0-ctrl_barcodes.tsv.gz'
+feat.file <- 'GSM5766894_sc1d0-ctrl_features.tsv.gz'
+
+setwd(data_dir)
 m        <- Matrix::readMM(file = m.file)
 barcodes <- read.table(file=gzfile(bcd.file))
 features <- read.table(file=gzfile(feat.file))
@@ -108,7 +111,6 @@ seurat_1 <- CreateSeuratObject(counts = m)
 
 # We add metadata indicating this dataset corresponds to day 0 of differentiation.
 seurat_1 <- AddMetaData(seurat_1,col.name = 'timepoint','d0')
-
 ```
 
 
@@ -151,7 +153,32 @@ seurat <- AddMetaData(seurat,col.name = 'batch',batch)
 Let's check how many cells and features
 ```{r}
 dim(seurat)
+
 ```
+
+Seurat object stores all the information for single-cell analysis, let's explore it a bit 
+
+```{r}
+# General information about the object
+seurat
+
+# Check the assays - we have one assay called RNA
+seurat@assays
+
+# Count matrix 
+# Note: [1:10,1:10] - means to print only the first 10 columns and 10 rows, not the whole huge matrix
+seurat[['RNA']]@counts[1:10,1:10]
+
+# or alternative command to see count matrix
+GetAssayData(seurat,slot='counts')[1:10,1:10]
+
+# metadata 
+head(seurat@meta.data)
+```
+
+
+
+
 
 ## Quality Control of cells (QC)
 
@@ -164,7 +191,10 @@ We can check these QC metric using the following commands
  - percent.mt   -> Percentage of raw reads mapped to mitochondrial RNAs
 
 ```{r}
-seurat[["percent.mt"]] <- PercentageFeatureSet(seurat, pattern = "^MT-")
+# Create a new metadata - percent.mt reads
+seurat$percent.mt <- PercentageFeatureSet(seurat, pattern = "^MT-")
+
+# Plot the QC metrics
 p_QC1 <- VlnPlot(seurat, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"))
 p_QC1
 ```
@@ -331,6 +361,7 @@ DimHeatmap(seurat, dims = 1:30, cells = 500, balanced = TRUE)
 The variation captured in PCs can also be visualised in so-called elbow plot. We can again see that the variation captured goes down with latter PCs. 
 
 ```{r}
+# Scree plot of PCs also called elbow plot
 ElbowPlot(seurat,ndims = 50)
 ```
 
@@ -450,14 +481,13 @@ g2m.genes <- cc.genes.updated.2019$g2m.genes
 
 seurat <- CellCycleScoring(seurat, s.features = s.genes, g2m.features = g2m.genes)
 
-
+DimPlot(seurat,group.by = 'timepoint')
 FeaturePlot(seurat,'S.Score') + scale_color_viridis_c()
 FeaturePlot(seurat,'G2M.Score') + scale_color_viridis_c()
-
-DimPlot(seurat,group.by = 'timepoint')
 DimPlot(seurat,group.by = 'Phase')
 
 ```
+
 ## Batch correction
 
 Single-cell RNA-seq is known for batch effects, meaning that experiments done in a different day, or sequenced on a different sequencing run can have technical artifacts.
@@ -497,6 +527,7 @@ seurat <- FindClusters(seurat, reduction='harmony', resolution = 0.2)
 
 
 # And let's now check how the results differ from the uncorrected clustering and UMAP
+
 DimPlot(seurat,group.by='timepoint',label=TRUE)
 DimPlot(seurat, group.by = "batch",label=TRUE)
 DimPlot(seurat, group.by = "seurat_clusters",label=TRUE)
@@ -506,6 +537,11 @@ Let's plot the cell cycle scores in the batch corrected UMAP
 ```{r}
 FeaturePlot(seurat,'G2M.Score') + scale_color_viridis_c()
 FeaturePlot(seurat,'S.Score') + scale_color_viridis_c()
+```
+
+And some neuronal markers
+
+```{r}
 FeaturePlot(seurat,'DCX') + scale_color_viridis_c()
 FeaturePlot(seurat,'STMN2') + scale_color_viridis_c()
 ```
@@ -548,16 +584,16 @@ We can visualize markers of all clusters on one heatmap
 library(dplyr)
 
 # Let's select top10 genes for each cluster using dplyr command below
-markers %>%
+top10 <- markers %>%
     group_by(cluster) %>%
     dplyr::filter(avg_log2FC > 1) %>%
     slice_head(n = 10) %>%
-    ungroup() -> top10
+    ungroup() 
 
 # And plot the heatmap
 DoHeatmap(seurat, features = top10$gene) + NoLegend() #+ scale_fill_viridis_c()
 
-
+top10
 ```
 
 
@@ -574,6 +610,8 @@ head(markers[markers$cluster == 4,],20)
 head(markers[markers$cluster == 5,],20)
 head(markers[markers$cluster == 6,],20)
 ```
+
+
 ```{r}
 # Proliferating progenitor cells markers 
 FeaturePlot(seurat,'TOP2A') + scale_color_viridis_c()
@@ -728,7 +766,7 @@ dotplot(go_enrichment_cl, showCategory = 20, title = "GO Biological Process for 
 ## Tasks for the students independent work
 
  - Visualize genes from the original [paper](https://www.sciencedirect.com/science/article/pii/S2589004222015516) from figure 4F as violin plots and on UMAP
- - Perform GO term analysis with marker genies of additional one cluster
+ - Perform GO term analysis with marker genies of one additional cluster
  - Pick 10 differential expressed genes from the analysis of **bulk** D13 vs D0 data. Plot their expression using the single-cell dataset. Can you reveal additional heterogeneity that was not clear in the bulk data but can be found in the single-cell data ? 
 
 
