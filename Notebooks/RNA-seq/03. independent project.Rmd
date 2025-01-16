@@ -40,7 +40,9 @@ output:
 
 #### [transcriptional landscapes during cerebral cortex development in a microcephaly mouse model](https://www.sciencedirect.com/science/article/abs/pii/S1673852723002230)
 
-There is bulk RNA-seq of E17.5 and P4 mouse cortex. Perform differential gene expression in this region for these samples
+There is bulk RNA-seq of E17.5 and P4 mouse cortex. Perform differential gene expression in this region for these samples.
+
+Use function read.table() to laod the data from the GSE215228_rowCount_for_all_samples.tsv.gz	file
 
 [Link to GEO](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE215228)
 
