@@ -38,6 +38,13 @@ output:
 
 ## Datasets to choose from 
 
+#### [transcriptional landscapes during cerebral cortex development in a microcephaly mouse model](https://www.sciencedirect.com/science/article/abs/pii/S1673852723002230)
+
+There is bulk RNA-seq of E17.5 and P4 mouse cortex. Perform differential gene expression in this region for these samples
+
+[Link to GEO](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE215228)
+
+![](GEO_bulk1.png)
 
 #### [Atlas of the aging mouse brain reveals white matter as vulnerable foci (Bulk RNA-seq)](https://www.sciencedirect.com/science/article/pii/S009286742300805X)
  
@@ -51,12 +58,16 @@ Load the data using base function read.table with parameter header=1.
  
 Subselect the matrix containing GE data for all experiments for the regions and timepoints you wish to analyze. 
  
+![](GEO_bulk2.png)
+
 ---------------------
 
 #### [Human prefrontal cortex gene regulatory dynamics from gestation to adulthood at single-cell resolution (single-cell RNA-seq)](https://www.sciencedirect.com/science/article/pii/S0092867422012582)
  
 Single-cell RNA-seq analysis of human cortex across multiple time points. Choose 3 different timepoints and download processed data from GEO database
  
+[link to GEO](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE168408)
+
 I recommend downloaded these 3 timepoints:
  
  - [gestation week 22 snRNA-seq](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM5138509)
@@ -66,6 +77,12 @@ I recommend downloaded these 3 timepoints:
 Download the snRNAseq_filtered_feature_bc_matrix.h5.gz file for each entry, unzip it.
  
 For loading into R use function Read10X_h5 from the Seurat package. 
+
+![](single_cell_1a.png)
+
+![](single_cell_1b.png)
+
+![](single_cell_1c.png)
  
 ------------------------- 
  
@@ -76,7 +93,8 @@ scRNA-seq analysis of Sox10+ cells from P21 mouse brain. The cell populations sh
  - [replicate 1 scRNA-seq](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM4979874)
  - [replicate 2 scRNA-seq](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM4979875) 
  
- 
+![](single_cell_2a.png)
+![](single_cell_2b.png)
  
  
  
