@@ -40,7 +40,7 @@ output:
 
 #### [transcriptional landscapes during cerebral cortex development in a microcephaly mouse model](https://www.sciencedirect.com/science/article/abs/pii/S1673852723002230)
 
-There is bulk RNA-seq of E17.5 and P4 mouse cortex. Perform differential gene expression in this region for these samples.
+There is bulk RNA-seq of E17.5 and P4 mouse cortex. Perform differential gene expression in cortex between E17.5 and P4
 
 Use function read.table() to laod the data from the GSE215228_rowCount_for_all_samples.tsv.gz	file
 
@@ -52,7 +52,7 @@ Use function read.table() to laod the data from the GSE215228_rowCount_for_all_s
  
 There is 847 RNA-seq samples across 8 brain regions and multiple time points. Choose 2 regions and 2 time points and perform the analysis. Include replicates in the analysis. 
  
-Recommended is to compare DGE of Motor cortex and Cerebellum across two time points -3months and 21 months.
+Recommended is to comparisons  are e.g. DGE of Motor cortex and Cerebellum or comparisons between two time points -3months and 21 months. Choose one comparison that you find interesting. 
  
 [link to GEO](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE212336)
  
