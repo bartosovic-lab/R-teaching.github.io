@@ -38,19 +38,8 @@ output:
 
 ## Datasets to choose from 
 
-#### [Transcriptional Convergence of Oligodendrocyte Lineage Progenitors during Development](https://doi.org/10.1016/j.devcel.2018.07.005)
 
-Bulk RNA-seq of mouse oligodendrocytes sorted from Brain and spinal cord at embryonic day 13.5 (E13.5) and postnatal day 7 (P7)
-
-12 samples together in 3 replicates focusing on glia development in mouse. 
-
-Download the count table from supplemntary files in GEO and load it using base function read.table with parameter header=1, and row.names=1
-
-[Link to GEO](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE95093)
-
---------------------
-
-#### [Atlas of the aging mouse brain reveals white matter as vulnerable foci](https://www.sciencedirect.com/science/article/pii/S009286742300805X)
+#### [Atlas of the aging mouse brain reveals white matter as vulnerable foci (Bulk RNA-seq)](https://www.sciencedirect.com/science/article/pii/S009286742300805X)
  
 There is 847 RNA-seq samples across 8 brain regions and multiple time points. Choose 2 regions and 2 time points and perform the analysis. Include replicates in the analysis. 
  
@@ -64,7 +53,7 @@ Subselect the matrix containing GE data for all experiments for the regions and 
  
 ---------------------
 
-#### [Human prefrontal cortex gene regulatory dynamics from gestation to adulthood at single-cell resolution](https://www.sciencedirect.com/science/article/pii/S0092867422012582)
+#### [Human prefrontal cortex gene regulatory dynamics from gestation to adulthood at single-cell resolution (single-cell RNA-seq)](https://www.sciencedirect.com/science/article/pii/S0092867422012582)
  
 Single-cell RNA-seq analysis of human cortex across multiple time points. Choose 3 different timepoints and download processed data from GEO database
  
@@ -80,7 +69,7 @@ For loading into R use function Read10X_h5 from the Seurat package.
  
 ------------------------- 
  
-#### [scRNA-seq analysis of Sox10-CRE/GFP positive cells from adolescent mouse brain](https://www.nature.com/articles/s41587-021-00869-9)
+#### [scRNA-seq analysis of Sox10-CRE/GFP positive cells from adolescent mouse brain (single-cell RNA-seq)](https://www.nature.com/articles/s41587-021-00869-9)
 
 scRNA-seq analysis of Sox10+ cells from P21 mouse brain. The cell populations should include astrocytes, oligodendrocytes, and vascular cells
 
