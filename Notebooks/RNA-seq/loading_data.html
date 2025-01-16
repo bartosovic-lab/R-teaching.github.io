@@ -1626,6 +1626,20 @@ display: none;
 
 <div id="i-commented-all-createseurat-lines-please-uncomment" class="section level2">
 <h2>I commented all CreateSeurat lines, please uncomment</h2>
+<pre class="r"><code>library(Seurat)</code></pre>
+<pre><code>## Loading required package: SeuratObject</code></pre>
+<pre><code>## Loading required package: sp</code></pre>
+<pre><code>## &#39;SeuratObject&#39; was built under R 4.4.0 but the current version is
+## 4.4.2; it is recomended that you reinstall &#39;SeuratObject&#39; as the ABI
+## for R may have changed</code></pre>
+<pre><code>## &#39;SeuratObject&#39; was built with package &#39;Matrix&#39; 1.7.0 but the current
+## version is 1.7.1; it is recomended that you reinstall &#39;SeuratObject&#39; as
+## the ABI for &#39;Matrix&#39; may have changed</code></pre>
+<pre><code>## 
+## Attaching package: &#39;SeuratObject&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, t</code></pre>
 <pre class="r"><code>data_dir &lt;- &#39;~/SU drive/Teaching/2024/transcriptomics workshop/data/GSE192857_RAW/&#39;
 
 m.file    &lt;- &#39;GSM5766894_sc1d0-ctrl_matrix.mtx.gz&#39;
@@ -1651,10 +1665,12 @@ m[1:10,1:10]</code></pre>
 ##  [8,] . . . . . . . . . .
 ##  [9,] . . . . . . . . . .
 ## [10,] . . . . . . . . . .</code></pre>
-<pre class="r"><code>rownames(m) &lt;- features$V2
+<pre class="r"><code>rownames(m) &lt;- make.unique(features$V2)
 colnames(m) &lt;- barcodes$V1 
 
-# seurat_1 &lt;- CreateSeuratObject(counts = m)</code></pre>
+seurat_1 &lt;- CreateSeuratObject(counts = m)</code></pre>
+<pre><code>## Warning: Data is of class dgTMatrix. Coercing to dgCMatrix.</code></pre>
+<pre class="r"><code>seurat_1$timepoint &lt;- &#39;d0&#39;</code></pre>
 <pre class="r"><code>data_dir &lt;- &#39;~/SU drive/Teaching/2024/transcriptomics workshop/data/GSE192857_RAW/&#39;
 
 m.file    &lt;- &#39;GSM5766895_sc2d0-ctrl_matrix.mtx.gz&#39;
@@ -1680,7 +1696,7 @@ m[1:10,1:10]</code></pre>
 ##  [8,] . . . . . . . . . .
 ##  [9,] . . . . . . . . . .
 ## [10,] . . . . . . . . . .</code></pre>
-<pre class="r"><code>rownames(m) &lt;- features$V2
+<pre class="r"><code>rownames(m) &lt;- make.unique(features$V2)
 colnames(m) &lt;- barcodes$V1 
 
 m[1:10,1:10]</code></pre>
@@ -1697,7 +1713,9 @@ m[1:10,1:10]</code></pre>
 ## AL732372.1  . . . . . . . . . .
 ## OR4F29      . . . . . . . . . .
 ## AC114498.1  . . . . . . . . . .</code></pre>
-<pre class="r"><code># seurat_2 &lt;- CreateSeuratObject(counts = m)</code></pre>
+<pre class="r"><code>seurat_2 &lt;- CreateSeuratObject(counts = m)</code></pre>
+<pre><code>## Warning: Data is of class dgTMatrix. Coercing to dgCMatrix.</code></pre>
+<pre class="r"><code>seurat_2$timepoint &lt;- &#39;d0&#39;</code></pre>
 <pre class="r"><code>data_dir &lt;- &#39;~/SU drive/Teaching/2024/transcriptomics workshop/data/GSE192857_RAW/&#39;
 
 m.file    &lt;- &#39;GSM5766896_sc1d7-ctrl_matrix.mtx.gz&#39;
@@ -1723,7 +1741,7 @@ m[1:10,1:10]</code></pre>
 ##  [8,] . . . . . . . . . .
 ##  [9,] . . . . . . . . . .
 ## [10,] . . . . . . . . . .</code></pre>
-<pre class="r"><code>rownames(m) &lt;- features$V2
+<pre class="r"><code>rownames(m) &lt;- make.unique(features$V2)
 colnames(m) &lt;- barcodes$V1 
 
 m[1:10,1:10]</code></pre>
@@ -1740,48 +1758,114 @@ m[1:10,1:10]</code></pre>
 ## AL732372.1  . . . . . . . . . .
 ## OR4F29      . . . . . . . . . .
 ## AC114498.1  . . . . . . . . . .</code></pre>
-<pre class="r"><code># seurat_3 &lt;- CreateSeuratObject(counts = m)</code></pre>
+<pre class="r"><code>seurat_3 &lt;- CreateSeuratObject(counts = m)</code></pre>
+<pre><code>## Warning: Data is of class dgTMatrix. Coercing to dgCMatrix.</code></pre>
+<pre class="r"><code>seurat_3$timepoint &lt;- &#39;d7&#39;</code></pre>
 <pre class="r"><code>read_seurat &lt;- function(m.file, bcd.file,feat.file){
   
-m        &lt;- Matrix::readMM(file = m.file)
-barcodes &lt;- read.table(file=gzfile(bcd.file))
-features &lt;- read.table(file=gzfile(feat.file))
-
-colnames(m) &lt;- barcodes$V1
-rownames(m) &lt;- features$V2 
-
-# Uncomment this line, it does not work 
-# seurat &lt;- CreateSeuratObject(counts = m)
-# return(seurat)
+  m        &lt;- Matrix::readMM(file = m.file)
+  barcodes &lt;- read.table(file=gzfile(bcd.file))
+  features &lt;- read.table(file=gzfile(feat.file))
+  
+  colnames(m) &lt;- barcodes$V1
+  rownames(m) &lt;- make.unique(features$V2 )
+  
+  # Uncomment this line, it does not work 
+  seurat &lt;- CreateSeuratObject(counts = m)
+  return(seurat)
 }
 
 m.file    &lt;- &#39;~/SU drive/Teaching/2024/transcriptomics workshop/data/GSE192857_RAW/GSM5766894_sc1d0-ctrl_matrix.mtx.gz&#39;
 bcd.file  &lt;- &#39;~/SU drive/Teaching/2024/transcriptomics workshop/data/GSE192857_RAW/GSM5766894_sc1d0-ctrl_barcodes.tsv.gz&#39;
 feat.file &lt;- &#39;~/SU drive/Teaching/2024/transcriptomics workshop/data/GSE192857_RAW/GSM5766894_sc1d0-ctrl_features.tsv.gz&#39;
-seurat1 &lt;- read_seurat(m.file,bcd.file,feat.file)
+seurat1 &lt;- read_seurat(m.file,bcd.file,feat.file)</code></pre>
+<pre><code>## Warning: Data is of class dgTMatrix. Coercing to dgCMatrix.</code></pre>
+<pre class="r"><code>seurat1$timepoint &lt;- &#39;d0&#39;
 
 m.file    &lt;- &#39;~/SU drive/Teaching/2024/transcriptomics workshop/data/GSE192857_RAW/GSM5766895_sc2d0-ctrl_matrix.mtx.gz&#39;
 bcd.file  &lt;- &#39;~/SU drive/Teaching/2024/transcriptomics workshop/data/GSE192857_RAW/GSM5766895_sc2d0-ctrl_barcodes.tsv.gz&#39;
 feat.file &lt;- &#39;~/SU drive/Teaching/2024/transcriptomics workshop/data/GSE192857_RAW/GSM5766895_sc2d0-ctrl_features.tsv.gz&#39;
 seurat2 &lt;- read_seurat(m.file,bcd.file,feat.file)</code></pre>
+<pre><code>## Warning: Data is of class dgTMatrix. Coercing to dgCMatrix.</code></pre>
+<pre class="r"><code>seurat1$timepoint &lt;- &#39;d0&#39;</code></pre>
 <pre class="r"><code>setwd(data_dir)
 
 barcodes.files &lt;- list.files(pattern=&quot;*barcodes.tsv.gz&quot;)
 features.files &lt;- list.files(pattern=&quot;*features.tsv.gz&quot;)
 matrix.files   &lt;- list.files(pattern=&quot;*matrix.mtx.gz&quot;)
+timepoints     &lt;- c(&#39;d0&#39;,&#39;d0&#39;,&#39;d7&#39;,&#39;d7&#39;,&#39;d13&#39;,&#39;d13&#39;,&#39;d20&#39;,&#39;d20&#39;)
 
-seurat.list &lt;- list()
-
+# Create an empty list 
+seurat.ls &lt;- list()
+  
 for(i in 1:8){
   matrix   &lt;- Matrix::readMM(file = matrix.files[i])
   barcodes &lt;- read.table(file=gzfile(barcodes.files[i]))
   features &lt;- read.table(file=gzfile(features.files[i]))
   
   colnames(matrix) &lt;- barcodes$V1
-  rownames(matrix) &lt;- features$V2
-  
-  # seurat.ls[[i]] &lt;- CreateSeuratObject(counts = matrix)
+  rownames(matrix) &lt;- make.unique(features$V2)
+    
+  seurat.ls[[i]] &lt;- CreateSeuratObject(counts = matrix)
+  seurat.ls[[i]]$timepoint &lt;- timepoints[i]
 }</code></pre>
+<pre><code>## Warning: Data is of class dgTMatrix. Coercing to dgCMatrix.
+## Warning: Data is of class dgTMatrix. Coercing to dgCMatrix.
+## Warning: Data is of class dgTMatrix. Coercing to dgCMatrix.
+## Warning: Data is of class dgTMatrix. Coercing to dgCMatrix.
+## Warning: Data is of class dgTMatrix. Coercing to dgCMatrix.
+## Warning: Data is of class dgTMatrix. Coercing to dgCMatrix.
+## Warning: Data is of class dgTMatrix. Coercing to dgCMatrix.
+## Warning: Data is of class dgTMatrix. Coercing to dgCMatrix.</code></pre>
+<pre class="r"><code># One object from the list 
+seurat.ls[[1]]</code></pre>
+<pre><code>## An object of class Seurat 
+## 33538 features across 1130 samples within 1 assay 
+## Active assay: RNA (33538 features, 0 variable features)
+##  1 layer present: counts</code></pre>
+<pre class="r"><code># Multiple objects from the list 
+seurat.ls[2:8]</code></pre>
+<pre><code>## [[1]]
+## An object of class Seurat 
+## 33538 features across 1358 samples within 1 assay 
+## Active assay: RNA (33538 features, 0 variable features)
+##  1 layer present: counts
+## 
+## [[2]]
+## An object of class Seurat 
+## 33538 features across 1409 samples within 1 assay 
+## Active assay: RNA (33538 features, 0 variable features)
+##  1 layer present: counts
+## 
+## [[3]]
+## An object of class Seurat 
+## 33538 features across 1375 samples within 1 assay 
+## Active assay: RNA (33538 features, 0 variable features)
+##  1 layer present: counts
+## 
+## [[4]]
+## An object of class Seurat 
+## 33538 features across 976 samples within 1 assay 
+## Active assay: RNA (33538 features, 0 variable features)
+##  1 layer present: counts
+## 
+## [[5]]
+## An object of class Seurat 
+## 33538 features across 1407 samples within 1 assay 
+## Active assay: RNA (33538 features, 0 variable features)
+##  1 layer present: counts
+## 
+## [[6]]
+## An object of class Seurat 
+## 33538 features across 1802 samples within 1 assay 
+## Active assay: RNA (33538 features, 0 variable features)
+##  1 layer present: counts
+## 
+## [[7]]
+## An object of class Seurat 
+## 33538 features across 1610 samples within 1 assay 
+## Active assay: RNA (33538 features, 0 variable features)
+##  1 layer present: counts</code></pre>
 </div>
 
 
