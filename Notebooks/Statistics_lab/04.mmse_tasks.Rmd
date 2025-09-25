@@ -1,0 +1,109 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+## Introduction to Data Analysis: Investigating Cognitive Decline and Brain Volume Using the MMSE Dataset
+
+In this class, we will explore how to perform data analysis using a dataset centered around cognitive and brain health measurements. The dataset we will be working with includes multiple variables that provide insight into factors affecting cognitive performance and brain structure. The main focus will be on understanding how these variables are interrelated and how they might influence cognitive decline, as assessed by the Mini Mental State Examination (MMSE).
+
+Key Variables in the Dataset:
+
+-   Class (Group): This categorical variable differentiates between various groups (such as control or dementia cases) that individuals may belong to.
+-   Age: The age of each individual, a critical variable as cognitive functions often decline with age.
+-   Years of Education (EDUC): Education level can impact cognitive reserve, which in turn may affect cognitive performance later in life.
+-   Socioeconomic Status (SES): Scored on a scale from 1 to 5, this variable captures an individual's socioeconomic background, which may influence cognitive health.
+-   MMSE (Mini Mental State Examination): A widely-used measure of cognitive performance, where lower scores indicate more severe cognitive impairment.
+-   Clinical Dementia Rating (CDR): This variable quantifies the severity of dementia, providing a context for interpreting MMSE scores.
+-   Estimated Total Intracranial Volume (eTIV): A measure of the brain's overall size, which may correlate with cognitive performance or dementia severity.
+-   Normalized Whole Brain Volume (nWBV): This variable adjusts for total brain volume relative to intracranial volume and may serve as a marker for brain atrophy.
+-   Atlas Scaling Factor (ASF): A scaling factor used in brain imaging analysis to account for differences in brain sizes among individuals.
+
+[Link for data download](https://github.com/bartosovic-lab/R-teaching.github.io/tree/main/data)
+
+## Import the dataset
+
+```{r}
+mmse <- read.csv(file='../../data/alzheimer_data.csv',header = TRUE,comment.char = '#',row.names = 1)
+mmse
+
+```
+
+------------------------------------------------------------------------
+
+### Data exploration
+
+**Q1:** How many rows and columns does the dataset have ?
+
+**Q2:** What are the names of the columns ?
+
+**Q3:** Which of the columns are numeric and which are categorical ?
+
+**Q4:** Are there any missing values in the dataset ?
+
+*Hint: There might be a missing value in the socio-economic status column - function `is.na()` can be useful here; combining is.na() with colSums() is particularly powerful*
+
+**Q5:** Create a logical vector called `is_senior` if `Age>80` and add it as a new column into the mmse `data.frame`. Verify how many TRUE/FALSE values are in the column `is_senior` using function `table()`
+
+------------------------------------------------------------------------
+
+### Descriptive Statistics
+
+**Q6:** How many males and females are there in the dataset? (Function `table()` can be useful)
+
+**Q7:** How many Demented/Non-demented individuals are there in the dataset?
+
+**Q8:** What is the mean, median and standard deviation of age overall?
+
+**Q9** What is the mean age of the demented group?
+
+**Q10:** What is the mean age of the non-demented group?
+
+**Q11:** What is the mean age of the demented male group?
+
+**Q12:** What is the mean and standard deviation of socioeconomic status (SES) across the groups (demented vs. non-demented)? *(mind the missing values or NAs)*
+
+**Q13:** What is the minimum and maximum value of the MMSE score?
+
+**Q14:** Show the whole mmse data.frame row for individuals with minimum and maximum MMSE score.
+
+**Q15:** What is the standard deviation of the MMSE score in demented and non-demented groups? What does this tell us about the spread/variance of MMSE scores? *Hint: You can also use boxplots to visualise the spread in addition to mean() and sd()*
+
+------------------------------------------------------------------------
+
+## Visualization
+
+**Q16:** Plot a barplot of mean values of mmse score of groups (demented, nondemented).
+
+**Q17:** Plot a boxplot of mmse score in demented vs non-demented individuals using either base plotting or ggplot. Color the points by demented status (e.g. demented = red, non-demented = blue)
+
+**Q18:** Plot a histogram of age, splitting it by demented vs. non-demented individuals. What does this show about the age distribution of each group?
+
+**Q19:** Create a scatter plot to investigate the relationship between nWBV (Normalized Whole Brain Volume) and MMSE scores.
+
+**Q20:* Plot the distribution of years of education (EDUC) using a boxplot for demented vs. non-demented groups. Does there appear to be any noticeable trend in educational attainment between the two groups?
+
+------------------------------------------------------------------------
+
+## Statistical analysis
+
+**Q21:** Does the MMSE column follow normal distribution ? Check with histogram, QQ-plot and Shapiro-Wilk test.
+
+**Q22:** Does the age of groups (demented, non-demented) and age overall follow normal distribution ? (test for all 3 groups)
+
+**Q23:** Conduct a statistical test to compare the mean MMSE scores between demented and non-demented individuals. Decide which statistical test should be used. Is there a statistically significant difference between the two groups?
+
+<br>
+
+*Bonus tasks: *
+
+ 
+**Q24:** Perform a spearman correlation analysis between age and MMSE score. Plot scatterplot of Age and MMSE first. Then use function `cor` (with parameter method='spearman', and use='complete.obs') to perform correlation analysis.What does the correlation coefficient suggest about the relationship between these two variables? 
+
+**Q25:** Conduct a chi-square test to see if there is an association between gender and the dementia classification (demented vs. non-demented). Use combination of `table` and `chisq.test` functions. 
+
+**Q26:** “One-figure story”: Make a 2×2 plotting window showing (i) Age histogram, (ii) MMSE boxplot by group, (iii) nWBV vs MMSE scatter, (iv) SES histogram (omit NAs). Add titles to each. *Hint: Use par(mfrow) function* 
+
+![Example answer to Q26](../../Figures/all_in_one.png)
