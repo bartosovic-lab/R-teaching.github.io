@@ -9,35 +9,40 @@ output:
 
 ### Analysis of bulk or single-cell RNA-seq data. 
 
-#### Choose one of the following datasets and perform bulk or single-cell RNA-seq data analysis. Perform analysis using DESeq2 (bulk) or Seurat (single-cell). The results of analysis should include:
+Choose one of the following datasets and perform bulk or single-cell RNA-seq data analysis. Perform analysis using DESeq2 (bulk). The results of analysis should be contained in a single notebook and include the following:
 
-------------------- 
 
-#### Bulk 
 
-Dataset + experimental design description (short)
- - What are the groups/conditions, how many replicates, any covariates (batch, donor, sex, etc.)?
- - A clear statement of the main contrast tested.
+**Dataset + experimental design description - either use comment or write narrative inside the notebook/report**
  
-Basic QC
+ - What are the groups/conditions, how many replicates, any covariates (batch, donor, sex, etc.)?
+ - A clear statement of the main contrast (condition A vs condition B) tested.
+ 
+**Basic QC**
+
  - Plot barplot of library sizes plot based on raw counts (colSums(counts)):
  - sample–sample correlation heatmap, or sample distance heatmap (on variance stabilized data VSD)
  - PCA analysis on variance stabilised data (VSD) and it's interpreatation
  
-Differential gene expression analysis
+**Differential gene expression analysis**
+
  - MA plot
+ - DESeq2 analysis in 3 steps
  - How many genes are up/downregulated with cutoff of padj < 0.05 and |log2FoldChange | > 2
  - Export full DE table with gene symbols as csv file
  - Volcano plot
 
-Visualisation
+**Visualisation**
+
  - Heatmap visualisation of top 50 up/down regulated genes
- - Expression plot for 1–2 marker genes across conditions (boxplot/violin)
+ - Expression plot for 2 marker genes of your choice across conditions (boxplot/violin)
  
-GO term analysis 
+**GO term analysis**
+
  - Biological process
  - Molecular function
  - Visualisation using dotplot, barplot and  optionally cnet network plot for top 10 terms
+
 
 ----------------------------
 

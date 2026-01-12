@@ -1628,33 +1628,50 @@ display: none;
 <h2>Part 3 - Independent project work</h2>
 <div id="analysis-of-bulk-or-single-cell-rna-seq-data." class="section level3">
 <h3>Analysis of bulk or single-cell RNA-seq data.</h3>
-<div id="choose-one-of-the-following-datasets-and-perform-bulk-or-single-cell-rna-seq-data-analysis.-perform-analysis-using-deseq2-bulk-or-seurat-single-cell.-the-results-of-analysis-should-include" class="section level4">
-<h4>Choose one of the following datasets and perform bulk or single-cell
-RNA-seq data analysis. Perform analysis using DESeq2 (bulk) or Seurat
-(single-cell). The results of analysis should include:</h4>
+<p>Choose one of the following datasets and perform bulk or single-cell
+RNA-seq data analysis. Perform analysis using DESeq2 (bulk). The results
+of analysis should be contained in a single notebook and include the
+following:</p>
+<p><strong>Dataset + experimental design description - either use
+comment or write narrative inside the notebook/report</strong></p>
+<ul>
+<li>What are the groups/conditions, how many replicates, any covariates
+(batch, donor, sex, etc.)?</li>
+<li>A clear statement of the main contrast (condition A vs condition B)
+tested.</li>
+</ul>
+<p><strong>Basic QC</strong></p>
+<ul>
+<li>Plot barplot of library sizes plot based on raw counts
+(colSums(counts)):</li>
+<li>sample–sample correlation heatmap, or sample distance heatmap (on
+variance stabilized data VSD)</li>
+<li>PCA analysis on variance stabilised data (VSD) and it’s
+interpreatation</li>
+</ul>
+<p><strong>Differential gene expression analysis</strong></p>
+<ul>
+<li>MA plot</li>
+<li>DESeq2 analysis in 3 steps</li>
+<li>How many genes are up/downregulated with cutoff of padj &lt; 0.05
+and |log2FoldChange | &gt; 2</li>
+<li>Export full DE table with gene symbols as csv file</li>
+<li>Volcano plot</li>
+</ul>
+<p><strong>Visualisation</strong></p>
+<ul>
+<li>Heatmap visualisation of top 50 up/down regulated genes</li>
+<li>Expression plot for 2 marker genes of your choice across conditions
+(boxplot/violin)</li>
+</ul>
+<p><strong>GO term analysis</strong></p>
+<ul>
+<li>Biological process</li>
+<li>Molecular function</li>
+<li>Visualisation using dotplot, barplot and optionally cnet network
+plot for top 10 terms</li>
+</ul>
 <hr />
-</div>
-<div id="bulk" class="section level4">
-<h4>Bulk</h4>
-<p>Dataset + experimental design description (short) - What are the
-groups/conditions, how many replicates, any covariates (batch, donor,
-sex, etc.)? - A clear statement of the main contrast tested.</p>
-<p>Basic QC - Plot barplot of library sizes plot based on raw counts
-(colSums(counts)): - sample–sample correlation heatmap, or sample
-distance heatmap (on variance stabilized data VSD) - PCA analysis on
-variance stabilised data (VSD) and it’s interpreatation</p>
-<p>Differential gene expression analysis - MA plot - How many genes are
-up/downregulated with cutoff of padj &lt; 0.05 and |log2FoldChange |
-&gt; 2 - Export full DE table with gene symbols as csv file - Volcano
-plot</p>
-<p>Visualisation - Heatmap visualisation of top 50 up/down regulated
-genes - Expression plot for 1–2 marker genes across conditions
-(boxplot/violin)</p>
-<p>GO term analysis - Biological process - Molecular function -
-Visualisation using dotplot, barplot and optionally cnet network plot
-for top 10 terms</p>
-<hr />
-</div>
 </div>
 </div>
 <div id="datasets-to-choose-from" class="section level2">
