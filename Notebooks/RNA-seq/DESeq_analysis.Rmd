@@ -1,0 +1,843 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+## Before you start with this vignette, read carefully these instructions
+
+The primary goal of this transcriptomic workshop is to provide participants with a comprehensive understanding of the RNA-seq data analysis pipeline using R and Bioconductor packages such as DESeq2. You will learn about the basic concepts behind statistical analysis of transciptomic data, and be able to perform basic analysis of public RNA-seq on your own. 
+
+We are going to analyse bulk RNA-seq data from this [paper](https://www.sciencedirect.com/science/article/pii/S2589004222015516) 
+
+![](images/screenshot_paper_1.png)
+
+Tha data comes from bulk RNA-seq of Day 0,7,13 and 20 of in vitro neuronal differentiation
+
+![](images/experimental_design.jpg)
+
+
+#### By the end of this vignette, you should be able to:
+
+ - Perform differential expression analysis using DESeq2.
+ - Generate visualizations such as PCA plots, volcano plots, and heatmaps.
+ - Interpret results in the context of biological pathways and Gene Ontology (GO) terms.
+
+#### Prepare folder for the analysis
+
+1. Before starting the analysis make sure to create a new folder for the project. Place downloaded data into this folder. 
+
+2. Create a new R notebook by going to File -> New File -> R Notebook
+
+3. Save the notebook to the project folder. 
+
+#### The most common problems: 
+In case of errors, try to figure out what is wrong with your command. Typical errors include:
+
+- Typos 
+- Your input is not what it is supposed to be (check it)
+- Missing library - Google how to install a missing library. Typically use either install.pacakges() or BiocManager::install() functions
+- File loading issues - Make sure to specifiy the correct path to your raw data files. 
+- Wrong syntax (google it or ask chatGPT)
+
+Generally, start by googling the error and use chatGPT to help you. If you do not understand, you can also ask ChatGPT to explain to you. 
+
+Ask Marek, Pepe or Yiquan for help and we will can also help you and explain. 
+
+## Step 1.  Download the data from GEO (if already done with this, proceed to the next step)
+
+[Link to GEO page](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE192855)
+
+[Direct link to the file](https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE192855&format=file)
+
+Download the file "GSE192855_RAW.tar" and place it into the folder "data"
+
+![](images/GEO_screenshot.jpg)
+
+
+------------- 
+Extract the archive, you should see 19 files:
+
+![](images/GEO_unpacked.jpg)
+
+### Question 1: How many timepoints and how many replicates per each timepoint are there in this dataset ? 
+
+Hint: Use the information provided in the [GEO page](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE192855) 
+
+Can you tell from filenames which replicate and timepoint it corresponds to ? 
+
+## Step 2. Loading the files for DESeq2 Analysis
+
+#### To begin, we load a single file containing gene count data:
+
+```{r}
+# Load a single count file
+# Here you will need to change the correct name and exact path of your file (path can be absolute or relative to the path of the notebook)
+D0_rep1_table <- read.table(file='data/GSE192855_RAW/GSM5766873_1-sc1-D0-ctrl-A.counts.txt.gz', header=TRUE)
+head(D0_rep1_table)
+```
+
+### Question 2: Can you identify what kind of information is provided in the table we just loaded ? 
+
+
+
+```{r}
+# Now we only extract the counts and gene ids and create a vector
+# Column 1 contains Gene IDs, and Column 7 contains raw counts.
+
+D0_rep1_counts        <- D0_rep1_table[,7] # This extracts vector of counts
+names(D0_rep1_counts) <- D0_rep1_table[,1] # This extracts gene ids
+
+# Preview the first few rows of the file
+head(D0_rep1_counts,20)
+
+```
+
+#### Loading all of the data 
+
+Now we need to repeat this process of data import for all 19 files. It is possible to do it one by one (or using a loop). Choose one approach and load all the data into 19 variables called
+
+19 variables: 
+
+ - D0_rep1_counts
+ - D0_rep2_counts
+ - D0_rep3_counts
+ - ...
+ - D20_rep3_counts
+ - D20_rep4_counts
+
+
+```{r}
+# Example 
+D0_rep2_table         <- read.table(file='data/GSE192855_RAW/GSM5766874_2-sc1-D0-ctrl-B.counts.txt.gz', header=TRUE)
+D0_rep2_counts        <- D0_rep2_table[,7] # This extracts vector of counts
+names(D0_rep2_counts) <- D0_rep2_table[,1] # This extracts gene ids
+
+# Preview the first few rows of the file
+head(D0_rep2_counts,20)
+
+# Now write the code for loading of rest of the files below
+# ...
+# ...
+# ...
+```
+
+```{r}
+# Advanced and optional: Alternatively one can use a for loop to load all the files into a list of vectors. 
+# Note: There is some deliberate typos in this part, try to catch them and fix
+
+
+ 
+# all_files <- list.files(data/GSE192855_RAW/',pattern = "*counts.txt.gz",full.names = TRUE)
+# all_filess
+# 
+# counts_list <- list()
+# 
+# for (file in all_file){
+#   counts_table               <- read.table(file=file,header=TRUE)
+#   counts_list[[file]]        <- counts_tble[,7] # This extracts vector of counts
+#   names(counts_list[[file]) <- counts_table[,1] # This extracts gene ids
+# }
+# 
+# lapply(counts_list,head)
+
+# # Aggregate the the data to a matrix using two commands - do.call and cbind
+# # This will convert list of vectors into matrix
+# combined_counts <- do.call('cbind',counts_list)
+# 
+# # Add column names to the matrix from file names
+# colnames(combined_counts) <- basename(names(counts_list))
+# 
+# # Check that the matrix looks good 
+# knitr::kable(head(combined_counts))
+# 
+# # The dimensions of the matrix should be 33694 genes (rows) by 19 samples (columns)
+# dim(combined_counts)
+
+
+```
+
+```{r,include=FALSE}
+all_files <- list.files('data/GSE192855_RAW/',pattern = "*counts.txt.gz",full.names = TRUE)
+all_files
+
+counts_list <- list()
+
+for (file in all_files){
+  counts_table               <- read.table(file=file,header=TRUE)
+  counts_list[[file]]        <- counts_table[,7] # This extracts vector of counts
+  names(counts_list[[file]]) <- counts_table[,1] # This extracts gene ids
+}
+
+lapply(counts_list,head)
+
+# Aggregate the the data to a matrix using two commands - do.call and cbind
+# This will convert list of vectors into matrix
+combined_counts <- do.call('cbind',counts_list)
+
+# Add column names to the matrix from file names
+colnames(combined_counts) <- basename(names(counts_list))
+
+# Check that the matrix looks good
+knitr::kable(head(combined_counts))
+
+# The dimensions of the matrix should be 33694 genes (rows) by 19 samples (columns)
+dim(combined_counts)
+
+```
+
+
+## Constructing the counts table 
+
+
+Aggregate the data loaded into 19 variables into a single data frame
+
+
+```{r}
+# combined_counts <- cbind(D0_rep1_counts,D0_rep2_counts, ...) # Fill in all the variable names instead of ...
+
+# Check the structure of the final counts table
+knitr::kable(head(combined_counts))
+```
+
+Count matrix is the essential input into DESeq2 analysis. Count matrix is composed of genes (rows) and samples (columns). Count matrix can be generated in different ways, this is just one example how to get there from this particular structure of data deposited in GEO.  
+
+In addition to count matrix we wil need metadata (colData) to inform DESeq about what kind of sample we want to compare with each other and replicates. 
+
+## Step 3. Creating Experimental Metadata in DESeq2 Analysis
+
+To properly analyze RNA-seq data in DESeq2, you need to provide experimental metadata, which describes the experimental design and conditions for each sample. This includes information such as 
+ - sample names
+ - time points
+ - replicate numbers.
+
+Below is an example of creating metadata manually:
+
+Note: It is critical that the column names of the count matrix and row names of metadata are in the same order. E.g. column 1 of count matrix corresponds to row 1 of metadata etc. 
+
+```{r}
+# Create experimental metadata
+# Include file names (extracted using basename), time points, and replicates
+
+coldata <- data.frame(
+            name = colnames(combined_counts),
+            timepoint = as.factor(c('D0','D0','D0','D0','D0','D0',
+                                    'D7','D7','D7','D7','D7',
+                                    'D13','D13','D13',
+                                    'D20','D20','D20','D20','D20')),
+            replicate = c(1,2,3,4,5,6,
+                          1,2,3,4,5,
+                          1,2,3,
+                          1,2,3,4,5))
+
+# Preview the metadata
+knitr::kable(coldata)
+```
+
+### Question 3: Does the metadata we created manually - timepoint and replicate number correspond to the actual samples ? 
+
+ - If it does not fix the metadata 
+
+Final check: Make sure that the order of samples in columns of count matrix and rows of metadata matches. 
+
+```{r}
+knitr::kable(head(combined_counts))
+knitr::kable(coldata)
+```
+
+
+```{r,include=FALSE}
+coldata <- data.frame(
+            name = colnames(combined_counts),
+            timepoint = as.factor(c('D0','D0','D0','D0','D0',
+                                    'D7','D7','D7','D7','D7','D7',
+                                    'D13','D13','D13','D13',
+                                    'D20','D20','D20','D20')),
+            replicate = c(1,2,3,4,5,
+                          1,2,3,4,5,6,
+                          1,2,3,4,
+                          1,2,3,4))
+
+knitr::kable(coldata)
+```
+
+## Loading the DESeq2 Library and Creating a DESeq2 Object
+
+To begin differential expression analysis, you need to load the DESeq2 library and construct a DESeqDataSet object, which is central to the DESeq2 pipeline. This object encapsulates the count matrix, metadata, and experimental design.
+
+DESeq2 is part of the Bioconductor project, so you’ll need BiocManager to install it if it isn’t already available.
+
+```{r,echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+# Load the DESeq2 library
+# Install it first if not already available
+# Uncomment the two lines below to install DESeq2:
+# install.packages('BiocManager')
+# BiocManager::install("DESeq2")
+
+library(DESeq2)
+```
+
+#### Creating a DESeq2 object
+
+The DESeqDataSetFromMatrix() function constructs a DESeq2 dataset using:
+
+1.	countData:
+ - A matrix of raw read counts (rows are genes, columns are samples).
+ - This is typically a matrix where each entry represents the raw counts for a gene in a sample.
+ - Ensure that row names are gene IDs and column names match the sample names in your metadata.
+2.	colData:
+ - A data frame containing the experimental metadata for your samples.
+ - It must have row names that correspond to the column names of the count matrix.
+3.	design:
+ - A formula specifying the experimental design.
+ - In this case, we use ~ timepoint, meaning we want to model the effect of timepoint on gene expression.
+
+```{r}
+
+# Create the DESeq2 dataset
+dds <- DESeqDataSetFromMatrix(countData = combined_counts,  # Raw count matrix
+                              colData = coldata,      # Experimental metadata
+                              design = ~ timepoint)    # Experimental design formula - timepoint is name of column in colData
+
+
+# The resulting object is a DESeqDataSet
+dds
+
+
+
+```
+
+## Step 4. Performing DESeq2 Analysis in Three Simple Steps
+
+The DESeq2 analysis pipeline is designed to handle RNA-seq count data efficiently. It involves three core steps: normalization, dispersion estimation, and statistical modeling. Each step builds upon the previous one.
+
+### Step 4a. Estimate size factors 
+
+```{r}
+# Estimate size factors for normalization
+dds <- estimateSizeFactors(dds)
+```
+
+#### Purpose:
+ - RNA-seq experiments often show differences in sequencing depth across samples, which can bias the analysis.
+ - Size factors are calculated to normalize for these differences, ensuring that gene counts are comparable between samples.
+
+#### What happens internally:
+ - DESeq2 calculates size factors by estimating a scaling factor for each sample, based on the median ratio of gene counts to the geometric mean across samples.
+ - The raw counts in the dataset are divided by these size factors to produce normalized counts.
+
+This normalization step does not account for biological factors or experimental design—it purely adjusts for library size differences.
+
+#### Visualize the library sizes for each replicate
+
+```{r}
+counts_summary <- colSums(combined_counts) # Count number of reads in each library in total
+counts_summary
+
+par(mar=c(5, 15 ,1 ,1))
+barplot(counts_summary,cex.names = 0.6,las=2,horiz = TRUE,main = "Read counts per replicate of bulk RNA-seq")
+```
+
+### Step 4b. Estimate the dispersion
+
+```{r}
+# Second step is to estimate the dispersion for each gene 
+dds <- estimateDispersions(dds)
+```
+
+#### Purpose:
+ - RNA-seq count data follows a negative binomial distribution, which requires an estimate of dispersion (variability of counts relative to the mean) for each gene.
+ - Dispersion captures both biological variation and technical noise.
+ - RNA-seq suffers from overdispersion (too much noise) and expression of some genes would be too noisy to do a reliable comparison
+ - DESeq models dispersion and assumes genes with similar expression level also have similar dispersion (variance) - this is modeled internally in the DESeq2 package
+
+#### What happens internally:
+ - DESeq2 fits a dispersion model to the data, estimating gene-specific dispersion values.
+ - These values are then shrunk toward a fitted trend line to stabilize estimates, especially for genes with low counts.
+
+![](images/DESeq2_dispersion.jpg)
+
+After this step, you can visualize dispersion estimates to confirm proper fitting:
+
+
+
+```{r}
+plotDispEsts(dds)
+
+# Task: Compare the obtained dispersion ~ mean model with the expected plot in section "Dispersion plot and fitting alternatives" from vignette below:
+# https://bioconductor.org/packages/3.21/bioc/vignettes/DESeq2/inst/doc/DESeq2.html 
+
+# What is the relationship between dispersion and mean expression in general ? 
+
+
+```
+
+
+### Step 4c: Fit the Model and Perform Wald Test
+
+
+```{r}
+# Fit the negative binomial model and perform Wald test
+dds <- nbinomWaldTest(dds)
+```
+
+Purpose:
+ - DESeq2 fits a negative binomial generalized linear model (GLM) for each gene using the specified design formula (e.g., ~ timepoint).
+ - The Wald test is used to assess the significance of coefficients (e.g., log2 fold changes for time points).
+
+What happens internally:
+ - For each gene, DESeq2 estimates:
+ - Log2 fold changes (LFCs) for each level of the design factor (e.g., differences between time points).
+ - Statistical significance (p-values) for the observed differences.
+ - The results can later be extracted using the results() function.
+
+Output and Next Steps
+
+After running these steps, the dds object is updated with:
+ - Normalized counts (accessible using counts(dds, normalized=TRUE)).
+ - Dispersion estimates for each gene.
+ - Model coefficients (log2 fold changes) and Wald test results.
+
+
+Troubleshooting Tips:
+1.	Size Factors:
+ - If size factors are extreme, check for outlier samples or problematic genes with very high counts.
+ - Use sizeFactors(dds) to inspect the calculated size factors.
+2.	Dispersion Estimation:
+ - Check the plot from plotDispEsts(dds) to ensure dispersions are properly fitted.
+ - Extremely noisy data may require additional filtering before analysis.
+3.	Model Fitting:
+ - Ensure the design formula in the dds object is correct (design(dds)).
+ - If results seem unexpected, check for batch effects or missing variables in the metadata.
+
+```{r}
+# DESeq2 considers the first condition as control - this is D0 in our case, and all comparisons are done against D0 
+resultsNames(dds) # lists the coefficients
+```
+
+## Step 5. QC of DESeq2 model and differential expression
+
+### MA plot
+
+An MA plot is a key visualization used in RNA-seq differential expression analysis, including the DESeq2 pipeline. It provides an overview of the relationship between the mean expression levels (average expression strength) and the log-fold changes (LFC) of genes between two conditions. Here’s how it is useful and what to pay attention to:
+
+####  Purpose of the MA Plot in DESeq2
+
+1.	Visualizing Differential Expression:
+ - The MA plot shows each gene as a point, where:
+ - The x-axis represents the average expression level (mean expression,  A ).
+ - The y-axis represents the log2 fold change ( M ) between conditions.
+ - It helps identify genes with significant changes in expression across a range of expression levels.
+2.	Detecting Outliers:
+ - Outliers can be easily spotted as points that are far from the main cloud of data.
+3.	Quality Check:
+ - You can assess whether the normalization and dispersion estimation have been properly applied.
+ - Ideally, the majority of genes with low fold change should cluster near zero on the y-axis.
+4.	Highlighting Significantly Altered Genes:
+ - DESeq2 often marks significantly differentially expressed genes (e.g., adjusted p-value < 0.05) in color (e.g., blue).
+5. Potential problems to look out for 
+ - Global shifts
+ - Extreme LFCs at low mean
+
+
+```{r}
+# Let's plot MA plot 
+plotMA(dds)
+
+```
+
+
+## Step 6. Extracting and Inspecting DESeq2 Results
+
+In this step, we extract and examine the results of the differential expression analysis for the comparison of D13 against D0 timepoints. This provides information on genes that are differentially expressed between these two time points.
+
+1.	The results() function extracts the results table for a specific comparison from the dds object.
+2.	The name argument specifies which comparison to extract. Here, "timepoint_D13_vs_D0" refers to the log2 fold changes (LFCs) for the time point D13 relative to the baseline D0.
+	
+```{r}
+# Now we can extract data frame of results for comparison of D13 against D0
+res <- as.data.frame(results(dds, name="timepoint_D13_vs_D0"))
+
+# We will get a table with 33694 (all) genes and 6 columns, examine it below
+# For some genes expression test can't be done - e.g. if there is not counts in any of the samples or baseMean == 0.00000
+head(res)
+dim(res)
+
+```
+# Converting ENSG codes to gene names
+
+
+```{r}
+# ENSGs to gene name
+library(biomaRt)
+library(org.Hs.eg.db) # For human gene annotations
+
+# Clean Ensembl Gene IDs
+# Ensembl gene IDs often include version numbers (e.g., ENSG00000123456.1), which need to be removed for mapping.
+cleaned_ensg_ids <- sub("\\..*", "", rownames(res))
+
+# Map Ensembl IDs to Gene Symbols:
+# The AnnotationDbi::mapIds() function is used to map Ensembl IDs to gene symbols using the org.Hs.eg.db database (for human).
+
+gene_symbols <- AnnotationDbi::mapIds(
+  org.Hs.eg.db, 
+  keys = cleaned_ensg_ids, 
+  keytype = "ENSEMBL", 
+  column = "SYMBOL", 
+  multiVals = "first"
+)
+
+
+# Map Ensembl IDs to Entrez IDs
+# Similarly, Ensembl IDs are mapped to Entrez IDs, which are required for many GO tools.
+
+entrez_ids <- AnnotationDbi::mapIds(
+  org.Hs.eg.db, 
+  keys = cleaned_ensg_ids, 
+  keytype = "ENSEMBL", 
+  column = "ENTREZID", 
+  multiVals = "first"
+)
+
+# The mapped gene symbols and Entrez IDs are added as new columns to the res table.
+res$gene_name <- gene_symbols[rownames(res)]
+res$entrez    <- entrez_ids[rownames(res)]
+
+#	Differential expression results are sorted by p-value to prioritize the most significant genes for GO analysis.
+resOrdered <- res[order(res$pvalue),]
+head(resOrdered,50)
+```
+
+
+#### Exporting differential gene expression table into csv file and open it in excel
+
+We can export the table with differentially expressed genes so we can share it with collaborators
+
+```{r}
+# Export data frame using write.csv function
+
+write.csv(res,file = 'D13_D0_DEGs.csv')
+```
+
+
+The resulting data frame (res) contains 33,694 rows (one for each gene) and 6 columns, which include the following:
+
+ - **baseMean**	       - The mean of normalized counts across all samples for a gene.
+ - **log2FoldChange**	 - Log2 fold change for D13 vs D0 (positive values indicate upregulation in D13).
+ - **lfcSE**	           - Standard error of the log2 fold change estimate.
+ - **stat**	           - Wald statistic for the hypothesis test (log2 fold change significantly different from 0).
+ - **pvalue**	         - Raw p-value for the test.
+ - **padj**	           - Adjusted p-value using the Benjamini-Hochberg method to control the false discovery rate (FDR).
+
+## Step 7. Creating a Volcano Plot with ggplot2
+
+A volcano plot is a key visualization for differential expression analysis. It combines fold-change (x-axis) and statistical significance (y-axis) to highlight genes of interest.
+
+Remember to always use p-value corrected for multiple hypothesis testing
+
+```{r}
+# Volcano plot
+library(ggplot2)
+
+
+# Load the required library
+
+# Add a new column to mark significant genes
+res$sig <- FALSE                            # Default: not significant
+res$sig[abs(res$padj) < 0.05] <- TRUE       # Mark genes with padj value < 0.05 as significant
+
+ggplot(data = res, aes(x = log2FoldChange, y = -log10(padj), color = sig)) + 
+  geom_point(size = 0.02, alpha = 0.7) +              # Use appropriate point size and transparency
+  scale_color_manual(values = c("gray", "red")) +  # Assign colors (e.g., gray for non-sig, red for sig)
+  labs(
+    title = "Volcano Plot",
+    x = "Log2 Fold Change",
+    y = "-Log10 Adjusted P-value",
+    color = "Significant"
+  ) +
+  theme_minimal() +                                # Use a clean theme
+  theme(
+    legend.position = "top",                       # Place legend at the top
+    plot.title = element_text(hjust = 0.5)         # Center the plot title
+  )
+```
+
+
+```{r}
+# Volcano plot
+library(ggplot2)
+library(ggrepel)
+
+# Load the required library
+
+# Add a new column to mark significant genes
+res$sig <- FALSE                            # Default: not significant
+res$sig[abs(res$padj) < 0.05] <- TRUE       # Mark genes with padj value < 0.05 as significant
+
+ggplot(data = res, aes(x = log2FoldChange, y = -log10(padj), color = sig)) + 
+  geom_point(size = 0.02, alpha = 0.7) +              # Use appropriate point size and transparency
+  scale_color_manual(values = c("gray", "darkred")) +  # Assign colors (e.g., gray for non-sig, red for sig)
+  labs(
+    title = "Volcano Plot",
+    x = "Log2 Fold Change",
+    y = "-Log10 Adjusted P-value",
+    color = "Significant"
+  ) +
+  theme_minimal() +                                # Use a clean theme
+  theme(
+    legend.position = "top",                       # Place legend at the top
+    plot.title = element_text(hjust = 0.5)         # Center the plot title
+  )  + geom_text_repel(data=res[which(res$padj < 1e-50 & abs(res$log2FoldChange) > 5),],aes(x=log2FoldChange,y=-log10(padj),label=gene_name))
+```
+
+## Step 8. Principal Component Analysis (PCA) Plot with DESeq2
+
+A PCA plot is a powerful visualization for understanding variability in RNA-seq data. It reduces high-dimensional count data into principal components (PCs) that summarize major sources of variation.
+
+#### Variance Stabilizing Transformation (VST)
+
+Before generating the PCA plot, we transform the raw count data to stabilize variance across the range of expression levels and obtain transformed and normalised expression values. 
+
+```{r}
+# Apply Variance Stabilizing Transformation (VST)
+vsd <- vst(dds, blind = FALSE)
+```
+
+Explanation:
+1.	vst():
+ - Performs a variance stabilizing transformation to normalize count data.
+ - Stabilizes variance, especially for genes with low counts.
+ - Retains important biological differences in the data.
+2.	blind = FALSE:
+ - Ensures that the transformation is aware of the experimental design (~ timepoint), which helps preserve biological variation in the data.
+ - Use blind = TRUE only when no design information is available (e.g., exploratory analysis).
+
+The transformed data should be approximated variance stabilized and also includes correction for size factors or normalization factors. The transformed data is on the log2 scale for large counts.
+
+For more details on vst() transformation see [DESeq vignette](https://bioconductor.org/packages/3.21/bioc/vignettes/DESeq2/inst/doc/DESeq2.html)
+
+#### Principal component analysis 
+
+Principal Component Analysis (PCA) is a statistical method used to simplify complex data by summarizing its variation into a few dimensions called principal components (PCs). For RNA-seq, PCA helps reduce the thousands of genes into just a few components that explain the most variability in the data.
+
+Why Use PCA in RNA-seq Analysis?
+1.	Exploration of Data Structure: PCA helps identify patterns in the data, such as similarities or differences between experimental groups (e.g., time points, treatments).
+2.	Quality Control: PCA can reveal outliers or unexpected clustering, which may indicate technical issues, batch effects, or biological variation.
+3.	Visualization: PCA plots provide an easy way to visualize the relationships between samples in a 2D or 3D space.
+
+How to interpret PCA plots: 
+ - Samples from the same condition (e.g., same time point or treatment group) should cluster together. If they do, it suggests that the biological signal dominates the data.
+ - Clear separation between clusters along a principal component indicates that the experimental condition (e.g., time point or treatment) explains a significant portion of the variation.
+ - The percentage of variance explained by PC1 and PC2 is often shown on the axes. For example, if PC1 explains 50% of the variance, it means half of the differences between samples are captured along this axis.
+ 
+Outliers - Samples that do not cluster with their group may indicate:
+ - Technical issues (e.g., poor library preparation or sequencing).
+ - Unique biological differences (e.g., a rare phenotype).
+
+plotPCA():
+ - Visualizes the data on a 2D plot using the first two principal components (PC1 and PC2).
+ - Each point represents a sample, positioned based on its expression profile.
+ 
+
+```{r}
+# Generate PCA plot using transformed and normalized data with timepoint as the grouping factor
+plotPCA(vsd, intgroup = c("timepoint"))
+```
+## Step 9. GO terms analysis
+
+#### Convert ENSG names to actual gene names and to entrez ids for GO term analysis
+
+Gene Ontology (GO) analysis is a widely used method to interpret and summarize large-scale gene expression data, such as that generated by RNA-seq. It helps identify biological themes and processes associated with differentially expressed genes (DEGs), providing insights into the underlying biology of a system or condition.
+
+RNA-seq experiments often identify thousands of differentially expressed genes (DEGs). GO analysis helps make sense of this large dataset by:
+1.	Identifying Enriched Processes:	Determines which biological processes, molecular functions, or cellular components are overrepresented among DEGs.
+2.	Biological Interpretation: Links changes in gene expression to specific biological mechanisms or pathways.
+3.	Hypothesis Generation: Suggests potential biological effects of experimental treatments or conditions.
+4.	Data Summarization: Condenses a long list of DEGs into meaningful categories, making the results easier to communicate and understand.
+
+Implementation: Gene Ontology (GO) term analysis requires converting gene identifiers (like Ensembl IDs) into formats that GO tools or databases understand, such as gene symbols or Entrez IDs. This block demonstrates how to prepare these mappings using the biomaRt and AnnotationDbi R packages.
+
+##### Performing GO Term Analysis Using clusterProfiler
+
+This code block demonstrates how to prepare a subset of significantly upregulated and downregulated genes for Gene Ontology (GO) term analysis using clusterprofiler package
+
+clusterProfiler is a powerful R package designed for the statistical analysis and visualization of functional profiles in high-throughput data, such as RNA-seq. It is widely used for Gene Ontology (GO) term analysis, pathway enrichment, and other functional annotation tasks.
+
+```{r}
+# Load Required Libraries:
+library(clusterProfiler)
+library(org.Hs.eg.db) # For human gene annotations
+
+# Filter Genes for GO Analysis:
+# top_up: Subset of significantly upregulated genes.
+# top_down: Subset of significantly downregulated genes.
+
+# Filtering criteria:
+# log2FoldChange > 5: Large positive fold change indicates strong upregulation.
+# log2FoldChange < -5: Large negative fold change indicates strong downregulation.
+# padj < 0.05: Significance threshold for adjusted p-values.
+
+top_up   <- resOrdered[resOrdered$log2FoldChange > 5 & resOrdered$padj < 0.05,]
+top_down <- resOrdered[resOrdered$log2FoldChange < -5 & resOrdered$padj < 0.05,]
+
+dim(resOrdered)
+dim(top_up) # 6576 genes
+dim(top_down) # 6954 genes
+
+# Plot the histogram - cutoffs of logFC are drawn as vertical lines
+ggplot(data=res) + geom_histogram(aes(x=log2FoldChange),fill='grey',col='black',binwidth = 0.25) + theme_minimal() + geom_vline(xintercept = c(-5,5))
+```
+#### GO term analysi of upregulated genes
+
+This block performs Gene Ontology (GO) enrichment analysis on upregulated genes between D13 and D0 and visualizes the results using dotplot and barplot. The analysis focuses on the Biological Process (BP) ontology.
+
+```{r,fig.height=12,fig.width=8}
+# 	1.	Perform GO Enrichment Analysis:
+go_enrichment <- enrichGO(
+  gene          = top_up$gene_name,  # Gene symbols for upregulated genes
+  OrgDb         = org.Hs.eg.db,      # Annotation database for human genes
+  keyType       = "SYMBOL",          # Type of input IDs (gene symbols in this case)
+  ont           = "BP",              # Ontology: Biological Process (can also be "MF" or "CC")
+  pAdjustMethod = "BH",              # Adjust p-values for multiple testing (Benjamini-Hochberg) - we are testing gene set against many different GO terms
+  pvalueCutoff  = 0.05,              # Significance threshold for raw p-values
+  qvalueCutoff  = 0.2                # Significance threshold for adjusted p-values
+)
+
+# 	2.	Visualize Enriched GO Terms:
+dotplot(go_enrichment, showCategory = 20, title = "GO Biological Process")
+barplot(go_enrichment, showCategory = 20, title = "GO Term Enrichment")
+
+# Visualizes the top 20 enriched GO terms as dots.
+# Dot Size: Represents the number of genes associated with the term (gene ratio).
+# Dot Color: Reflects the significance of enrichment (adjusted p-value).
+# Useful for quickly identifying terms with high enrichment scores and significance.
+```
+
+
+The cnetplot function from clusterProfiler visualizes the relationship between enriched GO terms and the genes associated with them. This network-style plot helps reveal how genes are shared across multiple enriched terms, making it easier to interpret the functional connections in your data.
+
+```{r,fig.width=12,fig.height=12}
+cnetplot(go_enrichment)
+```
+
+
+**What Does the Enrichment Map Show?**
+1.	Nodes: Represent enriched GO terms. The size of each node may correspond to the significance (e.g., p-value) or gene count.
+2.	Edges: Represent the similarity between GO terms, based on the overlap of associated genes. Thicker edges indicate greater similarity.
+3.	Clusters: Terms that share many genes are grouped into clusters, highlighting functionally related processes.
+4.	Colors: The color scheme can reflect the significance or another variable (e.g., fold change).
+
+#### Molecular function GO analysis
+
+This block performs Gene Ontology (GO) enrichment analysis, focusing on the Molecular Function (MF) ontology, which describes the biochemical activities of gene products. It then visualizes the enriched terms using dot plots and bar plots.
+
+```{r, fig.width=9,fig.height=12}
+go_enrichment_MF <- enrichGO(
+  gene          = top_up$gene_name,  # Gene symbols for upregulated genes
+  OrgDb         = org.Hs.eg.db,      # Annotation database for human genes
+  keyType       = "SYMBOL",          # Input gene type (here, gene symbols)
+  ont           = "MF",              # GO category: Molecular Function
+  pAdjustMethod = "BH",              # Adjust p-values with Benjamini-Hochberg method
+  pvalueCutoff  = 0.05,              # Significance threshold for raw p-values
+  qvalueCutoff  = 0.2                # Significance threshold for adjusted p-values
+)
+
+dotplot(go_enrichment_MF, showCategory = 20, title = "GO Biological Process")
+barplot(go_enrichment_MF, showCategory = 20, title = "GO Term Enrichment")
+```
+
+network plot of MF GO terms
+
+```{r,fig.width=12,fig.height=12}
+cnetplot(go_enrichment_MF)
+```
+
+
+## Step 10. Heatmap visualization of  top up- and down-regulated genes using pheatmap
+
+Heatmaps are powerful visualizations to explore gene expression patterns. This code generates a heatmap for the top 50 upregulated genes using normalized RNA-seq data. The heatmap shows the expression levels across different samples and groups them by experimental conditions.
+
+```{r, fig.width=6,fig.height=8}
+# Load the pheatmap library
+library("pheatmap")
+
+# Subset Top Genes for plotting
+heatmap_genes <- head(top_up,50)
+
+
+# Prepare Sample Metadata from the colData object
+# Extracts sample metadata (colData) from the DESeq2 dataset (dds) - timepoint and replicate, this will be used for column information in the heatmap
+metadata <- as.data.frame(colData(dds)[,c("timepoint",'replicate')])
+metadata
+
+
+# Extract Normalized Data for Heatmap
+# We again use variance stabilized and normalized data here - vsd object
+data_to_plot <- assay(vsd)[rownames(heatmap_genes),]
+knitr::kable(data_to_plot)
+
+# Annotate with Gene Names
+# Replaces Ensembl gene IDs in data_to_plot with more interpretable gene symbols from the gene_symbols mapping.
+rownames(data_to_plot) <- gene_symbols[rownames(data_to_plot)]
+
+# Check how does the data look like
+knitr::kable(data_to_plot)
+
+# Generate the Heatmap
+pheatmap(data_to_plot, cluster_rows=FALSE, show_rownames=TRUE,
+         cluster_cols=FALSE,show_colnames = FALSE, annotation_col=metadata)
+
+```
+
+#### Visualizing Expression Of A Single Gene (ZEB1) Across Time Points
+
+This code snippet creates a combined boxplot and jitter plot to visualize the expression of the gene ZEB1 across different time points. This type of plot is useful for comparing gene expression levels between groups and assessing variability within each group.
+
+```{r,fig.width=4,fig.height=7}
+# Extract ENSG code of ZEB1
+ZEB1_ENSG <- rownames(res[which(res$gene_name == 'ZEB1'),])
+ZEB1_ENSG
+
+# Get expresion value for ZEB1 ENSG code
+# Retrieves normalized expression values for the ZEB1 gene from the variance-stabilized dataset (vsd).
+# The assay(vsd) function extracts the underlying expression matrix, and [ZEB1_ENSG, ] selects the row corresponding to ZEB1.
+zeb1_expression <- assay(vsd)[ZEB1_ENSG,]
+knitr::kable(zeb1_expression)
+
+# Combine ZEB1 Expression with sample metadata - make sure the order of samples is the same 
+zeb1_expression <- cbind(metadata,zeb1_expression)
+knitr::kable(zeb1_expression)
+
+# Plot the expression using boxplot, use timepoint as variable for x axis
+ggplot(data=zeb1_expression) + 
+  geom_boxplot(aes(x=timepoint,y=zeb1_expression,fill=timepoint),alpha=0.2) + 
+  geom_jitter(aes(x=timepoint,y=zeb1_expression,col=timepoint),size=2) + 
+  theme_bw()
+```
+
+
+
+
+## Step 11. Independent tasks for students
+
+Perform the following analysis independently
+
+ 1.Perform differential gene expression analysis between timepoints D20 and D0. Plot volcano plot and export differential gene expression table as csv file. 
+
+ 2.Reproduce three of the boxplots in figure 2a of the [paper](https://www.sciencedirect.com/science/article/pii/S2589004222015516) 
+
+ 3.Reproduce the heatmap in figure 2c of the [paper](https://www.sciencedirect.com/science/article/pii/S2589004222015516)
+
+ 4.Bonus task (Advanced): Focused analysis of genes related to a specific biological process or pathway
+ 
+ - Choose one GO term enriched in analysis of D13 vs D0 (for example: GO:0021953  Central nervous system neuron differentiation). 
+ - Extract the list of genes associated with the GO term from org.Hs.eg.db database or another resource 
+ - Extract these genes from the count matrix and visualize their expression across time points using a heatmap.
+ - Extract a list of the top 5 upregulated and downregulated genes in this subset.
+ - Write a short explanation of the trends observed.
+
+ 
+
+Note: For detail explanation of DESeq2 workflow refer to the full DESeq2 [vignette](https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html)
+
