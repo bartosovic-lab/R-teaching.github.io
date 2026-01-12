@@ -1,0 +1,103 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+## Part 3 - Independent project work
+
+### Analysis of bulk or single-cell RNA-seq data. 
+
+#### Choose one of the following datasets and perform bulk or single-cell RNA-seq data analysis. Perform analysis using DESeq2 (bulk) or Seurat (single-cell). The results of analysis should include:
+
+------------------- 
+
+#### Bulk 
+
+ - volcano plot
+ - PCA plot
+ - MA plot
+ - List of DE genes between two samples/conditions exported as .csv file
+ - Heatmap visualisation of top 50 upregulated and 50 downregulated genes
+ - GO terms analysis of upregulated genes in one of the conditions (you choose)
+ 
+
+#### Single-cell
+
+ - QC plots with number of genes pre cell, reads per cell and percentage of mitochondrial reads
+ - Dimensionality reduction and clustering analysis - UMAP plot with colored clusters
+ - List of  markers for all clusters exported in csv format
+ - Heatmap of gene expression for top10 markers of each cluster identified. 
+ - Feature plot (on UMAP) and violin plot of expression of 2 marker genes for each cluster
+ - GO terms analysis of cluster-specific markers (single-cell) for two clusters
+
+
+----------------------------
+
+
+## Datasets to choose from 
+
+#### [transcriptional landscapes during cerebral cortex development in a microcephaly mouse model](https://www.sciencedirect.com/science/article/abs/pii/S1673852723002230)
+
+There is bulk RNA-seq of E17.5 and P4 mouse cortex. Perform differential gene expression in cortex between E17.5 and P4
+
+Use function read.table() to laod the data from the GSE215228_rowCount_for_all_samples.tsv.gz	file
+
+[Link to GEO](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE215228)
+
+![](GEO_bulk1.png)
+
+#### [Atlas of the aging mouse brain reveals white matter as vulnerable foci (Bulk RNA-seq)](https://www.sciencedirect.com/science/article/pii/S009286742300805X)
+ 
+There is 847 RNA-seq samples across 8 brain regions and multiple time points. Choose 2 regions and 2 time points and perform the analysis. Include replicates in the analysis. 
+ 
+Recommended is to comparisons  are e.g. DGE of Motor cortex and Cerebellum or comparisons between two time points -3months and 21 months. Choose one comparison that you find interesting. 
+ 
+[link to GEO](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE212336)
+ 
+Load the data using base function read.table with parameter header=1.
+ 
+Subselect the matrix containing GE data for all experiments for the regions and timepoints you wish to analyze. 
+ 
+![](GEO_bulk2.png)
+
+---------------------
+
+#### [Human prefrontal cortex gene regulatory dynamics from gestation to adulthood at single-cell resolution (single-cell RNA-seq)](https://www.sciencedirect.com/science/article/pii/S0092867422012582)
+ 
+Single-cell RNA-seq analysis of human cortex across multiple time points. Choose 3 different timepoints and download processed data from GEO database
+ 
+[link to GEO](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE168408)
+
+I recommend downloaded these 3 timepoints:
+ 
+ - [gestation week 22 snRNA-seq](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM5138509)
+ - [gestation week 34 snRNA-seq](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM5138513)
+ - [1 month old snRNA-seq](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM5138514)
+ 
+Download the snRNAseq_filtered_feature_bc_matrix.h5.gz file for each entry, unzip it.
+ 
+For loading into R use function Read10X_h5 from the Seurat package. 
+
+![](single_cell_1a.png)
+
+![](single_cell_1b.png)
+
+![](single_cell_1c.png)
+ 
+------------------------- 
+ 
+#### [scRNA-seq analysis of Sox10-CRE/GFP positive cells from adolescent mouse brain (single-cell RNA-seq)](https://www.nature.com/articles/s41587-021-00869-9)
+
+scRNA-seq analysis of Sox10+ cells from P21 mouse brain. The cell populations should include astrocytes, oligodendrocytes, and vascular cells
+
+ - [replicate 1 scRNA-seq](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM4979874)
+ - [replicate 2 scRNA-seq](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM4979875) 
+ 
+![](single_cell_2a.png)
+![](single_cell_2b.png)
+ 
+ 
+ 
+
