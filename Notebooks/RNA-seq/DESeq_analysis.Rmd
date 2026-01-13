@@ -356,6 +356,13 @@ The DESeqDataSetFromMatrix() function constructs a DESeq2 dataset using:
 ![DESeq2 object](images/DESeq2_object.png)
 
 ```{r}
+# Load the DESeq2 library
+# Install it first if not already available
+# Uncomment the two lines below to install DESeq2:
+# install.packages('BiocManager')
+# BiocManager::install("DESeq2")
+
+
 # Create the DESeq2 dataset
 dds <- DESeqDataSetFromMatrix(countData = combined_counts,  # Raw count matrix
                               colData = coldata,            # Experimental metadata
