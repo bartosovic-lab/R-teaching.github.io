@@ -215,7 +215,7 @@ dim(combined_counts)
 
 # Deliberate mistakes are present below — fix them.
 
-all_files <- list.files("data/GSE192855_RAW/",pattern = "*count.txt.gz",full.names = TRUE) # <- (hint: is the pattern correct?)
+all_files <- list.files("data/GSE192855_RAW/",pattern = "*counts.txt.gz",full.names = TRUE) # <- (hint: is the pattern correct?)
 
 # Peek into all_files
 all_files
@@ -227,7 +227,7 @@ counts_list <- list()
 for (file in all_files){                                                                              
   counts_table               <- read.table(file=file,header=TRUE)                                    
   counts_list[[file]]        <- counts_table[,_] # This extracts vector of counts                     # <- TODO: fill in column number
-  names(counts_list[[file]) <- counts_table[,_]  # This extracts gene ids                             # <- TODO: fill in column number
+  names(counts_list[[file]]) <- counts_table[,_]  # This extracts gene ids                             # <- TODO: fill in column number
 }
 
 # Quick peek
