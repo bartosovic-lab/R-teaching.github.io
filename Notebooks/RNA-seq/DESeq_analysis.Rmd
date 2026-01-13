@@ -103,7 +103,7 @@ install.packages('pheatmap')
 # Load a single count file
 # NOTE: you likely need to change path and/or filename
 
-D0_rep1_table <- read.table(file='data/GSE192855_RAW/GSM5766873_1-sc1-D0-ctrl-A.counts.txt.gz', header=TRUE)
+D0_rep1_table <- read.table(file='../../../data/GSE192855_RAW/GSM5766873_1-sc1-D0-ctrl-A.counts.txt.gz', header=TRUE)
 
 head(D0_rep1_table)
 ```
@@ -151,7 +151,7 @@ Now we need to repeat this process of data import for all 19 files. It is possib
 
 ```{r, eval=FALSE}
 # Example 
-D0_rep2_table         <- read.table(file='data/GSE192855_RAW/GSM5766874_2-sc1-D0-ctrl-B.counts.txt.gz', header=TRUE)
+D0_rep2_table         <- read.table(file='../../../data/GSE192855_RAW/GSM5766874_2-sc1-D0-ctrl-B.counts.txt.gz', header=TRUE)
 
 # TODO fill in the correct columns of counts and gene ids
 D0_rep2_counts        <- D0_rep2_table[,_] # This extracts vector of counts
@@ -182,7 +182,7 @@ print(head(combined_counts))
 ## Alternative Step 3b: Load all the data using loop (alternative to loading one by one)
 
 ```{r,include=FALSE}
-all_files <- list.files('data/GSE192855_RAW/',pattern = "*counts.txt.gz",full.names = TRUE)
+all_files <- list.files('../../../data/GSE192855_RAW/',pattern = "*counts.txt.gz",full.names = TRUE)
 all_files
 
 counts_list <- list()
@@ -353,6 +353,7 @@ The DESeqDataSetFromMatrix() function constructs a DESeq2 dataset using:
  - In this case, we use ~ timepoint, meaning we want to model the effect of timepoint on gene expression.
 
 
+![DESeq2 object](images/DESeq2_object.png)
 
 ```{r}
 # Create the DESeq2 dataset
