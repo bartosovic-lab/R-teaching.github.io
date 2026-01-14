@@ -289,7 +289,7 @@ sample_id
 # TODO 2: set rownames(coldata) to the sample IDs
 
 timepoint <- ___                                       # TODO: Create timepoint vector e.g. c("D0","D1","D2","D3) of length 19 that matches the sample id
-coldata <- data.frame(timepoint = factor(timepoint))   # Create metadata dataframe
+coldata <- data.frame(timepoint = factor(timepoint,levels = unique(timepoint)))   # Create metadata dataframe
 rownames(coldata) <- ___                               # TODO: Set rownames to sample_id
 
 # Check
@@ -298,13 +298,12 @@ table(coldata$timepoint)
 ```
 
 ```{r,include=FALSE}
-coldata <- data.frame(
-            #name = colnames(combined_counts),
-            timepoint = as.factor(c('D0','D0','D0','D0','D0',
-                                    'D7','D7','D7','D7','D7','D7',
-                                    'D13','D13','D13','D13',
-                                    'D20','D20','D20','D20')))
+timepoint <- c('D0','D0','D0','D0','D0',
+               'D7','D7','D7','D7','D7','D7',
+               'D13','D13','D13','D13',
+               'D20','D20','D20','D20')
 
+coldata <- data.frame(timepoint = factor(timepoint,levels=unique(timepoint)))
 rownames(coldata) <- colnames(combined_counts)
 ```
 
@@ -1006,6 +1005,8 @@ pheatmap(data_to_plot, cluster_rows=FALSE, show_rownames=TRUE,
 
 This code snippet creates a combined boxplot and jitter plot to visualize the expression of the gene ZEB1 across different time points. This type of plot is useful for comparing gene expression levels between groups and assessing variability within each group.
 
+For easier interpretatin of boxplot, normalized counts rather than vsd is used - normalized counts can be extracted from dds object using counts(dds,normalized=TRUE)
+
 ```{r,fig.width=4,fig.height=7,eval=FALSE}
 # Extract ENSG code of ZEB1
 ZEB1_ENSG <- rownames(res[which(res$gene_name == 'ZEB1'),])         # ENSG00000148516
@@ -1029,15 +1030,15 @@ ggplot(data=___) +                              # zeb1_expression
 ```
 
 
-```{r,fig.width=4,fig.height=7,include=FALSE}
+```{r,fig.width=4,fig.height=5,include=FALSE}
 # Extract ENSG code of ZEB1
 ZEB1_ENSG <- rownames(res[which(res$gene_name == 'ZEB1'),])         # ENSG00000148516
 ZEB1_ENSG
 
 # Get expresion value for ZEB1 ENSG code
-# Retrieves normalized expression values for the ZEB1 gene from the variance-stabilized dataset (vsd).
-# The assay(vsd) function extracts the underlying expression matrix, and [ZEB1_ENSG, ] selects the row corresponding to ZEB1.
-zeb1_expression <- assay(vsd)[ZEB1_ENSG,] 
+# Retrieves normalized count values for the ZEB1 gene from the counts(dds,normalized=TRUE) function
+# The counts(dds,normalized=TRUE) function extracts the underlying normalized counts matrix from dds object, and [ZEB1_ENSG, ] selects the row corresponding to ZEB1.
+zeb1_expression <- counts(dds,normalized=TRUE)[ZEB1_ENSG,] 
 print(zeb1_expression)
 
 # Combine ZEB1 Expression with sample metadata - make sure the order of samples is the same 
@@ -1058,26 +1059,26 @@ print(p1)
 
 Perform the following analysis independently
 
- 1.Perform differential gene expression analysis between timepoints D20 and D0. Plot volcano plot (shrunk LFC on x axis and adjusted p-value on y axis) and export differential gene expression table as csv file.
+1.Perform differential gene expression analysis between timepoints D20 and D0. Plot volcano plot (Log2FoldChange on x axis and adjusted p-value on y axis) and export differential gene expression table as csv file.
 
- 2.Reproduce three of the boxplots in figure 2a of the [paper](https://www.sciencedirect.com/science/article/pii/S2589004222015516). Use vsd - variance stabilized data (output of vst function).
+2.Reproduce three of the boxplots in figure 2a of the [paper](https://www.sciencedirect.com/science/article/pii/S2589004222015516). Use normalised counts (output of function counts(dds,normalized=TRUE)).
 
- 3.Reproduce the heatmap in figure 2c of the [paper](https://www.sciencedirect.com/science/article/pii/S2589004222015516). Use vsd - variance stabilized data (output of vst function).
+3.Reproduce the heatmap in figure 2c of the [paper](https://www.sciencedirect.com/science/article/pii/S2589004222015516). Use vsd - variance stabilized data (output of vst function).
 
- 4. Focused analysis of genes related to a specific biological process or pathway
+4.Focused analysis of genes related to a specific biological process or pathway
+
+- Choose one GO term enriched in analysis of D13 vs D0 (for example: GO:0021953  Central nervous system neuron differentiation). 
+- Extract the list of genes associated with the GO term from org.Hs.eg.db database or another resource 
+- Extract these genes from the count matrix and visualize their expression across time points using a heatmap.
+- Extract a list of the top 5 upregulated and downregulated genes in this subset.
+- Write a short explanation of the trends observed.
  
- - Choose one GO term enriched in analysis of D13 vs D0 (for example: GO:0021953  Central nervous system neuron differentiation). 
- - Extract the list of genes associated with the GO term from org.Hs.eg.db database or another resource 
- - Extract these genes from the count matrix and visualize their expression across time points using a heatmap.
- - Extract a list of the top 5 upregulated and downregulated genes in this subset.
- - Write a short explanation of the trends observed.
+5.Sample reproducibility QC (correlation + distance heatmaps). In addition to PCA, reproducibility can be assessed using sample–sample correlation and distance.
  
- 5. Sample reproducibility QC (correlation + distance heatmaps). In addition to PCA, reproducibility can be assessed using sample–sample correlation and distance.
- - Correlation: Use variance-stabilized data (vsd <- vst(dds)), compute the sample–sample Pearson correlation matrix with cor() (samples as columns), and visualize it as a heatmap.
- - Euclidean distance: Using the same assay(vsd) matrix, compute Euclidean distances between samples (e.g., dist(t(assay(vsd))),method='euclidean') and visualize as a heatmap.
- - Do samples cluster by timepoint? Any potential outlier? Are the results consistent with PCA analysis ? 
-
- 
+- Correlation: Use variance-stabilized data (vsd <- vst(dds)), compute the sample–sample Pearson correlation matrix with cor() (samples as columns), and visualize it as a heatmap.
+- Euclidean distance: Using the same assay(vsd) matrix, compute Euclidean distances between samples (e.g., dist(t(assay(vsd))),method='euclidean') and visualize as a heatmap.
+- Do samples cluster by timepoint? Any potential outlier? Are the results consistent with PCA analysis ? 
 
 Note: For detail explanation of DESeq2 workflow refer to the full DESeq2 [vignette](https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html)
+
 
