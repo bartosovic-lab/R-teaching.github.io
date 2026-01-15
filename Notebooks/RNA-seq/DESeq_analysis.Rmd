@@ -1063,14 +1063,14 @@ Perform the following analysis independently
 
 2.Reproduce three of the boxplots in figure 2a of the [paper](https://www.sciencedirect.com/science/article/pii/S2589004222015516). Use normalised counts (output of function counts(dds,normalized=TRUE)).
 
-3.Reproduce the heatmap in figure 2c of the [paper](https://www.sciencedirect.com/science/article/pii/S2589004222015516). Use vsd - variance stabilized data (output of vst function).
+3.Reproduce the heatmap in figure 2c of the [paper](https://www.sciencedirect.com/science/article/pii/S2589004222015516). Use vsd - variance stabilized data (output of vst function) and plot both up- and down- regulated genes. 
 
 4.Focused analysis of genes related to a specific biological process or pathway
 
 - Choose one GO term enriched in analysis of D13 vs D0 (for example: GO:0021953  Central nervous system neuron differentiation). 
 - Extract the list of genes associated with the GO term from org.Hs.eg.db database or another resource 
-- Extract these genes from the count matrix and visualize their expression across time points using a heatmap.
-- Extract a list of the top 5 upregulated and downregulated genes in this subset.
+- Extract these expression values of these genes from vsd matrix and visualize their expression across time points using a heatmap. If a gene from GO term is missing in the count matrix and you get error, remove that gene from the heatmap. 
+- Extract a list of the top 5 upregulated and downregulated genes in this subset, and print their expression. Use heatmap to visualize the expression of these genes. 
 - Write a short explanation of the trends observed.
  
 5.Sample reproducibility QC (correlation + distance heatmaps). In addition to PCA, reproducibility can be assessed using sample–sample correlation and distance.
