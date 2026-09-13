@@ -42,7 +42,7 @@ Our first question is: **How large is the difference in average MMSE score betwe
 
 For this exercise, assume each entry comes from a different person. If the same people were measured twice, we would need their pairing information and a different analysis. A normality test cannot tell us whether observations are independent. Equal vector lengths do not establish pairing.
 
-**Exercise 1:** Write the outcome, the two groups, the observation unit, and the quantity we want to estimate. Can a difference between these groups establish that a treatment works?
+**Exercise 1:** Which measurement are we comparing, and between which two groups? What does one value represent? Write the difference we want to estimate and its units. Can a difference between these groups establish that a treatment works?
 
 **Your answer:**
 
@@ -243,7 +243,7 @@ Use your neurite assumption table to assess whether Welch's mean comparison is r
 
 ## 8. Scatterplots and correlation — fifteen minutes
 
-We will work through one example together before tomorrow's independent analysis. Here we use the larger dataset with **one first visit per participant**. Its provenance and variables are described in the [data dictionary](../data/dictionary.html).
+We will work through one example together before tomorrow's independent analysis. Here we use the larger dataset with **one first visit per participant**. Where it comes from and what its columns mean are described in the [data dictionary](../data/dictionary.html).
 
 ```{r correlation-demo}
 mmse <- read.csv("data/mmse_baseline.csv")
@@ -258,7 +258,7 @@ Each point contains **two measurements from the same participant**. This is appr
 
 **Predict:** Is the association positive, negative, or unclear? Is it approximately linear? What does the score limit do to the plot?
 
-**Pearson's r** describes a linear association using the measured values. **Spearman's rho** describes a monotonic association using ranks: does one variable tend to increase as the other increases or decreases? Both coefficients run from −1 to +1; a value near zero does not rule out every nonlinear relationship. A coefficient describes association, not causation. Pearson's usual inferential procedure has distributional assumptions beyond merely being able to calculate r.
+**Pearson's r** describes a linear association using the measured values. **Spearman's rho** describes a monotonic association using ranks: does one variable tend to increase as the other increases or decreases? Both coefficients run from −1 to +1; a value near zero does not rule out every nonlinear relationship. A coefficient describes association, not causation. Calculating Pearson's r is not the same as checking whether its usual p-value and confidence interval are reliable; those also depend on the independence and joint distribution of the measurements.
 
 ```{r spearman-demo}
 correlation <- cor.test(pair_data$Age, pair_data$MMSE,
@@ -268,7 +268,7 @@ correlation
 
 We use an approximate Spearman p-value because these data contain ties. We are asking about monotonic association in a bounded score; we did not choose the method using a Shapiro cutoff. Base R's `cor.test()` does not provide a confidence interval for Spearman's rho; do not invent one.
 
-**Exercise 8:** Report the coefficient, direction, number of complete observations, and p-value. Does this cross-sectional association establish how an individual's score will change as they age? Why might group membership matter?
+**Exercise 8:** Report the coefficient, direction, number of participants with both measurements available, and p-value. We have one visit per person. Can this comparison between people tell us how one person's score will change as they age? Why might group membership matter?
 
 **Your answer:**
 
@@ -318,7 +318,7 @@ data.frame(
   bonferroni_p = p.adjust(neurite_p, method = "bonferroni"))
 ```
 
-Which condition has the larger estimated mean difference? Does it also have the smaller p-value? Use the SDs and sample sizes to explain why effect magnitude alone does not determine a p-value. Describe one concern about inference for condition 2. Tomorrow's worked example explains the adjustment in more detail; it accounts for two opportunities to find evidence, without changing the observed differences.
+Which condition has the larger estimated mean difference? Does it also have the smaller p-value? Use the SDs and sample sizes to explain why the size of the mean difference alone does not determine a p-value. Describe one reason to be cautious about using this sample to draw conclusions about condition 2 more generally. Tomorrow's worked example explains the adjustment in more detail; it accounts for two opportunities to find evidence, without changing the observed differences.
 
 **Your explanation:**
 

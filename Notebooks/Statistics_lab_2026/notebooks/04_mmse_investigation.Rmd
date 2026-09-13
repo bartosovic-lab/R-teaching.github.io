@@ -52,7 +52,7 @@ knitr::opts_chunk$set(echo = TRUE, error = FALSE, fig.width = 7, fig.height = 4.
 
 Imagine three planned treatment-versus-control comparisons in one experiment. These three questions form a **family of tests**. The p-values below are made up for this arithmetic example; they are not results from our dementia dataset.
 
-If we try many tests and report only the smallest p-value, we hide the number of opportunities to find an apparently unusual result. Bonferroni adjustment accounts for the size of a stated family: multiply each p-value by the number of tests and cap the result at 1.
+If we try many tests and report only the smallest p-value, we hide the number of opportunities to find an apparently unusual result. Bonferroni adjustment accounts for how many tests we are considering together: multiply each p-value by the number of tests and cap the result at 1.
 
 ```{r bonferroni-example}
 p_values <- c(Treatment_A = 0.01, Treatment_B = 0.03, Treatment_C = 0.20)
@@ -63,14 +63,14 @@ data.frame(comparison = names(p_values), raw_p = p_values,
 
 **Discuss, then answer:**
 
-1. Which tests belong to this family? Why is the multiplier three?
+1. Which three comparisons are we considering together? Why do we multiply each p-value by three?
 2. Which values are below 0.05 before and after adjustment?
 3. Did the estimated treatment effects change, or did our criterion for evidence change?
 4. Why would reporting only Treatment A's unadjusted p-value be incomplete?
 
 **Your explanation:**
 
-For your own investigation, declare two questions below and report both results, whether significant or not. Treat them as exploratory. This separate demonstration does not remove multiplicity from your own work; acknowledge that limitation. Do not keep changing variables or methods until a small p-value appears. An optional two-test adjustment is provided at the end if you want to support a joint claim about finding an effect in either analysis.
+For your own investigation, write down two questions below and report both results, whether significant or not. You are exploring possible patterns, rather than confirming a discovery. Running two tests gives more opportunities for a small p-value than running one; mention this when discussing your results. Do not keep changing variables or methods until a small p-value appears. The optional adjustment at the end shows how to account for both tests when claiming that at least one has found a difference or relationship.
 
 ## 2. What are these data?
 
@@ -166,20 +166,20 @@ Use `hist(mmse$Age, breaks = 8, xlab = "Age (years)", main = "Participant ages")
 
 ## 3. Plan two questions before looking at test results
 
-Our main group comparison is **MMSE between Demented and Nondemented participants**. Decide whether your primary question concerns means or a rank-based comparison. You may propose another group outcome, such as age, to the instructor, but the supplied templates below use MMSE.
+Our main group comparison is **MMSE between Demented and Nondemented participants**. What do you want to learn: **how much the average MMSE score differs between the groups**, or **whether scores tend to be higher in one group**? The first question compares means; the second uses the ordering of scores, called ranks. Start with the question you want to answer, then use the plots and checks below to justify your test. You may propose comparing another measurement, such as age, to the instructor, but the supplied templates below use MMSE.
 
 Choose **one** association: age with MMSE, **or** nWBV with MMSE. Choosing an association because its plot is relevant to your question is different from testing many associations and retaining only a significant one.
 
 ### Task B — write your plan
 
-- **Group question and target quantity:**
-- **One correlation question:**
+- **Which groups are you comparing, and what difference do you want to estimate?** For example: “Do Demented and Nondemented participants differ in average MMSE score? I will estimate Demented minus Nondemented in MMSE points.” Write your own question here:
+- **Which two measurements will you compare, and what relationship do you want to investigate?** Choose age and MMSE, or nWBV and MMSE:
 - **What I expect, and why:**
-- **What makes the observations independent in this version:**
-- **Which variables must be observed for each analysis:**
-- **Which plots and assumptions I will inspect before choosing the method:**
+- **What does one row represent? Does any person appear more than once? Why does this matter for your analysis?**
+- **Which values does a participant need for each analysis?** For example, can you include someone in the age–MMSE correlation if their age is missing?
+- **Which plots will you make, and what will you check before choosing a test?** Think about the shape and spread of each group, extreme values, and whether measurements come from different people:
 
-Show the plan to the instructor. You can revise a provisional method after inspecting the assumptions; record the reason. Use the break after completing the plan.
+Show the plan to the instructor. You can change your initial choice of test after checking the data; explain why you changed it. Use the break after completing the plan.
 
 ## 4. Group comparison
 
@@ -241,13 +241,13 @@ shapiro.test(nondemented)
 shapiro.test(demented)
 ```
 
-**Your assumption assessment:** Describe the graphs, the Shapiro results, and the limitations of a normal approximation for these scores. Why is the Shapiro p-value insufficient to select a test by itself?
+**What do your checks tell you?** Describe the shape of each group in the graphs and what its Shapiro result suggests. Do the score limit, repeated values, or extreme values make a normal distribution a questionable approximation? Explain why the Shapiro p-value alone cannot choose the test for you.
 
-### Task E — choose and justify one primary method
+### Task E — choose your main test and explain why
 
-Return to your question. Welch estimates a difference in means. Wilcoxon rank-sum uses ranks; it does not generally test a median difference without additional shape assumptions. Both require appropriate independent observations. Recall the side-by-side comparison from day 1.
+Return to your question. Welch estimates a difference in means. Wilcoxon rank-sum uses ranks; it does not generally test a median difference without additional shape assumptions. Both require measurements from separate, independent participants; repeated visits from the same person would need a different approach. Recall the side-by-side comparison from day 1.
 
-**My primary method and justification, written before running the test:**
+**Which test will I use, and why does it fit my question and these data? Write this before running the test:**
 
 Enter either `"welch"` or `"wilcoxon"` between the empty quotes below. The supplied code runs only that method. You do not need to learn `if` statements today; they select the appropriate supplied command.
 
@@ -296,11 +296,11 @@ if (correlation_variable %in% c("Age", "nWBV")) {
 
 `mmse[[correlation_variable]]` selects the column whose name is stored in that object. For example, when the name is `"Age"`, it selects the same values as `mmse$Age`. `%in%` checks whether your choice is one of the two allowed names.
 
-**Your description:** State the direction, form, clustering, any influential observations, and sample size. Explain why this plot helps you choose between a linear and a monotonic association question.
+**Describe your scatterplot:** As one measurement increases, does the other tend to increase, decrease, or show no clear pattern? Does the pattern look roughly straight or curved? Are there clusters or isolated points that might strongly affect the result? How many participants are shown?
 
 ### Task H — select a correlation method
 
-Use `"pearson"` for a linear-association question or `"spearman"` for a rank-based monotonic-association question. Consider the plot and score scale. A separate Shapiro test of each variable is not a required gate for correlation.
+Use `"pearson"` to ask how closely the two measurements follow a straight-line pattern (**linear association**). Use `"spearman"` to ask whether higher values of one measurement tend to go with higher or lower values of the other, using their ranks. This trend can be curved, but should keep the same overall direction (**monotonic association**). Explain your choice using the plot, your question, and the MMSE score scale. Do not choose solely from separate Shapiro tests of the two variables.
 
 **My choice and reason, before running the test:**
 
@@ -315,15 +315,15 @@ if (correlation_variable %in% c("Age", "nWBV") &&
 }
 ```
 
-For Spearman we specify an approximate p-value because the observations contain ties. Pearson's usual p-value and interval rely on its inferential assumptions; the ability to calculate r does not establish those assumptions. Base R does not return a Spearman confidence interval.
+For Spearman we request an approximate p-value because some participants have the same values (called ties). For Pearson, the usual p-value and confidence interval assume independent pairs of measurements and an appropriate model for their joint distribution. A clear curve or a few extreme points should make you question this analysis; R returning a number does not settle whether the method fits. Base R does not return a Spearman confidence interval.
 
-**Your result:** Report the coefficient, direction, sample size, p-value, and limitation. Include the confidence interval if using Pearson. Explain why a coefficient near zero would not rule out every possible relationship.
+**Your result:** Give the correlation value (r or rho), say whether the relationship is positive or negative, and report the number of participants and p-value. Explain one thing the result cannot tell us. Include the confidence interval if using Pearson. Explain why a coefficient near zero would not rule out every possible relationship.
 
 ## 6. Challenge one conclusion — ten minutes
 
 Choose one of these questions. You do not need another statistical test.
 
-1. Does colouring your chosen scatterplot by group change your interpretation of the pooled association?
+1. Does colouring your chosen scatterplot by group change your interpretation of the relationship seen when both groups are shown together?
 2. How does the ceiling of the MMSE scale affect your group plot and summaries?
 3. Why would using all 336 visits as independent people be inappropriate?
 
@@ -357,10 +357,10 @@ Check that suggested code uses the intended variables, groups, and sample sizes.
 
 You have 35 minutes to finish explanations and 20 minutes to rerun, check, and discuss. Use the work already written beside each output.
 
-- [ ] I described the data, observation unit, groups, and missing values.
+- [ ] I explained what each row represents, which groups are included, and which values are missing.
 - [ ] I completed the age, M/F, SES, and age-selection overview with plots and explanations.
 - [ ] I stated one comparison and one correlation question before testing.
-- [ ] I described the distributions and justified the primary group test.
+- [ ] I described the plots and explained why I chose my main group test.
 - [ ] I reported results with sample sizes, relevant estimates, and limitations.
 - [ ] I included a scatterplot and explained the correlation.
 - [ ] I answered the separate multiple-testing questions.
@@ -404,7 +404,7 @@ Choose **EDUC or nWBV**. Before running anything, use the dictionary to state it
 
 ## Extra: adjustment for your two planned tests
 
-This is optional. If you make a joint claim of finding an association in either of your two analyses, account for that family rather than ignoring it. After completing both analyses, copy this chunk into your notebook and run it. It does not justify running extra tests until you obtain significance.
+This is optional. If your conclusion is “at least one of my two tests found a difference or relationship”, account for the fact that you had two opportunities to obtain a small p-value. After completing both analyses, copy this chunk into your notebook and run it. It does not justify running extra tests until you obtain significance.
 
 ```{r optional-adjustment, eval=FALSE}
 my_p_values <- c(group = group_result$p.value, correlation = correlation_result$p.value)

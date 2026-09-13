@@ -39,11 +39,11 @@ These are reference examples, not an additional exercise. Replace the example ob
 | Shapiro–Wilk | `shapiro.test(scores)` |
 | Independent mean comparison | `result <- t.test(group1, group2)`; default is Welch |
 | Independent rank-sum comparison | `result <- wilcox.test(group1, group2, exact = FALSE)` |
-| Correlation with inference | `cor.test(x, y, method = "spearman", exact = FALSE)` |
-| Adjust a stated family | `p.adjust(p_values, method = "bonferroni")` |
+| Correlation value and a p-value | `cor.test(x, y, method = "spearman", exact = FALSE)` |
+| Adjust p-values for tests considered together | `p.adjust(p_values, method = "bonferroni")` |
 | Read a result | `result` first, then for example `result$p.value` |
 | Function help | `?t.test` in the Console |
 
 `<-` assigns; `==` compares. Text and file paths need quotes; object names do not. Capitals matter. If your Console shows `+`, check for an unclosed bracket or quote; Esc cancels an unfinished command.
 
-Before a test, state the question, observation unit, variables, and assumptions. After a test, report the relevant estimate, sample size, uncertainty where available, and limitations. A command running successfully does not establish that the analysis is appropriate.
+Before a test, explain your question, what one row represents, which measurements you are using, and what you checked about the data. After a test, give the size and direction of the difference or relationship, the number of observations, a confidence interval when available, and what the result cannot establish. A command running successfully does not establish that the analysis is appropriate.

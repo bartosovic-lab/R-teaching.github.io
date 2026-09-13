@@ -484,11 +484,11 @@ Welch</td>
 <td><code>result &lt;- wilcox.test(group1, group2, exact = FALSE)</code></td>
 </tr>
 <tr class="even">
-<td>Correlation with inference</td>
+<td>Correlation value and a p-value</td>
 <td><code>cor.test(x, y, method = &quot;spearman&quot;, exact = FALSE)</code></td>
 </tr>
 <tr class="odd">
-<td>Adjust a stated family</td>
+<td>Adjust p-values for tests considered together</td>
 <td><code>p.adjust(p_values, method = &quot;bonferroni&quot;)</code></td>
 </tr>
 <tr class="even">
@@ -506,10 +506,12 @@ Welch</td>
 paths need quotes; object names do not. Capitals matter. If your Console
 shows <code>+</code>, check for an unclosed bracket or quote; Esc
 cancels an unfinished command.</p>
-<p>Before a test, state the question, observation unit, variables, and
-assumptions. After a test, report the relevant estimate, sample size,
-uncertainty where available, and limitations. A command running
-successfully does not establish that the analysis is appropriate.</p>
+<p>Before a test, explain your question, what one row represents, which
+measurements you are using, and what you checked about the data. After a
+test, give the size and direction of the difference or relationship, the
+number of observations, a confidence interval when available, and what
+the result cannot establish. A command running successfully does not
+establish that the analysis is appropriate.</p>
 
 
 

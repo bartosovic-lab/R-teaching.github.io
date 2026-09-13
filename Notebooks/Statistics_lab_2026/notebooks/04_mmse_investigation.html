@@ -562,8 +562,9 @@ tests</strong>. The p-values below are made up for this arithmetic
 example; they are not results from our dementia dataset.</p>
 <p>If we try many tests and report only the smallest p-value, we hide
 the number of opportunities to find an apparently unusual result.
-Bonferroni adjustment accounts for the size of a stated family: multiply
-each p-value by the number of tests and cap the result at 1.</p>
+Bonferroni adjustment accounts for how many tests we are considering
+together: multiply each p-value by the number of tests and cap the
+result at 1.</p>
 <pre class="r"><code>p_values &lt;- c(Treatment_A = 0.01, Treatment_B = 0.03, Treatment_C = 0.20)
 adjusted &lt;- p.adjust(p_values, method = &quot;bonferroni&quot;)
 data.frame(comparison = names(p_values), raw_p = p_values,
@@ -574,7 +575,8 @@ data.frame(comparison = names(p_values), raw_p = p_values,
 ## Treatment_C Treatment_C  0.20         0.60</code></pre>
 <p><strong>Discuss, then answer:</strong></p>
 <ol style="list-style-type: decimal">
-<li>Which tests belong to this family? Why is the multiplier three?</li>
+<li>Which three comparisons are we considering together? Why do we
+multiply each p-value by three?</li>
 <li>Which values are below 0.05 before and after adjustment?</li>
 <li>Did the estimated treatment effects change, or did our criterion for
 evidence change?</li>
@@ -582,13 +584,14 @@ evidence change?</li>
 incomplete?</li>
 </ol>
 <p><strong>Your explanation:</strong></p>
-<p>For your own investigation, declare two questions below and report
-both results, whether significant or not. Treat them as exploratory.
-This separate demonstration does not remove multiplicity from your own
-work; acknowledge that limitation. Do not keep changing variables or
-methods until a small p-value appears. An optional two-test adjustment
-is provided at the end if you want to support a joint claim about
-finding an effect in either analysis.</p>
+<p>For your own investigation, write down two questions below and report
+both results, whether significant or not. You are exploring possible
+patterns, rather than confirming a discovery. Running two tests gives
+more opportunities for a small p-value than running one; mention this
+when discussing your results. Do not keep changing variables or methods
+until a small p-value appears. The optional adjustment at the end shows
+how to account for both tests when claiming that at least one has found
+a difference or relationship.</p>
 </div>
 <div id="what-are-these-data" class="section level2">
 <h2>2. What are these data?</h2>
@@ -784,10 +787,14 @@ explicit missingness check in the selection.</p>
 <div id="plan-two-questions-before-looking-at-test-results" class="section level2">
 <h2>3. Plan two questions before looking at test results</h2>
 <p>Our main group comparison is <strong>MMSE between Demented and
-Nondemented participants</strong>. Decide whether your primary question
-concerns means or a rank-based comparison. You may propose another group
-outcome, such as age, to the instructor, but the supplied templates
-below use MMSE.</p>
+Nondemented participants</strong>. What do you want to learn:
+<strong>how much the average MMSE score differs between the
+groups</strong>, or <strong>whether scores tend to be higher in one
+group</strong>? The first question compares means; the second uses the
+ordering of scores, called ranks. Start with the question you want to
+answer, then use the plots and checks below to justify your test. You
+may propose comparing another measurement, such as age, to the
+instructor, but the supplied templates below use MMSE.</p>
 <p>Choose <strong>one</strong> association: age with MMSE,
 <strong>or</strong> nWBV with MMSE. Choosing an association because its
 plot is relevant to your question is different from testing many
@@ -795,19 +802,27 @@ associations and retaining only a significant one.</p>
 <div id="task-b-write-your-plan" class="section level3">
 <h3>Task B — write your plan</h3>
 <ul>
-<li><strong>Group question and target quantity:</strong></li>
-<li><strong>One correlation question:</strong></li>
+<li><strong>Which groups are you comparing, and what difference do you
+want to estimate?</strong> For example: “Do Demented and Nondemented
+participants differ in average MMSE score? I will estimate Demented
+minus Nondemented in MMSE points.” Write your own question here:</li>
+<li><strong>Which two measurements will you compare, and what
+relationship do you want to investigate?</strong> Choose age and MMSE,
+or nWBV and MMSE:</li>
 <li><strong>What I expect, and why:</strong></li>
-<li><strong>What makes the observations independent in this
-version:</strong></li>
-<li><strong>Which variables must be observed for each
-analysis:</strong></li>
-<li><strong>Which plots and assumptions I will inspect before choosing
-the method:</strong></li>
+<li><strong>What does one row represent? Does any person appear more
+than once? Why does this matter for your analysis?</strong></li>
+<li><strong>Which values does a participant need for each
+analysis?</strong> For example, can you include someone in the age–MMSE
+correlation if their age is missing?</li>
+<li><strong>Which plots will you make, and what will you check before
+choosing a test?</strong> Think about the shape and spread of each
+group, extreme values, and whether measurements come from different
+people:</li>
 </ul>
-<p>Show the plan to the instructor. You can revise a provisional method
-after inspecting the assumptions; record the reason. Use the break after
-completing the plan.</p>
+<p>Show the plan to the instructor. You can change your initial choice
+of test after checking the data; explain why you changed it. Use the
+break after completing the plan.</p>
 </div>
 </div>
 <div id="group-comparison" class="section level2">
@@ -876,20 +891,22 @@ well as the selected values.</p>
 ##
 ## data:  demented
 ## W = 0.94879, p-value = 0.009978</code></pre>
-<p><strong>Your assumption assessment:</strong> Describe the graphs, the
-Shapiro results, and the limitations of a normal approximation for these
-scores. Why is the Shapiro p-value insufficient to select a test by
-itself?</p>
+<p><strong>What do your checks tell you?</strong> Describe the shape of
+each group in the graphs and what its Shapiro result suggests. Do the
+score limit, repeated values, or extreme values make a normal
+distribution a questionable approximation? Explain why the Shapiro
+p-value alone cannot choose the test for you.</p>
 </div>
-<div id="task-e-choose-and-justify-one-primary-method" class="section level3">
-<h3>Task E — choose and justify one primary method</h3>
+<div id="task-e-choose-your-main-test-and-explain-why" class="section level3">
+<h3>Task E — choose your main test and explain why</h3>
 <p>Return to your question. Welch estimates a difference in means.
 Wilcoxon rank-sum uses ranks; it does not generally test a median
 difference without additional shape assumptions. Both require
-appropriate independent observations. Recall the side-by-side comparison
-from day 1.</p>
-<p><strong>My primary method and justification, written before running
-the test:</strong></p>
+measurements from separate, independent participants; repeated visits
+from the same person would need a different approach. Recall the
+side-by-side comparison from day 1.</p>
+<p><strong>Which test will I use, and why does it fit my question and
+these data? Write this before running the test:</strong></p>
 <p>Enter either <code>&quot;welch&quot;</code> or <code>&quot;wilcoxon&quot;</code> between
 the empty quotes below. The supplied code runs only that method. You do
 not need to learn <code>if</code> statements today; they select the
@@ -944,17 +961,22 @@ name is stored in that object. For example, when the name is
 <code>&quot;Age&quot;</code>, it selects the same values as <code>mmse$Age</code>.
 <code>%in%</code> checks whether your choice is one of the two allowed
 names.</p>
-<p><strong>Your description:</strong> State the direction, form,
-clustering, any influential observations, and sample size. Explain why
-this plot helps you choose between a linear and a monotonic association
-question.</p>
+<p><strong>Describe your scatterplot:</strong> As one measurement
+increases, does the other tend to increase, decrease, or show no clear
+pattern? Does the pattern look roughly straight or curved? Are there
+clusters or isolated points that might strongly affect the result? How
+many participants are shown?</p>
 </div>
 <div id="task-h-select-a-correlation-method" class="section level3">
 <h3>Task H — select a correlation method</h3>
-<p>Use <code>&quot;pearson&quot;</code> for a linear-association question or
-<code>&quot;spearman&quot;</code> for a rank-based monotonic-association question.
-Consider the plot and score scale. A separate Shapiro test of each
-variable is not a required gate for correlation.</p>
+<p>Use <code>&quot;pearson&quot;</code> to ask how closely the two measurements
+follow a straight-line pattern (<strong>linear association</strong>).
+Use <code>&quot;spearman&quot;</code> to ask whether higher values of one
+measurement tend to go with higher or lower values of the other, using
+their ranks. This trend can be curved, but should keep the same overall
+direction (<strong>monotonic association</strong>). Explain your choice
+using the plot, your question, and the MMSE score scale. Do not choose
+solely from separate Shapiro tests of the two variables.</p>
 <p><strong>My choice and reason, before running the test:</strong></p>
 <pre class="r"><code>correlation_method &lt;- &quot;&quot;
 if (correlation_variable %in% c(&quot;Age&quot;, &quot;nWBV&quot;) &amp;&amp;
@@ -965,15 +987,19 @@ if (correlation_variable %in% c(&quot;Age&quot;, &quot;nWBV&quot;) &amp;&amp;
   cat(&quot;Choose your variable, run its plot chunk, then choose pearson or spearman.\n&quot;)
 }</code></pre>
 <pre><code>## Choose your variable, run its plot chunk, then choose pearson or spearman.</code></pre>
-<p>For Spearman we specify an approximate p-value because the
-observations contain ties. Pearson’s usual p-value and interval rely on
-its inferential assumptions; the ability to calculate r does not
-establish those assumptions. Base R does not return a Spearman
-confidence interval.</p>
-<p><strong>Your result:</strong> Report the coefficient, direction,
-sample size, p-value, and limitation. Include the confidence interval if
-using Pearson. Explain why a coefficient near zero would not rule out
-every possible relationship.</p>
+<p>For Spearman we request an approximate p-value because some
+participants have the same values (called ties). For Pearson, the usual
+p-value and confidence interval assume independent pairs of measurements
+and an appropriate model for their joint distribution. A clear curve or
+a few extreme points should make you question this analysis; R returning
+a number does not settle whether the method fits. Base R does not return
+a Spearman confidence interval.</p>
+<p><strong>Your result:</strong> Give the correlation value (r or rho),
+say whether the relationship is positive or negative, and report the
+number of participants and p-value. Explain one thing the result cannot
+tell us. Include the confidence interval if using Pearson. Explain why a
+coefficient near zero would not rule out every possible
+relationship.</p>
 </div>
 </div>
 <div id="challenge-one-conclusion-ten-minutes" class="section level2">
@@ -982,7 +1008,8 @@ every possible relationship.</p>
 test.</p>
 <ol style="list-style-type: decimal">
 <li>Does colouring your chosen scatterplot by group change your
-interpretation of the pooled association?</li>
+interpretation of the relationship seen when both groups are shown
+together?</li>
 <li>How does the ceiling of the MMSE scale affect your group plot and
 summaries?</li>
 <li>Why would using all 336 visits as independent people be
@@ -1028,14 +1055,15 @@ hints are equally acceptable.</p>
 <p>You have 35 minutes to finish explanations and 20 minutes to rerun,
 check, and discuss. Use the work already written beside each output.</p>
 <ul class="task-list">
-<li><label><input type="checkbox"></input>I described the data, observation
-unit, groups, and missing values.</label></li>
+<li><label><input type="checkbox"></input>I explained what each row
+represents, which groups are included, and which values are
+missing.</label></li>
 <li><label><input type="checkbox"></input>I completed the age, M/F, SES, and
 age-selection overview with plots and explanations.</label></li>
 <li><label><input type="checkbox"></input>I stated one comparison and one
 correlation question before testing.</label></li>
-<li><label><input type="checkbox"></input>I described the distributions and
-justified the primary group test.</label></li>
+<li><label><input type="checkbox"></input>I described the plots and explained
+why I chose my main group test.</label></li>
 <li><label><input type="checkbox"></input>I reported results with sample
 sizes, relevant estimates, and limitations.</label></li>
 <li><label><input type="checkbox"></input>I included a scatterplot and
@@ -1090,11 +1118,11 @@ analyses cannot answer. Do not turn it into another test today.</p>
 </div>
 <div id="extra-adjustment-for-your-two-planned-tests" class="section level2">
 <h2>Extra: adjustment for your two planned tests</h2>
-<p>This is optional. If you make a joint claim of finding an association
-in either of your two analyses, account for that family rather than
-ignoring it. After completing both analyses, copy this chunk into your
-notebook and run it. It does not justify running extra tests until you
-obtain significance.</p>
+<p>This is optional. If your conclusion is “at least one of my two tests
+found a difference or relationship”, account for the fact that you had
+two opportunities to obtain a small p-value. After completing both
+analyses, copy this chunk into your notebook and run it. It does not
+justify running extra tests until you obtain significance.</p>
 <pre class="r"><code>my_p_values &lt;- c(group = group_result$p.value, correlation = correlation_result$p.value)
 data.frame(raw_p = my_p_values,
            bonferroni_p = p.adjust(my_p_values, method = &quot;bonferroni&quot;))</code></pre>

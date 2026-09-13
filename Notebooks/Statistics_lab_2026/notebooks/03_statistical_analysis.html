@@ -504,9 +504,10 @@ If the same people were measured twice, we would need their pairing
 information and a different analysis. A normality test cannot tell us
 whether observations are independent. Equal vector lengths do not
 establish pairing.</p>
-<p><strong>Exercise 1:</strong> Write the outcome, the two groups, the
-observation unit, and the quantity we want to estimate. Can a difference
-between these groups establish that a treatment works?</p>
+<p><strong>Exercise 1:</strong> Which measurement are we comparing, and
+between which two groups? What does one value represent? Write the
+difference we want to estimate and its units. Can a difference between
+these groups establish that a treatment works?</p>
 <p><strong>Your answer:</strong></p>
 </div>
 <div id="look-at-each-groups-distribution" class="section level2">
@@ -911,8 +912,8 @@ is smaller.</p>
 <h2>8. Scatterplots and correlation — fifteen minutes</h2>
 <p>We will work through one example together before tomorrow’s
 independent analysis. Here we use the larger dataset with <strong>one
-first visit per participant</strong>. Its provenance and variables are
-described in the <a href="../data/dictionary.html">data
+first visit per participant</strong>. Where it comes from and what its
+columns mean are described in the <a href="../data/dictionary.html">data
 dictionary</a>.</p>
 <pre class="r"><code>mmse &lt;- read.csv(&quot;data/mmse_baseline.csv&quot;)
 pair_data &lt;- mmse[complete.cases(mmse[, c(&quot;Age&quot;, &quot;MMSE&quot;)]), ]
@@ -935,9 +936,10 @@ measured values. <strong>Spearman’s rho</strong> describes a monotonic
 association using ranks: does one variable tend to increase as the other
 increases or decreases? Both coefficients run from −1 to +1; a value
 near zero does not rule out every nonlinear relationship. A coefficient
-describes association, not causation. Pearson’s usual inferential
-procedure has distributional assumptions beyond merely being able to
-calculate r.</p>
+describes association, not causation. Calculating Pearson’s r is not the
+same as checking whether its usual p-value and confidence interval are
+reliable; those also depend on the independence and joint distribution
+of the measurements.</p>
 <pre class="r"><code>correlation &lt;- cor.test(pair_data$Age, pair_data$MMSE,
                         method = &quot;spearman&quot;, exact = FALSE)
 correlation</code></pre>
@@ -956,9 +958,10 @@ did not choose the method using a Shapiro cutoff. Base R’s
 <code>cor.test()</code> does not provide a confidence interval for
 Spearman’s rho; do not invent one.</p>
 <p><strong>Exercise 8:</strong> Report the coefficient, direction,
-number of complete observations, and p-value. Does this cross-sectional
-association establish how an individual’s score will change as they age?
-Why might group membership matter?</p>
+number of participants with both measurements available, and p-value. We
+have one visit per person. Can this comparison between people tell us
+how one person’s score will change as they age? Why might group
+membership matter?</p>
 <p><strong>Your answer:</strong></p>
 </div>
 <div id="save-and-explain" class="section level2">
@@ -1024,8 +1027,9 @@ data.frame(
 ## condition_2 condition_2        3.222831 1.911231e-04 3.822462e-04</code></pre>
 <p>Which condition has the larger estimated mean difference? Does it
 also have the smaller p-value? Use the SDs and sample sizes to explain
-why effect magnitude alone does not determine a p-value. Describe one
-concern about inference for condition 2. Tomorrow’s worked example
+why the size of the mean difference alone does not determine a p-value.
+Describe one reason to be cautious about using this sample to draw
+conclusions about condition 2 more generally. Tomorrow’s worked example
 explains the adjustment in more detail; it accounts for two
 opportunities to find evidence, without changing the observed
 differences.</p>
