@@ -20,7 +20,7 @@ The final full rebuild and all eight analysis-path checks passed with R 4.6.1, r
 - The extracted student ZIP passed 85 local file/anchor checks across eight HTML pages.
 - Student HTML dependencies and figures are embedded; external reference links require the internet, but reading the content does not.
 - The ZIP excludes instructor answers, planning documents, preparation scripts, and original source archives.
-- No previously tracked file from `main` was modified or deleted.
+- The initial notebook addition preserved all previous files. The later authorised deployment cleanup removed the old `Notebooks/Statistics_lab/` directory and updated navigation on the course branch only; `main` remains at `f617a6c814ce0d1e25278856f0b967180757147e`.
 
 ## Visual and teaching review
 
@@ -33,3 +33,7 @@ Full browser interaction was unavailable: no browser surface was exposed, and na
 R and RStudio were temporarily unavailable while the user reinstalled them. Once `/usr/local/bin/R` was restored, all nine documents were rebuilt from source with the new installation, including the GitHub download instructions and `mathjax: null` output setting. All eight analysis paths were rerun successfully, then the student ZIP and delivery checks were regenerated. The earlier runtime blocker is resolved; RStudio UI and browser-layout checks remain separate, outstanding checks.
 
 Future full rebuilds should use the documented R setup and `scripts/render.R`, followed by `scripts/validate.R`, packaging, and `scripts/check_delivery.py`.
+
+## Pages deployment preparation
+
+The root homepage and KN7001 navigation now target the revised workshop; their local links were checked, allowing Jekyll-generated HTML for Markdown course pages. Receptor–ligand and transcriptomic materials are unchanged. The Pages configuration excludes the new instructor folder and build scripts from the public teaching site. GitHub currently publishes `main`; a repository admin or maintainer must select `course/statistics-lab-2026` and `/(root)`. The authenticated account has write access but cannot change that setting. A live deployment check remains pending that change.

@@ -1,6 +1,6 @@
 # Statistics lab: revised notebooks
 
-Open [index.html](index.html) for the student route. All previous course notebooks remain unchanged in the neighbouring `Statistics_lab` folder.
+Open [index.html](index.html) for the student route. The superseded statistics notebooks are preserved on the repository’s `main` branch and have been removed from this deployment branch.
 
 - Six student guides/reference notebooks have editable `.Rmd` sources and rendered HTML in `notebooks/`.
 - `Statistics_lab.Rproj` opens the portable workshop project. Keep student copies in `notebooks/`.

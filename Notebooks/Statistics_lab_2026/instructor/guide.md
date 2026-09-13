@@ -1,6 +1,6 @@
 # Teaching the revised statistics lab
 
-The student route starts at `../index.html`. Distribute `../statistics_lab_student.zip`, which excludes this instructor folder and the preparation scripts. Keep the original course route unchanged until the new version has been reviewed.
+The student route starts at `../index.html`. Distribute `../statistics_lab_student.zip`, which excludes this instructor folder and the preparation scripts. The deployment branch now routes students to the revised course. The original statistics notebooks are preserved on `main`; they have been removed from this branch. See the repository’s `PUBLISHING.md` for the one-time Pages setting.
 
 ## Thursday: thirty minutes
 

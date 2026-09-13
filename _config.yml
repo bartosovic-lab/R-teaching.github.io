@@ -1,0 +1,8 @@
+title: Neurochemistry teaching materials
+description: Practical R and data analysis workshops for neurochemistry students
+exclude:
+  - Notebooks/Statistics_lab_2026/instructor
+  - Notebooks/Statistics_lab_2026/scripts
+  - Notebooks/Statistics_lab_2026/outputs
+  - Notebooks/Statistics_lab_2026/README.md
+  - PUBLISHING.md
