@@ -13,6 +13,16 @@ Open [index.html](index.html) for the student route. All previous course noteboo
 
 The day 2 blank template renders successfully before completion but does not run a group test or correlation until the student chooses methods. A successful Knit alone is therefore not evidence of a completed assignment; the final checklist requires actual results and explanations.
 
+## Publish the student download
+
+The setup guide links to the student ZIP on branch `course/statistics-lab-2026` in `bartosovic-lab/R-teaching.github.io`. That link becomes available only after the branch and its commits are pushed:
+
+```sh
+git push -u origin course/statistics-lab-2026
+```
+
+Publishing this branch makes its files downloadable without merging into `main`. It does not by itself change the repository's GitHub Pages deployment. Keep the branch available while distributing this URL; update the setup links if the course later moves to a different branch.
+
 ## Rebuild
 
 From this project folder:

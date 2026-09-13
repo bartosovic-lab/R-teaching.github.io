@@ -12,7 +12,7 @@ Completed 14 September 2026.
 - An injected missing-MMSE check excluded exactly one case from the relevant analyses, without dropping cases for unrelated missing SES values.
 - Data preparation reran deterministically. The small MMSE scores match the workbook, the neurite file is an exact copy, and every retained dementia measurement was checked against the source before selecting first visits. Existing rounding is preserved.
 
-The successful R runs used R 4.4.2, rmarkdown 2.28, knitr 1.48, and ggplot2 3.5.1. RStudio supplied Pandoc at that time.
+The final full rebuild and all eight analysis-path checks passed with R 4.6.1, rmarkdown 2.32, knitr 1.51, ggplot2 4.0.3, and Pandoc 3.11. Packages and Pandoc were supplied from temporary build directories, without modifying the new R installation's system library. Earlier checks also passed with R 4.4.2, rmarkdown 2.28, knitr 1.48, and ggplot2 3.5.1.
 
 ## Delivery
 
@@ -28,8 +28,8 @@ Inspected the embedded histogram panels, boxplots with points, mean bars, violin
 
 Full browser interaction was unavailable: no browser surface was exposed, and native computer access failed even after reset. Interactive hint toggling, full browser layout, and RStudio operation therefore still need a room-computer check. No beginner pilot has been performed.
 
-## Late environment change
+## Reinstallation and final rebuild
 
-RStudio and then R were no longer present during the final verification stage. The final substantive notebook content and figures had already rendered successfully. The remaining change was disabling unused external MathJax loading: the source YAML now uses `mathjax: null`, and `scripts/offline_html.py` removed that loader from the already rendered HTML without changing content, numerical outputs, or figures. A later attempt to repeat the R checks could not run because `Rscript` was absent; this is not recorded as an additional passing run.
+R and RStudio were temporarily unavailable while the user reinstalled them. Once `/usr/local/bin/R` was restored, all nine documents were rebuilt from source with the new installation, including the GitHub download instructions and `mathjax: null` output setting. All eight analysis paths were rerun successfully, then the student ZIP and delivery checks were regenerated. The earlier runtime blocker is resolved; RStudio UI and browser-layout checks remain separate, outstanding checks.
 
 Future full rebuilds should use the documented R setup and `scripts/render.R`, followed by `scripts/validate.R`, packaging, and `scripts/check_delivery.py`.

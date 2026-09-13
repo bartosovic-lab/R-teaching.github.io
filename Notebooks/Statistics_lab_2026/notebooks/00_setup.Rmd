@@ -27,7 +27,14 @@ If the installation does not work, ask for help. We will use a room computer if 
 
 ## Open the workshop project
 
-Use the workshop folder supplied by the instructor. If you downloaded a ZIP, **extract it first**. Keep the whole folder together; the notebooks need the files in `data/` and `figures/`.
+1. [Download the workshop project from GitHub (.zip)](https://github.com/bartosovic-lab/R-teaching.github.io/raw/refs/heads/course/statistics-lab-2026/Notebooks/Statistics_lab_2026/statistics_lab_student.zip).
+2. Find `statistics_lab_student.zip` in your Downloads folder. On Windows, right-click it and choose **Extract All**. On Mac, double-click the ZIP to extract it; your browser may already have done this.
+3. Move the extracted `Statistics_lab_2026` folder somewhere you can keep your work, for example Documents. On a room computer, use the storage location recommended by the instructor.
+4. Open that folder and double-click `Statistics_lab.Rproj` to start the project in RStudio.
+
+If the direct download opens a GitHub page instead, use **Download raw file** on the [workshop ZIP's GitHub page](https://github.com/bartosovic-lab/R-teaching.github.io/blob/course/statistics-lab-2026/Notebooks/Statistics_lab_2026/statistics_lab_student.zip). You do not need to clone the repository, install Git, or create a GitHub account for this public download.
+
+**Extract the ZIP before opening the project.** Keep the whole folder together; the notebooks need the files in `data/` and `figures/`. If you already received an extracted copy from the instructor, start with step 4.
 
 ```text
 Statistics_lab_2026/
