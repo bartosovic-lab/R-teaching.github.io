@@ -1,0 +1,10 @@
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+outputs/*
+!outputs/.gitkeep
+notebooks/*_files/
+notebooks/*_cache/
+instructor/*_files/
+instructor/*_cache/

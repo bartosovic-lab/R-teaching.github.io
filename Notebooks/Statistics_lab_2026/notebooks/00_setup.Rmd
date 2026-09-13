@@ -1,0 +1,96 @@
+---
+title: "Before the lab: R and RStudio"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    code_folding: show
+    self_contained: true
+    mathjax: null
+---
+
+[Course index](../index.html) · [Next: importing data](01_import_basics.html)
+
+# Thursday installation session — 30 minutes
+
+We will use R to analyse data during two afternoons. You do not need any previous experience with R. Bring your laptop to the Thursday session if you would like to use it. Computers in the computer room are also available.
+
+**R** runs the calculations. **RStudio** is the application where we will write code, view plots, and keep notes. Install both, in this order:
+
+1. [Install R](https://cran.r-project.org/) for your operating system.
+2. [Install RStudio Desktop](https://posit.co/download/rstudio-desktop/).
+3. Open RStudio. In the Console, type `1 + 1` and press Enter.
+
+You should see `[1] 2`. The `[1]` indicates the position of the first printed value. It is not part of the answer.
+
+If the installation does not work, ask for help. We will use a room computer if the problem cannot be solved during the session.
+
+## Open the workshop project
+
+Use the workshop folder supplied by the instructor. If you downloaded a ZIP, **extract it first**. Keep the whole folder together; the notebooks need the files in `data/` and `figures/`.
+
+```text
+Statistics_lab_2026/
+  Statistics_lab.Rproj
+  index.html
+  data/
+  notebooks/
+  figures/
+  outputs/
+```
+
+Double-click `Statistics_lab.Rproj`. In RStudio's Files pane, open `notebooks/01_import_basics.Rmd`. This is an R Markdown notebook: code and written explanations in the same file.
+
+Before editing, use **File → Save As** to save a personal copy in the **same `notebooks/` folder**, for example `01_import_basics_Anna.Rmd`. Do the same for the other notebooks when you reach them. Saving them in this folder keeps the relative data paths working.
+
+## Install the notebook packages once
+
+Paste this command into the **Console** and press Enter. It requires an internet connection. Package installation is a setup task; do not put installation commands into your analysis notebook.
+
+```{r install-packages, eval=FALSE}
+install.packages(c("rmarkdown", "knitr"))
+```
+
+`ggplot2` is only needed to rerun the optional violin demonstration. The figure is already included, so you can complete the workshop without installing it.
+
+## Run code and write notes
+
+In the `.Rmd` file, code sits between a line beginning with three backticks and `{r}`, and a closing line of three backticks. These markers define a **code chunk**. Do not copy the markers into the Console.
+
+- To run one line, put the cursor on it and press **Ctrl+Enter** on Windows or **Cmd+Enter** on Mac.
+- To run a whole chunk, click its small green triangle.
+- To add a chunk, use **Code → Insert Chunk**, or **Ctrl+Alt+I** / **Cmd+Option+I**.
+- Write explanations outside the chunks. Lines beginning with `#` *inside* a chunk are comments in the code.
+
+The Source pane holds your saved code. The Console shows commands and results. The Environment shows objects currently in memory. Figures appear below chunks or in the Plots pane, depending on your RStudio settings.
+
+## Check the complete workflow
+
+Open your copy of notebook 1. Run its first setup chunk, then its first calculation. Write your name in the space provided and save the file. Click **Knit** to produce an HTML version.
+
+Knit runs the notebook from the beginning in a fresh R session. This checks that the notebook contains the steps needed to reproduce the results. An object that you created only in the Console will not be available.
+
+**Before you leave Thursday:** you should be able to open the project, run a chunk, save your work, and create an HTML file. If you will use a room computer, check where to save your files and how to take them with you.
+
+## Before day 1
+
+Watch the statistics lecture assigned by the instructor. Bring brief answers to these questions; it is fine to be unsure.
+
+1. What different information do a mean and a standard deviation give you?
+2. What might happen to a mean and a median if one observation is much larger than the others?
+3. Is measuring ten people twice the same as measuring twenty different people?
+4. What can a correlation tell you? What can it not establish?
+
+## If something goes wrong
+
+| Message or problem | Try this |
+|---|---|
+| `object ... not found` | Check spelling and capitals. Run the earlier chunk that creates the object. |
+| `cannot open file` | Open the supplied `.Rproj`, keep your notebook in `notebooks/`, and run the setup chunk first. Check that `data/` is present. |
+| `there is no package called ...` | Install the named package in the Console during setup, or ask for help. |
+| Console shows `+` instead of `>` | R is waiting for a closing quote or bracket. Press Esc, check the command, and try again. |
+| Knit fails but a command worked in the Console | Find the first error. The notebook may be missing an earlier step. |
+
+Read the first error rather than trying to fix every later message. An error is often a misspelling or a missing step, not a problem with your understanding of statistics.
+
+[Start notebook 1](01_import_basics.html)

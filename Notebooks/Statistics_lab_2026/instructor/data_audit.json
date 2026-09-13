@@ -1,0 +1,56 @@
+{
+  "source_sha256": {
+    "03_neurites_synthetic.csv": "8d50be0c5e6944dcdcb8eb3b6906a564734f5134ae0beded2b7bbdd85131fd86",
+    "alzheimer_data.csv": "7fc9d58252c74ca957a49ed6c680f65feb543c95c4ddcf89c4665b4acb6a068f",
+    "excel_data.xlsx": "5862753ecad781bc77e02003c0d864cd0497dfef2000725729e0a971fad182ce",
+    "oasis_longitudinal_demographics.xlsx": "2298ed89718ffeb4131ee41ab22bada949542e028bda0c9356c6688c944f930e",
+    "visit_mapping.csv": "476729c06abd3355c087743e6cc27799ebc7e73fcb84ad30ea8f2132c058628b"
+  },
+  "legacy_visits": 336,
+  "baseline_participants": 136,
+  "baseline_groups": {
+    "Demented": 64,
+    "Nondemented": 72
+  },
+  "baseline_missing": {
+    "Source_row": 0,
+    "Subject_ID": 0,
+    "Visit": 0,
+    "Group": 0,
+    "M.F": 0,
+    "Age": 0,
+    "EDUC": 0,
+    "SES": 8,
+    "MMSE": 0,
+    "CDR": 0,
+    "eTIV": 0,
+    "nWBV": 0,
+    "ASF": 0
+  },
+  "small_scores": {
+    "Control": [
+      29,
+      27,
+      30,
+      27,
+      28,
+      28,
+      27,
+      30,
+      28,
+      27
+    ],
+    "AD": [
+      12,
+      10,
+      11,
+      7,
+      8,
+      9,
+      10,
+      12,
+      5,
+      6
+    ]
+  }
+}

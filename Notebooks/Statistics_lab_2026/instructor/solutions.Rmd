@@ -1,0 +1,175 @@
+---
+title: "Statistics lab: instructor solutions and feedback"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    self_contained: true
+    mathjax: null
+---
+
+These are feedback notes, not a script students must reproduce. Keep this file outside the student distribution. Numerical results are calculated from the prepared datasets when rendered. Accept alternative explanations when the statistical question and limitations are clear.
+
+```{r setup, include=FALSE}
+project_root <- normalizePath(if (file.exists("Statistics_lab.Rproj")) "." else "..")
+knitr::opts_knit$set(root.dir = project_root)
+knitr::opts_chunk$set(error = FALSE, fig.width = 7, fig.height = 4.5)
+```
+
+```{r imports}
+small <- read.csv("data/mmse_small.csv")
+control <- small$MMSE[small$Group == "Control"]
+ad <- small$MMSE[small$Group == "AD"]
+mmse <- read.csv("data/mmse_baseline.csv")
+neurites <- read.csv("data/neurites.csv")
+describe <- function(x) {
+  c(n = sum(!is.na(x)), mean = mean(x, na.rm = TRUE),
+    median = median(x, na.rm = TRUE), SD = sd(x, na.rm = TRUE),
+    Q1 = unname(quantile(x, 0.25, na.rm = TRUE)),
+    Q3 = unname(quantile(x, 0.75, na.rm = TRUE)), IQR = IQR(x, na.rm = TRUE))
+}
+```
+
+# Notebook 1
+
+Exercise 1: the original vector's mean is 28.5; adding 26 gives 28. Assignment stores the four values under a name. `Scores` and `scores` are distinct objects.
+
+Exercise 2: 20 rows, 3 columns. Teaching_ID identifies a row, Group is nominal, MMSE is a bounded discrete score. Equal vector lengths do not establish pairing. A score difference is useful descriptively but does not imply a calibrated equal change in overall cognition at every part of the scale.
+
+Exercises 3–4: ten scores in each group. Group selection should agree with `table(small$Group)`.
+
+```{r small-summaries}
+knitr::kable(rbind(Control = describe(control), AD = describe(ad)), digits = 3)
+```
+
+The AD group has greater observed spread. A mean alone hides that difference. Population generalisation is limited by the undocumented origin of this teaching example.
+
+The separate assay example changes the mean from 5.4 to 10 while leaving the median at 5. Investigate an extreme observation's source; do not remove it just to improve a p-value. Patient IDs have no meaningful average; ordinal SES codes do not establish equal intervals.
+
+Exercise 5: three observed scores give a mean of 85/3 = 28.333. Replacing the missing value by zero gives 21.25, a different and unjustified calculation. Missingness should be counted and considered scientifically.
+
+# Notebook 2
+
+The control histogram is concentrated near the upper score limit; AD scores are more spread and lower. Four-point bins conceal some integer detail without changing the observations. Neither a bell-like histogram nor a mean close to a median proves normality.
+
+Boxplots show medians and hinges, not confidence intervals. Jitter is horizontal only; points preserve their score values. Mean bars conceal spread, sample size, and repeated values. A violin estimates a smooth density: with ten observations and tied scores, that smoothness can overstate how much is known about shape. Its width is not uncertainty. A caption should name MMSE points, the two groups, and ten observations each.
+
+# Notebook 3
+
+## Question and distributions
+
+The initial target is the population mean-score difference under the independent-person teaching assumption, estimated by AD minus control. This is not a treatment experiment. A paired method would require matched observations, not equal counts.
+
+```{r small-normality}
+shapiro.test(control)
+shapiro.test(ad)
+```
+
+Discuss the actual plots even if Shapiro does not reject at 0.05. The control values are discrete and constrained by a ceiling. Ten observations cannot provide strong reassurance about tails. Pooling the strongly separated groups answers the wrong normality question for this comparison.
+
+## Mean and rank comparisons
+
+```{r small-tests}
+mean(ad) - mean(control)
+t.test(ad, control)
+wilcox.test(ad, control, exact = FALSE)
+```
+
+The observed mean difference is −19.1 points. The CI is for AD minus control, not for individual scores. A small p-value neither measures the probability the null hypothesis is true nor proves clinical importance or valid assumptions. Failure to reject is not equivalence.
+
+Wilcoxon addresses rank ordering under its framework, not equality of means and not generally equality of medians without shape assumptions. Both methods require independent participants. A good answer identifies the target, acknowledges bounds/ties and small-sample approximation limits, and explains why a chosen primary method fits the question. Do not grade on whether students choose the instructor's preferred method alone.
+
+Both analyses here provide strong evidence for their respective questions. Agreement does not prove normality. If asked about disagreement, students should revisit shapes, influential values, assumptions, and the target, rather than selecting the smaller p-value. The rank-sum W and Shapiro W have different meanings.
+
+## Overlap example
+
+```{r overlap-reference}
+mean(neurites$condition_1) - mean(neurites$control)
+t.test(neurites$condition_1, neurites$control)
+```
+
+The mean difference is about 0.430 recorded units, CI about 0.273–0.587. Individual ranges overlap but the uncertainty interval for a mean difference excludes zero. These are different quantities. The synthetic data's physical units and generation design are undocumented; independent observations are an explicit teaching assumption.
+
+## Correlation demonstration
+
+```{r age-correlation}
+cor.test(mmse$Age, mmse$MMSE, method = "spearman", exact = FALSE)
+```
+
+Report rho and n = 136. The association is cross-sectional and cannot establish within-person cognitive decline with ageing. Discuss ceiling effects and group composition. Spearman's approximate p-value handles ties explicitly; no Spearman CI is supplied by base R.
+
+# Notebook 4
+
+## Worked correction and data audit
+
+```{r corrections}
+p <- c(A = 0.01, B = 0.03, C = 0.20)
+data.frame(raw = p, adjusted = p.adjust(p, "bonferroni"))
+```
+
+All three prespecified comparisons form the example's family. A and B fall below 0.05 before adjustment; only A does after it. Adjustment changes the evidence criterion, not the observed treatment differences. Selective reporting would conceal the number of tests tried.
+
+```{r baseline-audit}
+dim(mmse)
+length(unique(mmse$Subject_ID))
+table(mmse$Group)
+colSums(is.na(mmse))
+range(mmse$Age)
+range(mmse$MMSE)
+```
+
+There are 136 independent participants in 13 columns, 72 Nondemented and 64 Demented; eight SES values are missing. No MMSE values are missing in this selected baseline dataset. This differs from the old visit-level file; do not use its old counts in feedback.
+
+The IDs and `Visit == 1` selection address repeated observations. This does not remove selection bias, measurement limitations, or confounding. The exclusion of the Converted group preserves the earlier course selection and depends on longitudinal information.
+
+## Group comparison reference
+
+```{r baseline-groups}
+non <- mmse$MMSE[mmse$Group == "Nondemented"]
+dem <- mmse$MMSE[mmse$Group == "Demented"]
+knitr::kable(rbind(Nondemented = describe(non), Demented = describe(dem)), digits = 3)
+shapiro.test(non)
+shapiro.test(dem)
+t.test(dem, non)
+wilcox.test(dem, non, exact = FALSE)
+```
+
+The reference includes both methods for marking, although students choose one primary comparison. The score distributions have different shapes and a ceiling, especially in the Nondemented group. A Wilcoxon result should not be reported as a test of a median difference without additional assumptions. A Welch analysis answers the mean question but needs a discussion of its approximate inference on bounded distributions. Expect direction, relevant summaries, sample sizes, test statistic and p-value, and a confidence interval when using Welch.
+
+Do not accept “Shapiro was significant, therefore Wilcoxon” as a complete justification. Ask what question the rank comparison answers. Do not accept “large n means assumptions no longer matter” either.
+
+## Correlation reference: students choose only one
+
+```{r reference-scatterplots, fig.height=4.5, fig.width=9}
+point_colours <- ifelse(mmse$Group == "Demented", "#B34D22", "#246B91")
+par(mfrow = c(1, 2))
+plot(mmse$Age, mmse$MMSE, pch = 16, col = point_colours,
+     xlab = "Age (years)", ylab = "MMSE score (points)")
+legend("bottomleft", legend = c("Demented", "Nondemented"),
+       col = c("#B34D22", "#246B91"), pch = 16, bty = "n", cex = 0.8)
+plot(mmse$nWBV, mmse$MMSE, pch = 16, col = point_colours,
+     xlab = "nWBV (fraction)", ylab = "MMSE score (points)")
+par(mfrow = c(1, 1))
+```
+
+```{r correlation-options}
+for (variable in c("Age", "nWBV")) {
+  for (method in c("pearson", "spearman")) {
+    cat("\n", variable, "and MMSE:", method, "\n")
+    result <- cor.test(mmse[[variable]], mmse$MMSE, method = method, exact = FALSE)
+    print(result)
+  }
+}
+```
+
+All options have 136 complete pairs. Award credit for choosing a linear or monotonic question and inspecting the plot, not for obtaining a particular coefficient. Pearson's usual inference has assumptions; Spearman does not answer every nonlinear question and does not come with a base-R CI.
+
+Colouring the scatterplot by group can reveal that between-group separation contributes to the pooled association. It does not itself adjust for group or establish causality. The student need only investigate one limitation, not run more subgroup tests.
+
+## Minimum submission feedback
+
+Check for actual selected-test outputs; the blank template intentionally renders without doing inferential tests. Required work is one primary comparison, one correlation, and the separate correction explanation. If a student leaves selection messages, empty answer prompts, or only a screenshot of a result, ask them to complete the reasoning and code.
+
+Good work connects the question, observation unit, assumptions, result and limitation. Allow short, direct answers. Partners may share code, but each should explain it. Ask each student to interpret one figure or predict the effect of changing an argument. LLM use itself is neither rewarded nor penalised; understanding and verification matter.
+
+An overall discovery claim based on either of the two analyses needs multiplicity considered. Students can acknowledge the exploratory, unadjusted scope; an optional supplied two-test adjustment is available. Never encourage additional testing to find significance.

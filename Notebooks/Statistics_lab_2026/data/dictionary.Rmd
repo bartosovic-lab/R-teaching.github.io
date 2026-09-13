@@ -1,0 +1,63 @@
+---
+title: "Workshop data: definitions and sources"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    self_contained: true
+    mathjax: null
+---
+
+[Course index](../index.html)
+
+# Small MMSE example: `mmse_small.csv`
+
+Twenty scores copied without changing values from the existing course workbook `excel_data.xlsx`, sheet **Mini Mental State exam**, cells A8:B17. The workbook's `Healthy` header is labelled `Control` in the new CSV, consistent with its description of ten controls versus ten AD cases. The other group remains `AD`.
+
+| Column | Definition |
+|---|---|
+| `Teaching_ID` | Added row label such as Control_01. Not an original clinical identifier. |
+| `Group` | Control or AD; nominal category. |
+| `MMSE` | Integer cognitive-assessment score, 0–30; higher indicates better performance on the assessment. |
+
+For the exercise, treat these as twenty independent individuals. The original clinical source and sampling design are not documented. Do not interpret these illustrative observations as a validated clinical study or use MMSE ratios as ratios of cognitive ability. No values are missing.
+
+# Larger dataset: `mmse_baseline.csv`
+
+One first visit for each of **136 participants**, with 72 source-labelled Nondemented and 64 Demented. The measurements come from the previous course's `alzheimer_data.csv`; all retained values and their numerical precision are preserved. Eight SES values are missing (`NA`); there are no missing MMSE values in this first-visit subset. `NA` is not zero.
+
+The previous file contained 336 visits with participant and visit columns removed. We matched its row references and every retained variable to the [official OASIS-2 demographics workbook](https://sites.wustl.edu/oasisbrains/files/2024/03/oasis_longitudinal_demographics-8d83e569fa2e2d30.xlsx), allowing only the existing rounding of imaging values. This restored identifiers and made selection of `Visit == 1` possible. No participant was selected on the basis of their MMSE value or a test result.
+
+The original OASIS-2 workbook contains 373 visits from 150 participants. The source's Converted group was already excluded from the previous course file. This teaching version keeps that exclusion: its group labels describe longitudinal classification, not an independently reconstructed baseline diagnosis. Selection based on longitudinal group membership limits generalisation. The core analysis is cross-sectional and cannot measure individual change over time. See the [OASIS-2 study description](https://sites.wustl.edu/oasisbrains/home/oasis-2/).
+
+| Column | Definition and unit | Measurement type |
+|---|---|---|
+| `Source_row` | Row number in the original demographic table, excluding the header | Provenance identifier |
+| `Subject_ID` | Original participant identifier | Identifier; unique in this file |
+| `Visit` | Visit number; all values are 1 | Visit index |
+| `Group` | Source longitudinal classification, Nondemented or Demented | Nominal |
+| `M.F` | Source-recorded M/F category | Nominal |
+| `Age` | Age at the visit in years | Numeric, recorded in whole years |
+| `EDUC` | Years of education | Numeric, recorded in whole years |
+| `SES` | Hollingshead categories, 1 highest status to 5 lowest | Ordinal; equal gaps are not assumed |
+| `MMSE` | Cognitive assessment score, 0–30 | Discrete, bounded score |
+| `CDR` | Clinical Dementia Rating: 0 none, 0.5 very mild, 1 mild, 2 moderate | Ordinal; not an equal-interval scale |
+| `eTIV` | Estimated total intracranial volume, cm³ | Numeric |
+| `nWBV` | Normalised whole-brain volume: tissue fraction within the atlas-masked image; 0.70 corresponds to 70% | Numeric fraction, not a raw volume in cm³ |
+| `ASF` | Atlas scaling factor used to map the native image to the atlas | Numeric, unitless |
+
+Definitions follow the measures in [Marcus et al. (2010), OASIS longitudinal MRI data, Table 4](https://pmc.ncbi.nlm.nih.gov/articles/PMC2895005/). The CSV stores nWBV as a fraction, although the paper describes the corresponding percentage. eTIV and ASF are related to head size and image scaling; neither should be treated as an independent measure of cognitive performance.
+
+MMSE and the clinical grouping are related assessments. A group difference in MMSE does not independently validate a diagnostic test. These participants were not randomly assigned to groups, so age, education, selection, and other factors may affect comparisons.
+
+# Synthetic neurite example: `neurites.csv`
+
+An exact copy of the existing `03_neurites_synthetic.csv`: twenty rows and three numeric columns, `control`, `condition_1`, and `condition_2`. The original generator and physical units are not documented. We therefore label plots **synthetic neurite measurement (recorded units)** and do not introduce a micrometre interpretation.
+
+For the short comparison, assume independent synthetic observations within and across conditions. Row alignment across columns does not establish pairing. We use control and condition 1 to illustrate overlapping observations. No values were regenerated, normalised, or removed. There are no missing entries.
+
+# Reproducibility
+
+Original source files, a verified visit mapping, checksums, and the preparation script are retained in the instructor version of the project. The student project contains only the prepared datasets. The script verifies all legacy values before producing the first-visit subset; it does not use a random seed because it generates no random measurements. Plot jitter uses a fixed seed and changes only display positions.
+
+Keep the data files unchanged. Any additional example vectors used to demonstrate an extreme value or missing observation are explicitly labelled in the notebooks and are separate from these datasets.

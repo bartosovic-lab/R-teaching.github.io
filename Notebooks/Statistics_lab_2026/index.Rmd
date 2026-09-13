@@ -1,0 +1,41 @@
+---
+title: "Statistics lab in R — KN7001"
+output:
+  html_document:
+    self_contained: true
+    mathjax: null
+---
+
+# Two afternoons of data analysis
+
+We will use R to explore biological data, inspect distributions, compare groups, and investigate correlations. You do not need previous R experience. The code is provided; your task is to understand the analysis and explain your decisions.
+
+[Download the complete student project](statistics_lab_student.zip). Extract the ZIP, open `Statistics_lab.Rproj`, and keep the folder together. You can also browse the guides below before opening RStudio.
+
+## Before the workshop
+
+[Setup guide: Thursday's 30-minute installation session](notebooks/00_setup.html) · [R Markdown source](notebooks/00_setup.Rmd)
+
+Watch the lecture assigned by the instructor. Bring your laptop to the installation session, or use a computer in the computer room.
+
+## Day 1 — work through the examples together
+
+| Notebook | What we will do | Editable source |
+|---|---|---|
+| [01. Importing data and basic statistics](notebooks/01_import_basics.html) | Run R commands, import the small MMSE table, and describe centre and spread | [Rmd](notebooks/01_import_basics.Rmd) |
+| [02. Looking at the data](notebooks/02_visualisation.html) | Histograms, boxplots with observations, and a violin demonstration | [Rmd](notebooks/02_visualisation.Rmd) |
+| [03. Normality, group comparisons and correlation](notebooks/03_statistical_analysis.html) | Inspect assumptions, compare Welch and Wilcoxon, and interpret a correlation | [Rmd](notebooks/03_statistical_analysis.Rmd) |
+
+## Day 2 — your investigation
+
+[04. Your MMSE investigation](notebooks/04_mmse_investigation.html) · [R Markdown source](notebooks/04_mmse_investigation.Rmd)
+
+Work in pairs. Each student keeps a personal notebook containing code, figures, and their own explanations. Complete one group comparison and one correlation, plus the short multiple-testing exercise. LLMs are available for hints, debugging, and explanations; you should understand the work you submit.
+
+## References to keep beside you
+
+- [Data dictionary and provenance](data/dictionary.html)
+- [Short R command reference](notebooks/05_command_reference.html)
+- The day 1 examples remain available during day 2.
+
+Each afternoon lasts four hours, including breaks. Exercises labelled **Extra** are optional. Keep axis labels and interpretation; plot decoration can wait.

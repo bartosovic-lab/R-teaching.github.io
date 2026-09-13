@@ -1,0 +1,257 @@
+---
+title: "03. Normality, group comparisons and correlation"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    code_folding: show
+    self_contained: true
+    mathjax: null
+---
+
+[Course index](../index.html) · [Previous: visualisation](02_visualisation.html) · [Next: day 2 investigation](04_mmse_investigation.html)
+
+# Day 1 — which analysis answers our question?
+
+**Your name:** write here.
+
+We will spend **30 minutes on distributions**, take a break, then use **60 minutes for group comparisons** and **15 minutes for correlation**. Leave the final ten minutes of the afternoon for saving, rerunning, and questions.
+
+The aim is to explain a choice of analysis. We will compare two methods using the same data and consider why they ask different questions.
+
+## Setup and import
+
+```{r setup, include=FALSE}
+project_root <- normalizePath(if (file.exists("Statistics_lab.Rproj")) "." else "..",
+                              mustWork = TRUE)
+stopifnot(file.exists(file.path(project_root, "Statistics_lab.Rproj")))
+knitr::opts_knit$set(root.dir = project_root)
+knitr::opts_chunk$set(echo = TRUE, error = FALSE, fig.width = 7, fig.height = 4.5)
+```
+
+```{r import}
+small <- read.csv("data/mmse_small.csv")
+control <- small$MMSE[small$Group == "Control"]
+ad <- small$MMSE[small$Group == "AD"]
+```
+
+## 1. Start with the question and the observations
+
+Our first question is: **How large is the difference in average MMSE score between the AD and control groups in this teaching example?**
+
+For this exercise, assume each entry comes from a different person. If the same people were measured twice, we would need their pairing information and a different analysis. A normality test cannot tell us whether observations are independent. Equal vector lengths do not establish pairing.
+
+**Exercise 1:** Write the outcome, the two groups, the observation unit, and the quantity we want to estimate. Can a difference between these groups establish that a treatment works?
+
+**Your answer:**
+
+## 2. Look at each group's distribution
+
+A normal distribution is symmetric and bell-shaped, described by its mean and SD. A small sample from it will not look perfectly symmetric. MMSE also has bounds and tied integer scores, so a normal distribution can only be an approximation for these data.
+
+```{r distribution-panels, fig.height=6}
+par(mfrow = c(2, 2))
+hist(control, breaks = seq(-0.5, 30.5, 1), xlim = c(0, 31), ylim = c(0, 5),
+     main = "Control", xlab = "MMSE score (points)", col = "lightblue")
+hist(ad, breaks = seq(-0.5, 30.5, 1), xlim = c(0, 31), ylim = c(0, 5),
+     main = "AD", xlab = "MMSE score (points)", col = "peachpuff")
+qqnorm(control, main = "Control: normal Q–Q plot", ylab = "Observed MMSE score")
+qqline(control)
+qqnorm(ad, main = "AD: normal Q–Q plot", ylab = "Observed MMSE score")
+qqline(ad)
+par(mfrow = c(1, 1))
+```
+
+A **normal Q–Q plot** compares the ordered observations with quantiles expected under a normal distribution. Approximate alignment supports that approximation. Curves, tail departures, and extreme points deserve attention. Repeated integer scores create horizontal steps. The reference line is not a fitted biological relationship between two measured variables.
+
+### Exercise 2 — before a normality test
+
+For each group, describe the shape, spread, ties, and proximity to the score limit. What can you tell from ten observations, and what remains uncertain? Are the mean and median alone sufficient to establish normality?
+
+| Group | What I see in the histogram and Q–Q plot | What remains uncertain |
+|---|---|---|
+| Control | Write here | Write here |
+| AD | Write here | Write here |
+
+## 3. Shapiro–Wilk: additional evidence
+
+The null hypothesis of Shapiro–Wilk is that the observations come from a normal distribution. A small p-value is evidence against that model. A large p-value does **not** prove normality.
+
+```{r normality-tests}
+shapiro.test(control)
+shapiro.test(ad)
+```
+
+The output gives `W`, a statistic describing agreement with normality, and a p-value. Small samples can fail to reveal important departures. Large samples can reveal small departures that may have little consequence for a particular analysis. Use the result with the plots, design, measurement scale, and sample size.
+
+### Exercise 3
+
+1. Record each group's Shapiro p-value. Does it change your description of the plots?
+2. Correct this sentence: “The Shapiro p-value is above 0.05, so the data are normal and the t-test is valid.”
+3. Why should we inspect the groups separately rather than use only the distribution of all twenty scores pooled together?
+
+**Your answer:**
+
+<details>
+<summary>Hint for question 3</summary>
+
+Groups can have different means. Combining them can create two peaks even when a normal approximation is reasonable within each group. For an independent two-group mean comparison, the relevant distributions are within groups.
+
+</details>
+
+**Take the ten-minute break here.**
+
+## 4. Estimate the difference first
+
+We will use **AD minus control** throughout. A negative result means the AD group has the lower average score.
+
+```{r mean-difference}
+mean(ad)
+mean(control)
+mean_difference <- mean(ad) - mean(control)
+mean_difference
+```
+
+**Exercise 4:** Report the difference in MMSE score points. Why would a fold change, such as “three times more cognition”, be inappropriate for this score?
+
+**Your answer:**
+
+## 5. Welch's t-test
+
+Welch's two-sample t-test addresses a difference in population means. It allows unequal group variances. We do not need a preliminary variance test to decide whether to use it. Independence still matters, and severe skew or influential observations can make small-sample inference unreliable. A normal approximation is more demanding with ten observations than with a large sample.
+
+```{r welch}
+welch <- t.test(ad, control, paired = FALSE, var.equal = FALSE,
+                alternative = "two.sided")
+welch
+```
+
+`paired = FALSE` specifies independent groups. `var.equal = FALSE` gives Welch's method, also the default. `alternative = "two.sided"` asks about a difference in either direction. The first vector is AD, so the confidence interval concerns **AD minus control**.
+
+| Output | How to read it |
+|---|---|
+| `t` | The estimated mean difference relative to its standard error |
+| `df` | Degrees of freedom used for the reference distribution; Welch values need not be integers |
+| `p-value` | How unusual a result at least this extreme would be under equal population means and the test's assumptions |
+| `95 percent confidence interval` | Uncertainty interval for AD minus control mean score |
+| `sample estimates` | The observed means, in the order of the input groups |
+
+A 95% confidence-interval procedure would cover the fixed population difference in 95% of repeated samples under the assumptions. This particular interval expresses uncertainty about a mean difference; it does not contain 95% of individual scores. SD describes variability among observations, whereas a standard error describes uncertainty in an estimate.
+
+### Exercise 5
+
+Read the full output before extracting individual values.
+
+```{r extract-welch}
+welch$conf.int
+welch$p.value
+```
+
+1. Does the interval include zero? Which direction of difference does it support?
+2. Is the p-value the probability that the null hypothesis is true?
+3. Would `p > 0.05` prove that the groups are equivalent?
+4. What limitation of this small, bounded teaching example would you report even if the p-value is very small?
+
+**Your result:** In this teaching example, the AD mean was ___ points higher/lower than the control mean (95% CI for AD minus control: ___ to ___). We used ___ because ___. The p-value was ___. An important limitation is ___.
+
+## 6. Compare with Wilcoxon rank-sum — work in pairs
+
+Now consider a related question: **Do observations in one group tend to have higher ranks than observations in the other?**
+
+Wilcoxon rank-sum, also called Mann–Whitney, uses ranks rather than the original measurement distances. It is not a test of a difference in means. A simple interpretation as a difference in medians needs additional assumptions about distribution shapes. It is also not a general detector of every possible distributional difference.
+
+```{r wilcoxon}
+rank_test <- wilcox.test(ad, control, paired = FALSE,
+                         alternative = "two.sided", exact = FALSE)
+rank_test
+```
+
+The scores contain ties. We explicitly use the normal approximation (`exact = FALSE`), with R's default continuity correction, to keep the demonstration consistent across R versions. This is an approximate calculation, particularly worth remembering in small samples. The displayed `W` is the rank-sum statistic, **not** the Shapiro–Wilk `W`.
+
+### Exercise 6 — allow about fifteen minutes
+
+Discuss the following table, then write your own answers. Do not choose a method by comparing which p-value is smaller.
+
+| Question | Your explanation |
+|---|---|
+| What does Welch test, and in what units is its effect estimate? | Write here |
+| What information does Wilcoxon use, and how does its question differ? | Write here |
+| What do both methods assume about separate observations? | Write here |
+| If both give small p-values, does that prove normality or make them interchangeable? | Write here |
+| If they disagreed, what would you investigate before drawing a conclusion? | Write here |
+| Which method would you lead with for your stated question, and why? | Write here |
+
+We can discuss disagreement as a hypothetical case if these results agree. Revisit the question, sample size, shapes, and influential values. Keep the original question visible; changing from a mean comparison to a rank-based question changes what you can conclude.
+
+## 7. A contrasting example: overlapping observations
+
+The small MMSE groups are far apart. Let's look at `control` and `condition_1` in the existing **synthetic neurite dataset**. The original file does not document physical units, so the axis uses “recorded units”. For this teaching comparison, assume twenty independent observations per condition. Matching row numbers across columns do not indicate pairing.
+
+```{r overlap}
+neurites <- read.csv("data/neurites.csv")
+comparison <- list(Control = neurites$control, Condition_1 = neurites$condition_1)
+boxplot(comparison, outline = FALSE, col = c("lightblue", "peachpuff"),
+        ylab = "Synthetic neurite measurement (recorded units)")
+set.seed(7)
+stripchart(comparison, vertical = TRUE, method = "jitter", add = TRUE, pch = 16)
+```
+
+**Before running the test:** Do the observed ranges overlap? Does overlap rule out a difference in means?
+
+```{r overlap-test}
+overlap_test <- t.test(neurites$condition_1, neurites$control)
+mean(neurites$condition_1) - mean(neurites$control)
+overlap_test
+```
+
+**Exercise 7 — eight minutes:** Explain how overlapping observations can coexist with an interval for the mean difference that excludes zero. What would you lose by describing every individual observation using only its group mean? Do not compare the magnitude of a neurite difference directly with an MMSE difference; their units differ.
+
+**Your answer:**
+
+## 8. Scatterplots and correlation — fifteen minutes
+
+We will work through one example together before tomorrow's independent analysis. Here we use the larger dataset with **one first visit per participant**. Its provenance and variables are described in the [data dictionary](../data/dictionary.html).
+
+```{r correlation-demo}
+mmse <- read.csv("data/mmse_baseline.csv")
+pair_data <- mmse[complete.cases(mmse[, c("Age", "MMSE")]), ]
+plot(pair_data$Age, pair_data$MMSE, pch = 16,
+     xlab = "Age (years)", ylab = "MMSE score (points)",
+     main = "One observation per participant")
+nrow(pair_data)
+```
+
+Each point contains **two measurements from the same participant**. This is appropriate for correlation. Participants should be independent of one another. `complete.cases()` keeps rows with both measurements observed; we do not remove people because an unrelated SES value is missing.
+
+**Predict:** Is the association positive, negative, or unclear? Is it approximately linear? What does the score limit do to the plot?
+
+**Pearson's r** describes a linear association using the measured values. **Spearman's rho** describes a monotonic association using ranks: does one variable tend to increase as the other increases or decreases? Both coefficients run from −1 to +1; a value near zero does not rule out every nonlinear relationship. A coefficient describes association, not causation. Pearson's usual inferential procedure has distributional assumptions beyond merely being able to calculate r.
+
+```{r spearman-demo}
+correlation <- cor.test(pair_data$Age, pair_data$MMSE,
+                        method = "spearman", exact = FALSE)
+correlation
+```
+
+We use an approximate Spearman p-value because these data contain ties. We are asking about monotonic association in a bounded score; we did not choose the method using a Shapiro cutoff. Base R's `cor.test()` does not provide a confidence interval for Spearman's rho; do not invent one.
+
+**Exercise 8:** Report the coefficient, direction, number of complete observations, and p-value. Does this cross-sectional association establish how an individual's score will change as they age? Why might group membership matter?
+
+**Your answer:**
+
+## Save and explain
+
+Restart R using **Session → Restart R**, then Knit your notebook. Save the `.Rmd` and HTML together. Explain one of these statements to your partner:
+
+- A large Shapiro p-value does not prove normality.
+- Welch and Wilcoxon do not ask exactly the same question.
+- Overlap between observations does not rule out a difference in group means.
+- A correlation does not establish a causal effect.
+
+Tomorrow, you will choose one group comparison and one correlation. The code remains available; the choices and explanations will be yours.
+
+## Function references
+
+[Shapiro–Wilk](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/shapiro.test.html), [Welch and paired t-tests](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/t.test.html), [Wilcoxon tests](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/wilcox.test.html), and [correlation](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/cor.test.html).
+
+[Continue to day 2](04_mmse_investigation.html)

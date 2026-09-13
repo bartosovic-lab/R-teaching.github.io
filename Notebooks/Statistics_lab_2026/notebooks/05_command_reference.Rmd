@@ -1,0 +1,41 @@
+---
+title: "R commands to keep beside you"
+output:
+  html_document:
+    self_contained: true
+    mathjax: null
+---
+
+[Course index](../index.html)
+
+These are reference examples, not an additional exercise. Replace the example object names with the objects in your notebook. Write commands in a chunk and run earlier chunks first.
+
+| Task | Example |
+|---|---|
+| Store values | `scores <- c(27, 28, 30)` |
+| Read a CSV | `mmse <- read.csv("data/mmse_baseline.csv")` |
+| Inspect a table | `head(mmse)`; `dim(mmse)`; `names(mmse)`; `str(mmse)` |
+| Select a column | `mmse$Age` |
+| Count categories | `table(mmse$Group)` |
+| Count missing values per column | `colSums(is.na(mmse))` |
+| Count observed values | `sum(!is.na(mmse$MMSE))` |
+| Keep scores from one group | `mmse$MMSE[mmse$Group == "Demented"]` |
+| Centre and spread | `mean(scores)`; `median(scores)`; `sd(scores)`; `IQR(scores)` |
+| Quartiles | `quantile(scores, c(0.25, 0.5, 0.75))` |
+| Range | `range(scores)` |
+| Omit missing values in a summary | `mean(scores, na.rm = TRUE)` |
+| Histogram | `hist(scores, xlab = "MMSE score (points)")` |
+| Boxplot by group | `boxplot(MMSE ~ Group, data = mmse)` |
+| Scatterplot | `plot(mmse$Age, mmse$MMSE)`; add meaningful axis labels |
+| Normal Q–Q plot | `qqnorm(scores)` followed by `qqline(scores)` |
+| Shapiro–Wilk | `shapiro.test(scores)` |
+| Independent mean comparison | `result <- t.test(group1, group2)`; default is Welch |
+| Independent rank-sum comparison | `result <- wilcox.test(group1, group2, exact = FALSE)` |
+| Correlation with inference | `cor.test(x, y, method = "spearman", exact = FALSE)` |
+| Adjust a stated family | `p.adjust(p_values, method = "bonferroni")` |
+| Read a result | `result` first, then for example `result$p.value` |
+| Function help | `?t.test` in the Console |
+
+`<-` assigns; `==` compares. Text and file paths need quotes; object names do not. Capitals matter. If your Console shows `+`, check for an unclosed bracket or quote; Esc cancels an unfinished command.
+
+Before a test, state the question, observation unit, variables, and assumptions. After a test, report the relevant estimate, sample size, uncertainty where available, and limitations. A command running successfully does not establish that the analysis is appropriate.

@@ -1,0 +1,362 @@
+---
+title: "04. Your MMSE investigation"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    code_folding: show
+    self_contained: true
+    mathjax: null
+---
+
+[Course index](../index.html) · [Day 1 reference](03_statistical_analysis.html) · [Data dictionary](../data/dictionary.html)
+
+# Day 2 — work in pairs, explain the analysis yourself
+
+**Your name:** write here. **Working partner:** write here.
+
+Today you will investigate a larger dementia dataset. Work with a partner: discuss questions, inspect plots, and help each other with code. Each of you should run the analysis in your own notebook and write your own explanations of what you did and why.
+
+**Submit one integrated notebook per student**, with code, figures, and narrative. Save its `.Rmd` source and rendered HTML; these are two versions of the same notebook, not a separate report. Follow the instructor's submission instructions for uploading them.
+
+You need **one group comparison and one correlation**, plus a short response to the worked multiple-testing example. You do not need a large collection of tests. Write a few sentences beside each important result rather than leaving all the writing until the end.
+
+## Today's plan
+
+| Time after the start | Task |
+|---|---|
+| 0:00–0:15 | Recap and discuss the task |
+| 0:15–0:35 | Worked example: multiple testing |
+| 0:35–1:15 | Inspect the data and write your analysis plan |
+| 1:15–1:30 | Break |
+| 1:30–2:20 | Group comparison: plots, assumptions, test, and interpretation |
+| 2:20–2:45 | One correlation and its scatterplot |
+| 2:45–2:55 | Break |
+| 2:55–3:05 | Challenge one conclusion |
+| 3:05–3:40 | Complete your explanations |
+| 3:40–4:00 | Restart, rerun, check, and discuss |
+
+## Setup — run first
+
+Save a personal copy in `notebooks/`, for example `04_mmse_investigation_Anna.Rmd`.
+
+```{r setup, include=FALSE}
+project_root <- normalizePath(if (file.exists("Statistics_lab.Rproj")) "." else "..",
+                              mustWork = TRUE)
+stopifnot(file.exists(file.path(project_root, "Statistics_lab.Rproj")))
+knitr::opts_knit$set(root.dir = project_root)
+knitr::opts_chunk$set(echo = TRUE, error = FALSE, fig.width = 7, fig.height = 4.5)
+```
+
+## 1. Worked example: why account for multiple testing?
+
+Imagine three planned treatment-versus-control comparisons in one experiment. These three questions form a **family of tests**. The p-values below are made up for this arithmetic example; they are not results from our dementia dataset.
+
+If we try many tests and report only the smallest p-value, we hide the number of opportunities to find an apparently unusual result. Bonferroni adjustment accounts for the size of a stated family: multiply each p-value by the number of tests and cap the result at 1.
+
+```{r bonferroni-example}
+p_values <- c(Treatment_A = 0.01, Treatment_B = 0.03, Treatment_C = 0.20)
+adjusted <- p.adjust(p_values, method = "bonferroni")
+data.frame(comparison = names(p_values), raw_p = p_values,
+           bonferroni_p = adjusted)
+```
+
+**Discuss, then answer:**
+
+1. Which tests belong to this family? Why is the multiplier three?
+2. Which values are below 0.05 before and after adjustment?
+3. Did the estimated treatment effects change, or did our criterion for evidence change?
+4. Why would reporting only Treatment A's unadjusted p-value be incomplete?
+
+**Your explanation:**
+
+For your own investigation, declare two questions below and report both results, whether significant or not. Treat them as exploratory. This separate demonstration does not remove multiplicity from your own work; acknowledge that limitation. Do not keep changing variables or methods until a small p-value appears. An optional two-test adjustment is provided at the end if you want to support a joint claim about finding an effect in either analysis.
+
+## 2. What are these data?
+
+The observations come from the OASIS-2 longitudinal study. The previous course file contained **336 visits from 136 people**. This version keeps the **first visit of each of those 136 participants**, preserving the original course values and rounding. We restored the participant IDs from the original source.
+
+The two labels, `Demented` and `Nondemented`, are the source study's longitudinal group classifications. Participants in its `Converted` group were already absent from the previous course file and remain excluded. This selection limits generalisation. These are observational data, not a randomised treatment experiment. Comparing MMSE across related clinical groups does not independently validate a diagnostic test.
+
+```{r import}
+mmse <- read.csv("data/mmse_baseline.csv")
+head(mmse)
+```
+
+### Data dictionary
+
+| Column | Meaning | How to treat it |
+|---|---|---|
+| `Subject_ID` | Source participant identifier | Identifier, not a measurement |
+| `Source_row`, `Visit` | Original row reference and visit number | Provenance; all retained visits are 1 |
+| `Group` | Source longitudinal group | Nominal category |
+| `M.F` | Source-recorded M/F category | Categorical; do not infer unrecorded identity information |
+| `Age` | Age at the visit, years | Numeric |
+| `EDUC` | Years of education | Numeric, recorded in whole years |
+| `SES` | Socioeconomic category: 1 highest status to 5 lowest | Ordinal; inspect category counts |
+| `MMSE` | Cognitive assessment score, 0–30 | Bounded integer score |
+| `CDR` | Clinical Dementia Rating | Ordered clinical categories |
+| `eTIV` | Estimated intracranial volume, cm³ | Numeric; not a direct measure of functioning brain tissue |
+| `nWBV` | Normalised whole-brain volume, stored as a fraction | Numeric; 0.70 corresponds to 70% on this scale |
+| `ASF` | Atlas scaling factor | Unitless imaging quantity; not a primary outcome here |
+
+Definitions and sources are in the [full data dictionary](../data/dictionary.html).
+
+### Task A — inspect before analysing
+
+Use the day 1 commands to answer:
+
+1. How many rows and columns are there? Does each `Subject_ID` appear once?
+2. How many participants are in each group?
+3. Which variables contain missing values?
+4. What are the observed age and MMSE ranges? Are they plausible given the dictionary?
+5. Why should we avoid calculating a mean SES as if the categories were equally spaced measurements?
+
+```{r student-audit}
+# Add your checks here.
+```
+
+**Your data description:**
+
+<details>
+<summary>Hint 1: functions to reuse</summary>
+
+Try `dim()`, `names()`, `table()`, `range()`, and `is.na()`. `unique()` keeps distinct values; compare the number of unique IDs with the number of rows.
+
+</details>
+
+<details>
+<summary>Hint 2: code to adapt if you are stuck</summary>
+
+This chunk is a reference. Copy needed lines into your audit chunk above so they run when you Knit.
+
+```{r audit-hint, eval=FALSE}
+dim(mmse)
+length(unique(mmse$Subject_ID))
+table(mmse$Group)
+colSums(is.na(mmse))
+range(mmse$Age, na.rm = TRUE)
+```
+
+`colSums(is.na(mmse))` counts missing entries in each column. Copy the last line and change the variable to inspect MMSE.
+
+</details>
+
+## 3. Plan two questions before looking at test results
+
+Our main group comparison is **MMSE between Demented and Nondemented participants**. Decide whether your primary question concerns means or a rank-based comparison. You may propose another group outcome, such as age, to the instructor, but the supplied templates below use MMSE.
+
+Choose **one** association: age with MMSE, **or** nWBV with MMSE. Choosing an association because its plot is relevant to your question is different from testing many associations and retaining only a significant one.
+
+### Task B — write your plan
+
+- **Group question and target quantity:**
+- **One correlation question:**
+- **What I expect, and why:**
+- **What makes the observations independent in this version:**
+- **Which variables must be observed for each analysis:**
+- **Which plots and assumptions I will inspect before choosing the method:**
+
+Show the plan to the instructor. You can revise a provisional method after inspecting the assumptions; record the reason. Use the break after completing the plan.
+
+## 4. Group comparison
+
+The following chunk keeps participants with an observed group and MMSE score. It leaves unrelated missing values alone. Selection is based on the variables needed for this analysis, not on whether every column in a row is complete.
+
+```{r prepare-groups}
+group_data <- mmse[complete.cases(mmse[, c("Group", "MMSE")]), ]
+group_data$Group <- factor(group_data$Group, levels = c("Nondemented", "Demented"))
+nondemented <- group_data$MMSE[group_data$Group == "Nondemented"]
+demented <- group_data$MMSE[group_data$Group == "Demented"]
+table(group_data$Group)
+nrow(mmse) - nrow(group_data)  # excluded from this comparison
+```
+
+### Task C — summarise and plot
+
+Calculate mean, median, SD, and IQR for each group. Reuse notebook 1. Report sample sizes. A summary table is useful, but a list of clearly labelled results is sufficient.
+
+```{r student-summaries}
+# Your summary commands here.
+```
+
+Adapt the following plot labels if needed. The dots show individual observations; horizontal jitter separates tied values without changing their scores.
+
+```{r group-plot}
+boxplot(MMSE ~ Group, data = group_data, outline = FALSE,
+        col = c("lightblue", "peachpuff"), ylim = c(0, 31),
+        ylab = "MMSE score (points)", xlab = "Source group")
+set.seed(7)
+stripchart(MMSE ~ Group, data = group_data, method = "jitter",
+           vertical = TRUE, add = TRUE, pch = 16, cex = 0.6, jitter = 0.15)
+```
+
+**Your caption, including group sizes, centre, spread, and any ceiling effect:**
+
+### Task D — assess distributions
+
+Use the supplied panel and normality tests. Read the plots first.
+
+```{r group-distributions, fig.height=6}
+par(mfrow = c(2, 2))
+hist(nondemented, breaks = seq(-0.5, 30.5, 1), xlim = c(0, 31),
+     ylim = c(0, 35),
+     main = "Nondemented", xlab = "MMSE score (points)")
+hist(demented, breaks = seq(-0.5, 30.5, 1), xlim = c(0, 31),
+     ylim = c(0, 35),
+     main = "Demented", xlab = "MMSE score (points)")
+qqnorm(nondemented, main = "Nondemented: Q–Q plot")
+qqline(nondemented)
+qqnorm(demented, main = "Demented: Q–Q plot")
+qqline(demented)
+par(mfrow = c(1, 1))
+```
+
+Both histograms use the same axes and bins. If you analyse a different outcome with the instructor, update these limits and labels as well as the selected values.
+
+```{r shapiro-groups}
+shapiro.test(nondemented)
+shapiro.test(demented)
+```
+
+**Your assumption assessment:** Describe the graphs, the Shapiro results, and the limitations of a normal approximation for these scores. Why is the Shapiro p-value insufficient to select a test by itself?
+
+### Task E — choose and justify one primary method
+
+Return to your question. Welch estimates a difference in means. Wilcoxon rank-sum uses ranks; it does not generally test a median difference without additional shape assumptions. Both require appropriate independent observations. Recall the side-by-side comparison from day 1.
+
+**My primary method and justification, written before running the test:**
+
+Enter either `"welch"` or `"wilcoxon"` between the empty quotes below. The supplied code runs only that method. You do not need to learn `if` statements today; they select the appropriate supplied command.
+
+```{r chosen-group-test}
+group_method <- ""
+if (group_method == "welch") {
+  group_result <- t.test(demented, nondemented, var.equal = FALSE)
+  print(mean(demented) - mean(nondemented))
+  print(group_result)
+} else if (group_method == "wilcoxon") {
+  group_result <- wilcox.test(demented, nondemented, exact = FALSE)
+  print(group_result)
+} else {
+  cat("Choose welch or wilcoxon in group_method after writing your justification.\n")
+}
+```
+
+### Task F — explain the result
+
+Include group sample sizes, direction, relevant summaries, method, statistic, and p-value. For Welch, include the mean difference and its 95% CI in the direction **Demented minus Nondemented**. For Wilcoxon, report the rank-based result and descriptive median/IQR values; do not claim its p-value tests the observed difference in medians or invent a mean-difference CI.
+
+**Your result paragraph:**
+
+**What this result does not establish:**
+
+## 5. One correlation
+
+### Task G — choose the variables and inspect the scatterplot
+
+Enter `"Age"` or `"nWBV"` below, following your plan. Leave the selection fixed when comparing plain and group-coloured displays.
+
+```{r correlation-plot}
+correlation_variable <- ""
+if (correlation_variable %in% c("Age", "nWBV")) {
+  correlation_data <- mmse[complete.cases(mmse[, c(correlation_variable, "MMSE")]), ]
+  x <- correlation_data[[correlation_variable]]
+  y <- correlation_data$MMSE
+  x_label <- if (correlation_variable == "Age") "Age (years)" else "Normalised whole-brain volume (fraction)"
+  plot(x, y, pch = 16, xlab = x_label, ylab = "MMSE score (points)")
+  print(nrow(correlation_data))
+  print(nrow(mmse) - nrow(correlation_data))
+} else {
+  cat("Choose Age or nWBV in correlation_variable to draw your scatterplot.\n")
+}
+```
+
+`mmse[[correlation_variable]]` selects the column whose name is stored in that object. For example, when the name is `"Age"`, it selects the same values as `mmse$Age`. `%in%` checks whether your choice is one of the two allowed names.
+
+**Your description:** State the direction, form, clustering, any influential observations, and sample size. Explain why this plot helps you choose between a linear and a monotonic association question.
+
+### Task H — select a correlation method
+
+Use `"pearson"` for a linear-association question or `"spearman"` for a rank-based monotonic-association question. Consider the plot and score scale. A separate Shapiro test of each variable is not a required gate for correlation.
+
+**My choice and reason, before running the test:**
+
+```{r chosen-correlation}
+correlation_method <- ""
+if (correlation_variable %in% c("Age", "nWBV") &&
+    correlation_method %in% c("pearson", "spearman")) {
+  correlation_result <- cor.test(x, y, method = correlation_method, exact = FALSE)
+  print(correlation_result)
+} else {
+  cat("Choose your variable, run its plot chunk, then choose pearson or spearman.\n")
+}
+```
+
+For Spearman we specify an approximate p-value because the observations contain ties. Pearson's usual p-value and interval rely on its inferential assumptions; the ability to calculate r does not establish those assumptions. Base R does not return a Spearman confidence interval.
+
+**Your result:** Report the coefficient, direction, sample size, p-value, and limitation. Include the confidence interval if using Pearson. Explain why a coefficient near zero would not rule out every possible relationship.
+
+## 6. Challenge one conclusion — ten minutes
+
+Choose one of these questions. You do not need another statistical test.
+
+1. Does colouring your chosen scatterplot by group change your interpretation of the pooled association?
+2. How does the ceiling of the MMSE scale affect your group plot and summaries?
+3. Why would using all 336 visits as independent people be inappropriate?
+
+If you choose question 1, copy and run this reference chunk after your correlation plot:
+
+```{r group-colour-hint, eval=FALSE}
+point_colours <- ifelse(correlation_data$Group == "Demented", "#B34D22", "#246B91")
+plot(x, y, col = point_colours, pch = 16, xlab = x_label,
+     ylab = "MMSE score (points)")
+legend("bottomleft", legend = c("Demented", "Nondemented"),
+       col = c("#B34D22", "#246B91"), pch = 16, bty = "n")
+```
+
+**Your answer and how it changes or qualifies your conclusion:**
+
+## 7. Using LLMs and other help
+
+Feel free to ask an LLM for debugging help, hints, or a more detailed explanation of a concept. Include the actual column names, your question, and the error or command you are working on. Ask for a small step if you are lost.
+
+Useful requests include:
+
+- “Explain this error and suggest the smallest correction. Here is my code and the exact message.”
+- “Explain why Welch and Wilcoxon ask different questions using a small numerical example. Then ask me a question to check my understanding.”
+- “Help me interpret this R output. Which conclusion would go beyond what it shows?”
+
+Check that suggested code uses the intended variables, groups, and sample sizes. Compare the explanation with the actual output. You should be able to explain any command you retain. Do not accept a method simply because an LLM recommended it, and write your own narrative.
+
+**If you used an LLM:** Give one short example: what you asked, what you checked, and what you now understand. A chat transcript is unnecessary. If you did not use one, say so; instructor help and the hints are equally acceptable.
+
+## 8. Finish your notebook
+
+You have 35 minutes to finish explanations and 15 minutes to rerun and check. Use the work already written beside each output.
+
+- [ ] I described the data, observation unit, groups, and missing values.
+- [ ] I stated one comparison and one correlation question before testing.
+- [ ] I described the distributions and justified the primary group test.
+- [ ] I reported results with sample sizes, relevant estimates, and limitations.
+- [ ] I included a scatterplot and explained the correlation.
+- [ ] I answered the separate multiple-testing questions.
+- [ ] I challenged one conclusion and described assistance if used.
+- [ ] I wrote my own explanations and replaced the empty answer prompts.
+- [ ] I restarted R and knitted the notebook successfully.
+
+Make sure the rendered notebook contains actual group-test and correlation results, not the messages asking you to choose a method. Save both versions of your notebook. On a room computer, copy your files to a location you can access after the class.
+
+**Final conclusion, three or four sentences:** Answer your two questions, state the main limitations, and identify one thing these data cannot establish. A non-significant result is still a result worth explaining.
+
+## Extra: adjustment for your two planned tests
+
+This is optional. If you make a joint claim of finding an association in either of your two analyses, account for that family rather than ignoring it. After completing both analyses, copy this chunk into your notebook and run it. It does not justify running extra tests until you obtain significance.
+
+```{r optional-adjustment, eval=FALSE}
+my_p_values <- c(group = group_result$p.value, correlation = correlation_result$p.value)
+data.frame(raw_p = my_p_values,
+           bonferroni_p = p.adjust(my_p_values, method = "bonferroni"))
+```
+
+[R reference for multiple-testing adjustment](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/p.adjust.html)

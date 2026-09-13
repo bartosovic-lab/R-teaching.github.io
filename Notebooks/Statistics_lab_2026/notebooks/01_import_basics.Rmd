@@ -1,0 +1,234 @@
+---
+title: "01. Importing data and basic statistics"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    code_folding: show
+    self_contained: true
+    mathjax: null
+---
+
+[Course index](../index.html) · [Setup](00_setup.html) · [Next: visualisation](02_visualisation.html)
+
+# Day 1 — let's start with a small dataset
+
+**Your name:** write here. **Working partner:** write here.
+
+In this notebook you will run R code, import a table, select values, and calculate simple summaries. We will work through the examples together. You can reuse the code; the important part is being able to explain what it does and what the result means.
+
+Use about **45 minutes for sections 1–4**, followed by **20 minutes for sections 5–6**. Exercises labelled **Extra** can wait. Write short answers in the notebook outside the code chunks.
+
+## Setup — run this first in every session
+
+Save your personal copy in the supplied `notebooks/` folder. This chunk tells R where to find the project. You do not need to learn these setup commands today.
+
+```{r setup, include=FALSE}
+project_root <- normalizePath(if (file.exists("Statistics_lab.Rproj")) "." else "..",
+                              mustWork = TRUE)
+stopifnot(file.exists(file.path(project_root, "Statistics_lab.Rproj")))
+knitr::opts_knit$set(root.dir = project_root)
+knitr::opts_chunk$set(echo = TRUE, error = FALSE, fig.width = 7, fig.height = 4.5)
+```
+
+## 1. Your first commands
+
+Run the following chunk. Then change the calculation to find `12 / 4` and run it again.
+
+```{r first-calculation}
+2 + 3
+```
+
+We can store values in an **object** and give it a name. `<-` means “store the result on the right using the name on the left”. `c()` combines values into a **vector**.
+
+```{r first-vector}
+scores <- c(27, 28, 29, 30)
+scores
+mean(scores)
+length(scores)
+```
+
+`mean()` is a **function**. It takes the values in `scores` and calculates their average. `length()` counts the values. Function names are followed by parentheses, and the information the function needs goes inside them.
+
+### Exercise 1
+
+1. Before running it, predict what `mean(scores)` will return.
+2. Add a fifth value, `26`, to the vector and rerun the chunk. What changed?
+3. Explain `scores <- c(27, 28, 29, 30)` to your partner without using the word “code”.
+
+**Your explanation:**
+
+### A small error to recognise
+
+R distinguishes between capitals and lower-case letters. The following command deliberately uses the wrong name. It is not run when you Knit the notebook. Try it in the Console, read the message, and correct the name.
+
+```{r deliberate-error, eval=FALSE}
+mean(Scores)
+```
+
+When R says an object is not found, check both its spelling and whether you ran the line that creates it.
+
+## 2. Import the MMSE data
+
+The Mini-Mental State Examination (MMSE) is a cognitive assessment scored from 0 to 30. Higher scores indicate better performance on this assessment. The score is bounded: someone already scoring 30 cannot score higher.
+
+Our small teaching example contains ten control scores and ten scores labelled AD. These values come from the workbook used in the previous course. Its original clinical provenance is not recorded, so use it to learn analysis rather than to make clinical claims. For this exercise, we treat the twenty entries as separate individuals. The IDs were added for teaching; they are not recovered patient identifiers.
+
+```{r import-small}
+small <- read.csv("data/mmse_small.csv")
+head(small)
+```
+
+`read.csv()` reads a comma-separated table. The quoted text is a file path relative to the project folder. `small` is now a **data frame**: a table in which each row is one observation and each column is one variable.
+
+```{r inspect-small}
+dim(small)       # number of rows, then number of columns
+names(small)     # column names
+str(small)       # storage types and a preview
+table(small$Group)
+```
+
+The `$` selects one column. `table()` counts how often each value occurs. `small$Group` therefore means “the Group column of small”.
+
+### Exercise 2
+
+1. How many observations and variables are there?
+2. Which column is an identifier, which describes a group, and which contains a measurement?
+3. Is `Group` nominal or ordinal? Is the numerical distance between MMSE scores necessarily a precise measure of cognitive ability?
+4. Would two columns containing ten values each be enough to establish that the measurements are paired? Explain.
+
+**Your answers:**
+
+## 3. Select a group
+
+First ask R a question about each row. `==` means “is equal to”. It differs from `<-`, which assigns an object.
+
+```{r logical-selection}
+small$Group == "Control"
+```
+
+The result contains `TRUE` for control rows and `FALSE` for other rows. Square brackets keep the values where the condition is `TRUE`.
+
+```{r group-vectors}
+control <- small$MMSE[small$Group == "Control"]
+ad <- small$MMSE[small$Group == "AD"]
+control
+ad
+```
+
+### Exercise 3
+
+Check `length(control)` and `length(ad)`. Why should these counts agree with the earlier group table? Then calculate the mean for each group using the commands you have already seen.
+
+```{r exercise-group-means}
+# Your code here
+```
+
+**What does one value in `ad` represent?**
+
+<details>
+<summary>Hint</summary>
+
+`mean(control)` calculates the control mean. Replace the object name to calculate the AD mean. The objects contain score values, not group names.
+
+</details>
+
+## 4. Stored as a number does not always mean continuous
+
+We will meet these variables on day 2. Their meaning matters more than how R happens to store them.
+
+| Variable | Meaning | Useful description |
+|---|---|---|
+| Group | A category such as Demented or Nondemented | Counts and proportions; nominal |
+| Age | Age in years | Numeric measurement, recorded in whole years |
+| SES | Ordered socioeconomic categories, 1 to 5 | Counts by ordered category; ordinal |
+| MMSE | A score from 0 to 30 | Numeric, discrete and bounded; inspect its distribution |
+
+**Discuss:** Why could taking the mean of numeric patient IDs produce a number that has no useful scientific meaning? Why is the distance between SES categories 1 and 2 not necessarily equivalent to the distance between 4 and 5?
+
+**Your answer:**
+
+Before continuing, check that you can run a chunk, select a column, find its output, and save your notebook. Ask for help now if any of these steps are unclear.
+
+## 5. Describe centre and spread
+
+Let's calculate several summaries in one chunk. You do not need to memorise all of these function names.
+
+```{r summary-control}
+mean(control)
+median(control)
+sd(control)
+quantile(control, probs = c(0.25, 0.50, 0.75))
+IQR(control)
+range(control)
+```
+
+| Summary | What it describes |
+|---|---|
+| Mean | The sum divided by the number of observations |
+| Median | The middle of the ordered values; with an even count, the mean of the middle two |
+| Standard deviation (SD) | Spread around the mean, in the measurement's units |
+| First and third quartiles | Values marking approximately the lower and upper quarters |
+| Interquartile range (IQR) | Third quartile minus first quartile; spread of the middle half |
+| Range | Minimum and maximum |
+
+R's `sd()` calculates the sample SD using `n - 1` in the variance calculation. Quartile conventions differ slightly between software, particularly for small samples. Use the same method consistently.
+
+### Exercise 4
+
+Run the same summaries for `ad` using a copy of the chunk above. Which group has the larger spread? Describe the difference using the units **MMSE score points**.
+
+```{r exercise-ad-summary}
+# Copy and adapt the summary commands here.
+```
+
+**Your comparison, including numbers:**
+
+### What does an extreme value do?
+
+These are made-up assay measurements for a separate demonstration. We are not changing the MMSE dataset.
+
+```{r extreme-value}
+assay <- c(4, 5, 5, 6, 7)
+assay_extreme <- c(4, 5, 5, 6, 30)
+mean(assay)
+mean(assay_extreme)
+median(assay)
+median(assay_extreme)
+```
+
+**Predict before running:** Which summary will change more? Explain the result. Does an extreme value give you a sufficient reason to delete an observation from a real experiment?
+
+**Your answer:**
+
+## 6. Missing values
+
+`NA` means a value is missing. It does not mean zero. This vector is another separate demonstration.
+
+```{r missing-values}
+example <- c(27, 28, NA, 30)
+mean(example)
+mean(example, na.rm = TRUE)
+is.na(example)
+sum(!is.na(example))
+```
+
+`na.rm = TRUE` tells the function to leave missing values out of this calculation. `!` means “not”, so the last line counts values that are **not missing**. Always report how many observed values contributed to a summary. Leaving out missing observations may bias the result if their absence is related to what you are studying.
+
+**Exercise 5:** How many observations contributed to the second mean? What incorrect result would you get if you replaced the missing value with zero? You can calculate it using a new vector.
+
+**Your answer:**
+
+## Before the break
+
+Save the notebook and click Knit. You should see both your code and explanations in the HTML file.
+
+Explain to your partner:
+
+1. What is the difference between a data frame and a selected column?
+2. What different information do the mean and SD provide?
+3. Why should a summary include the number of observations?
+
+**Extra:** Use `?sd` or `?quantile` in the Console to open the help. Find the argument controlling removal of missing values. Reading a function's help is a useful skill; you do not need to understand the entire page.
+
+[Continue to notebook 2: visualisation](02_visualisation.html)
