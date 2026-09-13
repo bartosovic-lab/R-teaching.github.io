@@ -17,7 +17,7 @@ output:
 
 In this notebook you will run R code, import a table, select values, and calculate simple summaries. We will work through the examples together. You can reuse the code; the important part is being able to explain what it does and what the result means.
 
-Use about **45 minutes for sections 1–4**, followed by **20 minutes for sections 5–6**. Exercises labelled **Extra** can wait. Write short answers in the notebook outside the code chunks.
+Use about **55 minutes**: 10 for first commands, 15 for MMSE import and selection, 15 for summaries and missing values, and 15 for the neurite practice in section 7. We will discuss section 4 together rather than write long answers. Exercises labelled **Extra** can wait. Write short answers in the notebook outside the code chunks.
 
 ## Setup — run this first in every session
 
@@ -233,6 +233,81 @@ sum(!is.na(example))
 **Exercise 5:** How many observations contributed to the second mean? What incorrect result would you get if you replaced the missing value with zero? You can calculate it using a new vector.
 
 **Your answer:**
+
+## 7. Your turn: import the neurite data
+
+Neurites are projections from neurons that develop into axons or dendrites. Imagine comparing neurite outgrowth in a control culture and two treatment conditions. Our **synthetic** table gives twenty values per condition. We use recorded units because physical units are not specified. For this exercise, each value represents an independent culture measurement. The values in the same row across different columns are not paired.
+
+This table is **wide**: each condition has its own column. The MMSE table is **long**: the measurement is in one column and the group label in another. Both layouts can describe independent groups.
+
+### Exercise 6 — import and inspect
+
+In the empty chunk, use `read.csv("data/neurites.csv")` to create an object called `neurites`. Then inspect its first rows, dimensions, column names, and structure. Use the MMSE example as a guide.
+
+```{r exercise-neurite-import}
+
+```
+
+**How many measurements are there in total? What does a column represent here, and how does this differ from `small`?**
+
+The following line also imports the data so the remaining examples work when you Knit an unfinished notebook. Complete your own import above before continuing.
+
+```{r neurite-import-reference}
+neurites <- read.csv("data/neurites.csv")
+```
+
+### Select values, then ask a question
+
+```{r neurite-selection}
+neurites$control
+neurites[1:5, c("control", "condition_1")]
+above_threshold <- neurites$control > 0.5
+above_threshold
+neurites$control[above_threshold]
+sum(above_threshold)
+```
+
+For a table, square brackets mean `[rows, columns]`. `1:5` selects rows 1 through 5. For a vector, there is only one position to specify. Summing a logical vector counts its `TRUE` values. The threshold here is just for practising selection; it is not a biological cutoff.
+
+**Exercise 7:** Select the `condition_2` values greater than 5 and count them. Then calculate its mean, median, and SD. Your partner does the same summaries for `condition_1`; each of you records both sets of results. Compare them with the supplied control summary below.
+
+```{r neurite-control-summary}
+c(mean = mean(neurites$control), median = median(neurites$control),
+  SD = sd(neurites$control))
+```
+
+```{r exercise-neurite-summary}
+
+```
+
+**Which condition has the highest mean? Which has the most variation? Would a mean alone show both things?**
+
+Do not subtract the columns row by row to claim a treatment response for an individual culture: these columns do not contain matched measurements.
+
+## Extra: practise with vectors — 10 minutes
+
+These made-up lengths have stated units for this separate microscope example.
+
+```{r calibration-example}
+lengths_um <- c(12.3, 15.8, 9.4, 18.1)
+calibrated_um <- lengths_um * 0.98 - 0.15
+calibrated_um
+class(calibrated_um)
+calibrated_um > 15
+```
+
+R applies the multiplication and subtraction to every value. `class()` reports the storage type; a comparison returns logical values.
+
+1. Predict whether calibration increases or decreases each length, then check.
+2. Select the calibrated values greater than 15 µm. Use `which(calibrated_um > 15)` to find their positions.
+3. Create `lengths_with_missing <- c(lengths_um, NA)`. Calculate its mean with and without `na.rm = TRUE`, and report the number of observed lengths.
+4. Use `quantile()` and `IQR()` to describe `neurites$condition_2`. Explain what its middle half adds to your earlier summary.
+
+```{r exercise-vector-practice}
+
+```
+
+**Your explanation:**
 
 ## Before the break
 

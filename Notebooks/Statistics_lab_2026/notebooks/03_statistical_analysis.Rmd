@@ -15,7 +15,7 @@ output:
 
 **Your name:** write here.
 
-We will spend **30 minutes on distributions**, take a break, then use **60 minutes for group comparisons** and **15 minutes for correlation**. Leave the final ten minutes of the afternoon for saving, rerunning, and questions.
+We will spend **30 minutes on distributions**, take a break, then use **50 minutes for group comparisons** and **15 minutes for correlation**. Leave the final ten minutes of the afternoon for saving, rerunning, and questions.
 
 The aim is to explain a choice of analysis. We will compare two methods using the same data and consider why they ask different questions.
 
@@ -30,6 +30,7 @@ knitr::opts_chunk$set(echo = TRUE, error = FALSE, fig.width = 7, fig.height = 4.
 ```
 
 ```{r import}
+neurites <- read.csv("data/neurites.csv")
 small <- read.csv("data/mmse_small.csv")
 control <- small$MMSE[small$Group == "Control"]
 ad <- small$MMSE[small$Group == "AD"]
@@ -99,6 +100,30 @@ Groups can have different means. Combining them can create two peaks even when a
 
 </details>
 
+### Exercise — apply the same checks to neurites
+
+Now use the histograms from notebook 2 and add Q–Q plots and Shapiro tests. We will do control together. Then one partner checks condition 1 and the other checks condition 2; each records the findings for all three conditions. Allow ten minutes within this normality block.
+
+```{r neurite-normality-example}
+qqnorm(neurites$control, main = "Neurite control: normal Q–Q plot")
+qqline(neurites$control)
+shapiro.test(neurites$control)
+```
+
+In your chunk, adapt these three commands to your assigned condition. A new `qqnorm()` plot needs its own `qqline()` immediately afterwards.
+
+```{r exercise-neurite-normality}
+
+```
+
+| Condition | Histogram and Q–Q plot: shape and unusual values | Shapiro p-value | How reasonable is a normal approximation, and what is uncertain? |
+|---|---|---|---|
+| Control | Write here | Write here | Write here |
+| Condition 1 | Write here | Write here | Write here |
+| Condition 2 | Write here | Write here | Write here |
+
+Compare your assessment with the mean, median, and SD from notebook 1. Do they support your description of the graphs? Would identical means and medians be enough to establish normality? Keep this table beside you for the later comparison.
+
 **Take the ten-minute break here.**
 
 ## 4. Estimate the difference first
@@ -112,7 +137,7 @@ mean_difference <- mean(ad) - mean(control)
 mean_difference
 ```
 
-**Exercise 4:** Report the difference in MMSE score points. Why would a fold change, such as “three times more cognition”, be inappropriate for this score?
+**Exercise 4:** Report the difference in MMSE score points. Then reverse the subtraction. What changes, and why must the direction be stated when reporting a difference?
 
 **Your answer:**
 
@@ -204,9 +229,17 @@ mean(neurites$condition_1) - mean(neurites$control)
 overlap_test
 ```
 
-**Exercise 7 — eight minutes:** Explain how overlapping observations can coexist with an interval for the mean difference that excludes zero. What would you lose by describing every individual observation using only its group mean? Do not compare the magnitude of a neurite difference directly with an MMSE difference; their units differ.
+**Exercise 7 — ten minutes:** Explain how overlapping observations can coexist with an interval for the mean difference that excludes zero. What would you lose by describing every individual observation using only its group mean? Do not compare the magnitude of a neurite difference directly with an MMSE difference; their units differ.
 
 **Your answer:**
+
+Use your neurite assumption table to assess whether Welch's mean comparison is reasonable for control and condition 1. Then adapt the earlier Wilcoxon command to these two vectors. Keep the direction **condition 1 minus control** for any mean difference.
+
+```{r exercise-overlap-ranks}
+
+```
+
+**Report:** the mean difference and its confidence interval; the question answered by the rank test; and whether the two results support compatible conclusions. Do not choose whichever p-value is smaller.
 
 ## 8. Scatterplots and correlation — fifteen minutes
 
@@ -249,6 +282,45 @@ Restart R using **Session → Restart R**, then Knit your notebook. Save the `.R
 - A correlation does not establish a causal effect.
 
 Tomorrow, you will choose one group comparison and one correlation. The code remains available; the choices and explanations will be yours.
+
+## Extra: what happens when we pool groups? — 10 minutes
+
+This repeats an idea from the original neurite exercise. Pooling puts all three conditions into one vector and discards their labels.
+
+```{r pooled-neurites, fig.height=3.8}
+pooled_neurites <- c(neurites$control, neurites$condition_1, neurites$condition_2)
+par(mfrow = c(1, 2))
+hist(pooled_neurites, main = "All conditions pooled", xlab = "Recorded units")
+qqnorm(pooled_neurites, main = "Pooled normal Q–Q plot")
+qqline(pooled_neurites)
+par(mfrow = c(1, 1))
+shapiro.test(pooled_neurites)
+```
+
+Compare this with your three separate assessments. Pooling groups with different centres or spreads can change the shape; it does not guarantee a particular Shapiro result. Explain why a test on this pooled vector cannot settle whether a normal approximation is reasonable within each treatment group.
+
+**Your explanation:**
+
+## Extra: a second neurite comparison and correction — 10–15 minutes
+
+Suppose the planned family consists of **two** questions: condition 1 versus control and condition 2 versus control. Use Welch to address mean differences in this teaching exercise, while reporting the concerns in your distribution table. There is no preliminary equal-variance test.
+
+```{r two-neurite-comparisons}
+neurite_test_1 <- t.test(neurites$condition_1, neurites$control)
+neurite_test_2 <- t.test(neurites$condition_2, neurites$control)
+neurite_p <- c(condition_1 = neurite_test_1$p.value,
+              condition_2 = neurite_test_2$p.value)
+data.frame(
+  condition = c("condition_1", "condition_2"),
+  mean_difference = c(mean(neurites$condition_1) - mean(neurites$control),
+                      mean(neurites$condition_2) - mean(neurites$control)),
+  raw_p = neurite_p,
+  bonferroni_p = p.adjust(neurite_p, method = "bonferroni"))
+```
+
+Which condition has the larger estimated mean difference? Does it also have the smaller p-value? Use the SDs and sample sizes to explain why effect magnitude alone does not determine a p-value. Describe one concern about inference for condition 2. Tomorrow's worked example explains the adjustment in more detail; it accounts for two opportunities to find evidence, without changing the observed differences.
+
+**Your explanation:**
 
 ## Function references
 

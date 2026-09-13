@@ -37,3 +37,7 @@ Future full rebuilds should use the documented R setup and `scripts/render.R`, f
 ## Pages deployment preparation
 
 The root homepage and KN7001 navigation now target the revised workshop; their local links were checked, allowing Jekyll-generated HTML for Markdown course pages. Receptor–ligand and transcriptomic materials are unchanged. The Pages configuration excludes the new instructor folder and build scripts from the public teaching site. GitHub currently publishes `main`; a repository admin or maintainer must select `course/statistics-lab-2026` and `/(root)`. The authenticated account has write access but cannot change that setting. A live deployment check remains pending that change.
+
+## Expanded practical work — September 2026
+
+Rebuilt all nine HTML documents after expanding the neurite work and day 2 descriptive tasks. All eight day 2 method/variable paths passed again. In a separate copied project with spaces in its path, filled the new student chunks with representative answers and rendered notebooks 01–04; enabled the optional PDF export and ggplot2 chunks and verified the PDF was created. Inspected the new histogram, Q–Q, and four-panel figures; added an explicit label for missing SES. Student package and local-link checks were repeated. No dataset values were changed. The timing is a teaching estimate, not a learner-tested result.

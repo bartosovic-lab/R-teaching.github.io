@@ -16,6 +16,12 @@ These are reference examples, not an additional exercise. Replace the example ob
 | Read a CSV | `mmse <- read.csv("data/mmse_baseline.csv")` |
 | Inspect a table | `head(mmse)`; `dim(mmse)`; `names(mmse)`; `str(mmse)` |
 | Select a column | `mmse$Age` |
+| Select rows and columns | `mmse[1:5, c("Age", "MMSE")]` |
+| Keep values above a threshold | `scores[scores > 25]` |
+| Count values meeting a condition | `sum(scores > 25)`; check missing values first |
+| Find positions | `which(scores > 25)` |
+| Apply arithmetic to every value | `calibrated <- lengths_um * 0.98 - 0.15` |
+| Wide to long for numeric group columns | `neurites_long <- stack(neurites)` |
 | Count categories | `table(mmse$Group)` |
 | Count missing values per column | `colSums(is.na(mmse))` |
 | Count observed values | `sum(!is.na(mmse$MMSE))` |
@@ -25,6 +31,8 @@ These are reference examples, not an additional exercise. Replace the example ob
 | Range | `range(scores)` |
 | Omit missing values in a summary | `mean(scores, na.rm = TRUE)` |
 | Histogram | `hist(scores, xlab = "MMSE score (points)")` |
+| Bar chart of category counts | `barplot(table(mmse$M.F), ylab = "Participants")` |
+| Multiple panels | `par(mfrow = c(2, 2))`; reset with `par(mfrow = c(1, 1))` |
 | Boxplot by group | `boxplot(MMSE ~ Group, data = mmse)` |
 | Scatterplot | `plot(mmse$Age, mmse$MMSE)`; add meaningful axis labels |
 | Normal Q–Q plot | `qqnorm(scores)` followed by `qqline(scores)` |

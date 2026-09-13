@@ -6,24 +6,25 @@ The student route starts at `../index.html`. Distribute `../statistics_lab_stude
 
 Use notebook 00. Install R before RStudio, then `rmarkdown` and `knitr`. Have students open the supplied project, run a chunk, save a personal copy in `notebooks/`, and Knit it. Test room computers with a student account beforehand, including file retention after logout. Move unresolved laptop cases to those machines; do not use the first statistics session for installation troubleshooting.
 
-The violin figure is pre-rendered. Students do not need `ggplot2` unless they elect to rerun its optional code. No LLM account is required.
+The violin figure is pre-rendered. Students need `ggplot2` only for the optional plotting extension or to rerun the violin code. No LLM account is required.
 
 ## Day 1: four hours including breaks
 
 | Elapsed time | Activity |
 |---|---|
 | 0:00–0:15 | Welcome, lecture retrieval, five-minute RStudio overview |
-| 0:15–1:00 | Notebook 01, sections 1–4: basic R and import |
-| 1:00–1:20 | Notebook 01, sections 5–6: summaries and missingness |
-| 1:20–1:35 | Break |
-| 1:35–1:55 | Notebook 02: prepared histograms and boxplots; demonstrate violin |
-| 1:55–2:25 | Notebook 03, sections 1–3: question, plots, normality |
-| 2:25–2:35 | Break |
-| 2:35–3:35 | Notebook 03, sections 4–7: Welch, Wilcoxon comparison, overlap |
+| 0:15–1:10 | Notebook 01: first commands (10), MMSE import/selection (15), summaries/missingness (15), neurite transfer (15) |
+| 1:10–1:25 | Break |
+| 1:25–2:05 | Notebook 02: neurite histograms (15), MMSE histograms (10), boxplots/mean bars (10), violin and caption (5) |
+| 2:05–2:35 | Notebook 03, sections 1–3: MMSE question and diagnostics (20), neurite diagnostics in pairs (10) |
+| 2:35–2:45 | Break |
+| 2:45–3:35 | Notebook 03, sections 4–7: mean estimate/Welch (20), Welch–Wilcoxon discussion (15), overlap transfer (10), writing (5) |
 | 3:35–3:50 | Notebook 03, section 8: scatterplot and correlation demonstration |
 | 3:50–4:00 | Restart, Knit, and exit explanation |
 
-Protect the 30-minute normality block and the 60-minute analysis block. Within the latter, aim for 25 minutes on mean estimation and Welch output, 15 on the paired method discussion, 8 on the overlap example, and 12 for writing and questions. Shorten duplicate calculations and cosmetic plotting first. For the 20-minute plot block, show prepared plots and ask targeted questions rather than typing all the code live.
+This is a fuller main route with 40 minutes for plotting, not a requirement to finish every prompt on every page. In notebook 01, discuss measurement scales orally and demonstrate the extreme-value and missing-value examples; students write the neurite summary themselves. Partners divide conditions 1 and 2 for calculations and diagnostics, then each records and explains both results. Do not have students retype every supplied command.
+
+Protect normality, the required Welch–Wilcoxon comparison, and the closing explanation. If the class falls ten minutes behind, show the supplied common-axis histograms and discuss the neurite boxplot together instead of having everyone reconstruct both. Keep the three-condition histogram exercise. Save vector calibration, PDF export, ggplot2, pooled normality, and the second neurite comparison for extension work; these are not prerequisites for day 2. The expanded route needs a beginner pilot to establish whether the timing is comfortable.
 
 Use the original teaching pattern: explain a concrete example, run it, ask students to change or interpret something. Avoid narrating every function argument. The early challenge is predicting output and connecting commands to values; later it is explaining statistical choices. A student who cannot type a test command from memory can still meet the goals.
 
@@ -43,7 +44,7 @@ The existing synthetic neurite comparison has overlap but still a small Welch p-
 
 Follow notebook 04's timetable. Work in pairs but have each student run and write in their own copy. Change who explains and who operates the keyboard during discussion; do not let one partner do all interpretation.
 
-Begin with the separate 20-minute Bonferroni example. The independent assignment contains only one primary group comparison and one correlation. Do not turn the day into a survey of additional tests. The blank method fields stop premature inference while keeping the template renderable.
+Begin with the separate 20-minute Bonferroni example. The independent assignment includes a descriptive overview (age summaries/histogram, M/F counts/bar chart, SES missingness, and an age-based selection), followed by one primary group comparison and one correlation. Within the 40-minute audit-and-plan block, allow 10 minutes for the audit, 20 for the overview, and 10 for the plan. Do not turn the day into a survey of additional tests. The blank method fields stop premature inference while keeping the template renderable.
 
 The group templates use MMSE. An alternative outcome is possible with instructor support, but requires changing all relevant selectors, axis labels, bins/ranges, and interpretation, not just the test command. Prefer the provided outcome if a pair is struggling. For correlation, Age and nWBV are both supported explicitly.
 

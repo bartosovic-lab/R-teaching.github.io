@@ -2,7 +2,7 @@
 
 ## Overall assessment
 
-The notebooks follow the agreed priorities: learning statistical reasoning with supplied R code, normality assessment, comparison of Welch and Wilcoxon, useful plots, and a manageable independent investigation. They preserve the previous course values and leave the old notebooks unchanged.
+The notebooks follow the agreed priorities: learning statistical reasoning with supplied R code, normality assessment, comparison of Welch and Wilcoxon, useful plots, and a manageable independent investigation. They preserve the previous course values and keep the old notebooks on the unchanged main branch.
 
 The main remaining uncertainty is pacing with actual beginners. The code can be checked automatically; whether students understand it and finish comfortably needs a short learner pilot or observation during the first run. Do not interpret successful rendering as evidence of learning.
 
@@ -11,8 +11,8 @@ The main remaining uncertainty is pacing with actual beginners. The code can be 
 | Notebook | What supports learning | Remaining risk and what to watch |
 |---|---|---|
 | 00: setup | A separate installation session, prepared project, one successful chunk, and one successful Knit | Installation may exceed thirty minutes. Test room computers beforehand and direct unresolved cases there. |
-| 01: basics | One selection syntax first, a small visible vector, concrete table, prediction tasks, and separate missing-value examples | SD, quartiles, and missingness are still a lot in twenty minutes. Demonstrate the supplied summary chunk and prioritise explanation over repeated typing. |
-| 02: plots | Matched histogram axes, all points on boxplots, a comparison with mean bars, and a supplied violin | Twenty minutes leaves little room for customisation. Run prepared figures and ask the interpretation questions; students need not learn ggplot syntax. |
+| 01: basics | One selection syntax first, a small visible vector, concrete table, prediction tasks, and separate missing-value examples | The 55-minute route now includes neurite transfer. Discuss scales and the supplied missingness example together, then let students adapt the neurite commands. |
+| 02: plots | Matched histogram axes, all points on boxplots, a comparison with mean bars, and a supplied violin | The plot block is now 40 minutes, with hands-on histograms for all neurite conditions. Keep styling minimal and ggplot syntax optional. |
 | 03: tests | Question before test, within-group diagnostics, output interpretation, required comparison of targets, and an overlap example | Small MMSE scores are strongly separated and bounded. Do not let agreement between tests obscure approximation limits or imply every biological dataset gives a clear result. |
 | 04: investigation | Two questions only, explicit method choices, staged audit hints, a complete-case rule per analysis, and narrative beside outputs | A strong partner or LLM can still do the reasoning for another student. Use individual explanations and check actual selected-test output, not just a successful Knit. |
 | 05: reference | Reusable commands without a new exercise burden | Students may use it as a test menu. Remind them to state the question and assumptions first. |
@@ -66,14 +66,22 @@ The main remaining uncertainty is pacing with actual beginners. The code can be 
 
 **Evidence to collect:** Whether both can identify the quantity being estimated and one limitation in their own words.
 
-### 5. Improve examples based on observed misunderstandings, not by adding more topics
+### 5. Use the added practice to check transfer
 
 **Why:** These notebooks already cover a substantial amount for eight hours. More tests or plots may reduce the time spent explaining the central ideas.
 
-**How:** Collect the most common unclear points after day 1. If confidence intervals are the difficulty, replace a repeated calculation with a simple explanation contrasting individual spread and estimate uncertainty. If normality dominates every decision, return to the question-and-design worksheet. Keep ANOVA and chi-square as follow-on resources.
+**How:** The expanded notebooks now let students repeat the same reasoning on MMSE and neurites. Collect the most common unclear points after day 1. If confidence intervals are the difficulty, replace a repeated calculation with a simple explanation contrasting individual spread and estimate uncertainty. If normality dominates every decision, return to the question-and-design worksheet. Keep ANOVA and chi-square as follow-on resources.
 
 **Evidence to collect:** Fewer unsupported phrases such as “normal because p > 0.05”, “Wilcoxon compares means”, or “no effect because p > 0.05” in the final narratives.
 
 ## What this review could not establish
 
 The HTML files were generated successfully, their embedded figures were inspected, and code/data/link checks were performed. The browser automation connection was unavailable, including after resetting it; full interactive browser layout, hint toggling, and RStudio operation were not verified through the UI. No students have piloted the notebooks yet. Before teaching, open the index and notebooks in the browser used in the computer room and complete Thursday's setup check on a student account.
+
+## Breadth review after comparison with the original notebooks
+
+Restored practical work on importing the neurite table, vector and table selection, three-condition summaries, repeated histogram views, common axes, three-condition boxplots, and transferring normality checks between datasets. Day 2 now includes a descriptive overview before inference. Empty chunks let students write and adapt commands, with supplied examples for reference.
+
+Retained the clearer narrative and statistical safeguards. Did not restore row-by-row treatment differences between independent cultures, automatic test selection from Shapiro or a variance test, or fold-change exercises. Wide-to-long conversion uses base R; ggplot2 is the only optional plotting dependency. PDF export, pooled distributions, a second planned neurite comparison with correction, and a four-panel day 2 figure provide further work without extending the required list of statistical tests.
+
+Main remaining risk: the expanded first afternoon is demanding for a complete beginner. The revised guide assigns 40 minutes to plotting and identifies exact demonstrations to shorten if the class falls behind. Pilot the first 55-minute notebook and the 40-minute plot block before fixing these times for future cohorts. Breadth should give students more chances to practise and explain, not require them to finish a checklist at speed.

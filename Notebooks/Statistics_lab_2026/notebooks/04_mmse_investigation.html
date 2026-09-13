@@ -463,6 +463,10 @@ conclusion — ten minutes</a></li>
 <li><a href="#using-llms-and-other-help" id="toc-using-llms-and-other-help">7. Using LLMs and other help</a></li>
 <li><a href="#finish-your-notebook" id="toc-finish-your-notebook">8.
 Finish your notebook</a></li>
+<li><a href="#extra-a-four-panel-figure-15-minutes" id="toc-extra-a-four-panel-figure-15-minutes">Extra: a four-panel figure
+— 15 minutes</a></li>
+<li><a href="#extra-explore-another-measurement-10-minutes" id="toc-extra-explore-another-measurement-10-minutes">Extra: explore
+another measurement — 10 minutes</a></li>
 <li><a href="#extra-adjustment-for-your-two-planned-tests" id="toc-extra-adjustment-for-your-two-planned-tests">Extra: adjustment
 for your two planned tests</a></li>
 </ul></li>
@@ -483,10 +487,11 @@ code, figures, and narrative. Save its <code>.Rmd</code> source and
 rendered HTML; these are two versions of the same notebook, not a
 separate report. Follow the instructor’s submission instructions for
 uploading them.</p>
-<p>You need <strong>one group comparison and one correlation</strong>,
-plus a short response to the worked multiple-testing example. You do not
-need a large collection of tests. Write a few sentences beside each
-important result rather than leaving all the writing until the end.</p>
+<p>You will first build a descriptive picture of the participants, then
+complete <strong>one group comparison and one correlation</strong>, plus
+a short response to the worked multiple-testing example. You do not need
+a large collection of tests. Write a few sentences beside each important
+result rather than leaving all the writing until the end.</p>
 <div id="todays-plan" class="section level2">
 <h2>Today’s plan</h2>
 <table>
@@ -511,7 +516,7 @@ important result rather than leaving all the writing until the end.</p>
 </tr>
 <tr class="odd">
 <td>0:35–1:15</td>
-<td>Inspect the data and write your analysis plan</td>
+<td>Audit, explore participant characteristics, and write your plan</td>
 </tr>
 <tr class="even">
 <td>1:15–1:30</td>
@@ -733,6 +738,46 @@ colSums(is.na(mmse))
 range(mmse$Age, na.rm = TRUE)</code></pre>
 <p><code>colSums(is.na(mmse))</code> counts missing entries in each
 column. Copy the last line and change the variable to inspect MMSE.</p>
+</details>
+</div>
+<div id="task-a2-who-is-in-this-sample-20-minutes" class="section level3">
+<h3>Task A2 — who is in this sample? — 20 minutes</h3>
+<p>Build a short descriptive overview before the hypothesis tests. Use
+the neurite practice to help you select columns and adapt plot commands.
+Work through these four tasks; write a sentence beside each output.
+These are descriptions, not additional statistical tests.</p>
+<ol style="list-style-type: decimal">
+<li>Calculate the mean, median, SD, and range of age. Make an age
+histogram with a meaningful title and axis label. Try two bin widths or
+numbers of bins, and keep the view that best communicates the
+distribution.</li>
+<li>Count participants by source-recorded M/F category using
+<code>table(mmse$M.F)</code>. Make a bar chart of the counts. Explain
+why this is a bar chart rather than a histogram.</li>
+<li>Inspect the SES counts with
+<code>table(mmse$SES, useNA = &quot;ifany&quot;)</code>. Report how many values
+are missing and why replacing them with zero would introduce a new,
+invalid category.</li>
+<li>Select participants aged 80 or older. Count them and inspect their
+group counts. State the denominator when reporting their proportion of
+the full sample. This threshold is a descriptive exercise, not a new
+definition of disease.</li>
+</ol>
+<p><strong>What kind of sample are we analysing? Include the age
+summary, category counts, and missingness in three or four
+sentences.</strong></p>
+<details>
+<summary>
+Hints for the overview
+</summary>
+<p>Use
+<code>hist(mmse$Age, breaks = 8, xlab = &quot;Age (years)&quot;, main = &quot;Participant ages&quot;)</code>
+as a starting point. Use
+<code>barplot(table(mmse$M.F), xlab = &quot;Source-recorded category&quot;, ylab = &quot;Participants&quot;)</code>
+for counts. Adapt <code>mmse[mmse$Age &gt;= 80, ]</code> to create a
+selected table; <code>nrow()</code> counts its participants. Age has no
+missing values here. For a variable with missing values, include an
+explicit missingness check in the selection.</p>
 </details>
 </div>
 </div>
@@ -980,11 +1025,13 @@ hints are equally acceptable.</p>
 </div>
 <div id="finish-your-notebook" class="section level2">
 <h2>8. Finish your notebook</h2>
-<p>You have 35 minutes to finish explanations and 15 minutes to rerun
-and check. Use the work already written beside each output.</p>
+<p>You have 35 minutes to finish explanations and 20 minutes to rerun,
+check, and discuss. Use the work already written beside each output.</p>
 <ul class="task-list">
 <li><label><input type="checkbox"></input>I described the data, observation
 unit, groups, and missing values.</label></li>
+<li><label><input type="checkbox"></input>I completed the age, M/F, SES, and
+age-selection overview with plots and explanations.</label></li>
 <li><label><input type="checkbox"></input>I stated one comparison and one
 correlation question before testing.</label></li>
 <li><label><input type="checkbox"></input>I described the distributions and
@@ -1010,6 +1057,36 @@ to a location you can access after the class.</p>
 your two questions, state the main limitations, and identify one thing
 these data cannot establish. A non-significant result is still a result
 worth explaining.</p>
+</div>
+<div id="extra-a-four-panel-figure-15-minutes" class="section level2">
+<h2>Extra: a four-panel figure — 15 minutes</h2>
+<p>Once the required analysis and writing are complete, bring your
+findings together in a figure: age histogram, MMSE boxplot by group,
+your chosen scatterplot, and SES category counts. Reuse the commands you
+already understand.</p>
+<p>Start with <code>par(mfrow = c(2, 2))</code>, add your four plotting
+commands, and finish with <code>par(mfrow = c(1, 1))</code>. For the SES
+panel, the following commands label the missing category explicitly.
+Copy them into your four-panel chunk as its fourth plot. Add titles and
+axis labels to every panel. Do not add more hypothesis tests.</p>
+<pre class="r"><code>ses_counts &lt;- table(mmse$SES, useNA = &quot;ifany&quot;)
+ses_labels &lt;- names(ses_counts)
+ses_labels[is.na(ses_labels)] &lt;- &quot;Missing&quot;
+barplot(ses_counts, names.arg = ses_labels, main = &quot;SES including missing values&quot;,
+        xlab = &quot;SES category&quot;, ylab = &quot;Participants&quot;)</code></pre>
+<p><strong>Caption:</strong> Name the sample, describe one finding from
+each panel, and state a limitation. What does the combined figure make
+easier to understand? Which details would need a larger separate
+plot?</p>
+</div>
+<div id="extra-explore-another-measurement-10-minutes" class="section level2">
+<h2>Extra: explore another measurement — 10 minutes</h2>
+<p>Choose <strong>EDUC or nWBV</strong>. Before running anything, use
+the dictionary to state its meaning and units. Make a histogram,
+calculate appropriate summaries, and describe the values by group using
+a boxplot. Write one question the plots raise that your two planned
+analyses cannot answer. Do not turn it into another test today.</p>
+<p><strong>Your observation and unanswered question:</strong></p>
 </div>
 <div id="extra-adjustment-for-your-two-planned-tests" class="section level2">
 <h2>Extra: adjustment for your two planned tests</h2>

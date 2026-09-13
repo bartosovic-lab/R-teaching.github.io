@@ -15,7 +15,7 @@ output:
 
 **Your name:** write here.
 
-Use about **20 minutes** for this notebook. We will make histograms and boxplots, then look at a violin plot together. The code is supplied so we can spend our time understanding the figures. We will practise scatterplots at the end of notebook 3 and on day 2.
+Use about **40 minutes**: 15 for neurite histograms, 10 for the MMSE histograms, 10 for boxplots and mean bars, and 5 for the violin demonstration and a caption. You will adapt commands and make your own figures. The extensions on saving figures and ggplot2 can wait until you finish the main route. We will practise scatterplots at the end of notebook 3 and on day 2.
 
 ## Setup and import
 
@@ -30,6 +30,7 @@ knitr::opts_chunk$set(echo = TRUE, error = FALSE, fig.width = 7, fig.height = 4.
 ```
 
 ```{r import}
+neurites <- read.csv("data/neurites.csv")
 small <- read.csv("data/mmse_small.csv")
 small$Group <- factor(small$Group, levels = c("Control", "AD"))
 control <- small$MMSE[small$Group == "Control"]
@@ -41,6 +42,47 @@ ad <- small$MMSE[small$Group == "AD"]
 ## 1. Histograms
 
 A histogram divides the measurement scale into intervals, or **bins**, and counts observations in each interval. Adjacent bars describe one numeric scale. This differs from a bar chart of separate categories.
+
+### Start with the neurite measurements
+
+```{r neurite-histogram}
+hist(neurites$control, breaks = 5, col = "lightblue",
+     main = "Control", xlab = "Neurite measurement (recorded units)")
+```
+
+`main` sets the title and `xlab` labels the horizontal axis. `breaks = 5` asks R for roughly five bins; R chooses convenient boundaries, so the actual number can differ. A vector of boundaries sets them explicitly. See the [R histogram reference](https://stat.ethz.ch/R-manual/R-devel/library/graphics/html/hist.html).
+
+### Exercise — three conditions, several views
+
+1. Copy the command into the empty chunk and adapt it to plot `condition_1` and `condition_2`. Change the titles as well as the selected columns.
+2. Compare their centres, ranges, and shapes. Check the axis numbers: are all three panels using the same scale?
+3. Plot `condition_2` with `breaks = 5`, then `breaks = 15`. Which features remain, and which depend on the bins? With twenty measurements, what happens when there are almost as many bins as observations?
+
+```{r exercise-neurite-histograms}
+
+```
+
+**Two observations about the data, and one feature that depends on the plotting settings:**
+
+### Make a fair comparison
+
+Here are control and condition 1 using the same bins and axes. Compare this view with your individually scaled plots.
+
+```{r neurite-common-bins, fig.height=3.8}
+neurite_breaks <- seq(0, 1.6, by = 0.2)
+par(mfrow = c(1, 2))
+hist(neurites$control, breaks = neurite_breaks, xlim = c(0, 1.6),
+     ylim = c(0, 12), main = "Control", xlab = "Recorded units", col = "lightblue")
+hist(neurites$condition_1, breaks = neurite_breaks, xlim = c(0, 1.6),
+     ylim = c(0, 12), main = "Condition 1", xlab = "Recorded units", col = "peachpuff")
+par(mfrow = c(1, 1))
+```
+
+**Discuss:** Why would these boundaries fail for condition 2? How would putting all three conditions on a 0–12 axis change what you can see in control and condition 1? Shared scales help comparisons, but can hide detail in the narrower distributions.
+
+### Now return to MMSE
+
+The same plotting function works for scores. Their integer scale and upper limit call for different bin choices.
 
 ```{r histograms, fig.height=3.8}
 par(mfrow = c(1, 2))
@@ -93,6 +135,20 @@ stripchart(MMSE ~ Group, data = small, vertical = TRUE,
 
 **Your answers:**
 
+### Exercise — show all three neurite conditions
+
+Use `boxplot(neurites, outline = FALSE)` as your starting point. Add a title and label the vertical axis in recorded units. Then add the individual values using the supplied lines below in the same chunk.
+
+```{r exercise-neurite-boxplot}
+# Write your boxplot command first, then copy these lines below it:
+# set.seed(7)
+# stripchart(neurites, vertical = TRUE, method = "jitter", add = TRUE, pch = 16)
+```
+
+Remove the `#` from the two plotting lines when you use them. Compare your plot with the three histograms. Does the condition with the largest mean also have the narrowest spread? Can you see the overlap between control and condition 1 on this scale?
+
+**Your interpretation:**
+
 ### Compare with a mean-only bar chart
 
 ```{r mean-bars}
@@ -136,6 +192,60 @@ Here the violin is trimmed to each group's observed range. Smoothing still sugge
 Choose the figure you would use to describe this small dataset and explain why. Include a caption naming the measurements, groups, and sample sizes. Keep axis labels and units; colour changes can wait.
 
 **Your choice and caption:**
+
+## Extra: save a figure — 5 minutes
+
+The HTML keeps your plots with your analysis. You may also need a separate figure for a presentation. Run this chunk to save a PDF inside the project's `outputs/` folder.
+
+```{r save-neurite-pdf, eval=FALSE}
+dir.create("outputs", showWarnings = FALSE)
+pdf("outputs/neurite_boxplot.pdf", width = 7, height = 5)
+boxplot(neurites, outline = FALSE, ylab = "Neurite measurement (recorded units)")
+set.seed(7)
+stripchart(neurites, vertical = TRUE, method = "jitter", add = TRUE, pch = 16)
+dev.off()
+```
+
+`pdf()` opens the output file; `dev.off()` finishes it. Run all the lines, then open the PDF from the Files pane. Check that the labels are readable. To retain the result when you Knit, change `eval=FALSE` to `eval=TRUE` after trying it.
+
+## Extra: wide tables, long tables, and ggplot2 — 15–20 minutes
+
+The original neurite table stores groups in separate columns. `stack()` places their values in one column and the condition labels in another. No extra package is needed for this step.
+
+```{r neurites-long}
+neurites_long <- stack(neurites)
+names(neurites_long) <- c("measurement", "condition")
+head(neurites_long)
+dim(neurites_long)
+table(neurites_long$condition)
+```
+
+**Explain:** Why does the table now have sixty rows? Did we collect more measurements? Select only the `condition_2` rows using the logical selection you practised in notebook 1.
+
+```{r exercise-long-selection}
+
+```
+
+If `ggplot2` is installed, try the following chunk. Change `eval=FALSE` to `eval=TRUE` to include it when you Knit. `aes()` maps columns to positions or colours; each `+` adds a layer. `facet_wrap()` gives each condition its own panel.
+
+```{r neurite-ggplot, eval=FALSE}
+library(ggplot2)
+ggplot(neurites_long, aes(x = measurement)) +
+  geom_histogram(binwidth = 0.5, boundary = 0, colour = "white", fill = "steelblue") +
+  facet_wrap(~ condition) +
+  labs(x = "Neurite measurement (recorded units)", y = "Count") +
+  theme_classic()
+
+ggplot(neurites_long, aes(x = condition, y = measurement)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_point(position = position_jitter(width = 0.12, height = 0, seed = 7)) +
+  labs(x = "Condition", y = "Neurite measurement (recorded units)") +
+  theme_classic()
+```
+
+Change `binwidth` to 0.2, then 1. Explain which view is useful for each condition. Fixed facet scales make comparison possible, but the much wider condition 2 compresses the other groups. See the [ggplot2 histogram reference](https://ggplot2.tidyverse.org/reference/geom_histogram.html).
+
+**Your explanation:**
 
 ## Extra: plots you may use in other biology courses
 

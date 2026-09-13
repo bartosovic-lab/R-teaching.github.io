@@ -387,6 +387,30 @@ in a chunk and run earlier chunks first.</p>
 <td><code>mmse$Age</code></td>
 </tr>
 <tr class="odd">
+<td>Select rows and columns</td>
+<td><code>mmse[1:5, c(&quot;Age&quot;, &quot;MMSE&quot;)]</code></td>
+</tr>
+<tr class="even">
+<td>Keep values above a threshold</td>
+<td><code>scores[scores &gt; 25]</code></td>
+</tr>
+<tr class="odd">
+<td>Count values meeting a condition</td>
+<td><code>sum(scores &gt; 25)</code>; check missing values first</td>
+</tr>
+<tr class="even">
+<td>Find positions</td>
+<td><code>which(scores &gt; 25)</code></td>
+</tr>
+<tr class="odd">
+<td>Apply arithmetic to every value</td>
+<td><code>calibrated &lt;- lengths_um * 0.98 - 0.15</code></td>
+</tr>
+<tr class="even">
+<td>Wide to long for numeric group columns</td>
+<td><code>neurites_long &lt;- stack(neurites)</code></td>
+</tr>
+<tr class="odd">
 <td>Count categories</td>
 <td><code>table(mmse$Group)</code></td>
 </tr>
@@ -422,6 +446,15 @@ in a chunk and run earlier chunks first.</p>
 <tr class="odd">
 <td>Histogram</td>
 <td><code>hist(scores, xlab = &quot;MMSE score (points)&quot;)</code></td>
+</tr>
+<tr class="even">
+<td>Bar chart of category counts</td>
+<td><code>barplot(table(mmse$M.F), ylab = &quot;Participants&quot;)</code></td>
+</tr>
+<tr class="odd">
+<td>Multiple panels</td>
+<td><code>par(mfrow = c(2, 2))</code>; reset with
+<code>par(mfrow = c(1, 1))</code></td>
 </tr>
 <tr class="even">
 <td>Boxplot by group</td>

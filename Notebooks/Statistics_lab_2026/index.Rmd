@@ -22,15 +22,15 @@ Watch the lecture assigned by the instructor. Bring your laptop to the installat
 
 | Notebook | What we will do | Editable source |
 |---|---|---|
-| [01. Importing data and basic statistics](notebooks/01_import_basics.html) | Run R commands, import the small MMSE table, and describe centre and spread | [Rmd](notebooks/01_import_basics.Rmd) |
-| [02. Looking at the data](notebooks/02_visualisation.html) | Histograms, boxplots with observations, and a violin demonstration | [Rmd](notebooks/02_visualisation.Rmd) |
+| [01. Importing data and basic statistics](notebooks/01_import_basics.html) | Run R commands, import MMSE and neurite tables, select values, and compare summaries | [Rmd](notebooks/01_import_basics.Rmd) |
+| [02. Looking at the data](notebooks/02_visualisation.html) | Explore all three neurite conditions, vary histogram bins, compare boxplots and mean bars, and discuss a violin | [Rmd](notebooks/02_visualisation.Rmd) |
 | [03. Normality, group comparisons and correlation](notebooks/03_statistical_analysis.html) | Inspect assumptions, compare Welch and Wilcoxon, and interpret a correlation | [Rmd](notebooks/03_statistical_analysis.Rmd) |
 
 ## Day 2 — your investigation
 
 [04. Your MMSE investigation](notebooks/04_mmse_investigation.html) · [R Markdown source](notebooks/04_mmse_investigation.Rmd)
 
-Work in pairs. Each student keeps a personal notebook containing code, figures, and their own explanations. Complete one group comparison and one correlation, plus the short multiple-testing exercise. LLMs are available for hints, debugging, and explanations; you should understand the work you submit.
+Work in pairs. Each student keeps a personal notebook containing code, figures, and their own explanations. Build a descriptive overview with summaries and plots, then complete one group comparison and one correlation, plus the short multiple-testing exercise. LLMs are available for hints, debugging, and explanations; you should understand the work you submit.
 
 ## References to keep beside you
 

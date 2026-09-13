@@ -58,7 +58,7 @@ Paste this command into the **Console** and press Enter. It requires an internet
 install.packages(c("rmarkdown", "knitr"))
 ```
 
-`ggplot2` is only needed to rerun the optional violin demonstration. The figure is already included, so you can complete the workshop without installing it.
+`ggplot2` is only needed for the optional plotting extension and to rerun the violin demonstration. The figure is already included, so you can complete the workshop without installing it.
 
 ## Run code and write notes
 
@@ -78,6 +78,12 @@ Open your copy of notebook 1. Run its first setup chunk, then its first calculat
 Knit runs the notebook from the beginning in a fresh R session. This checks that the notebook contains the steps needed to reproduce the results. An object that you created only in the Console will not be available.
 
 **Before you leave Thursday:** you should be able to open the project, run a chunk, save your work, and create an HTML file. If you use a room computer, work in the workshop folder on the Desktop. At the end of each afternoon, copy the whole folder to your own storage so you can take your work with you.
+
+## A five-minute rehearsal, if setup is finished
+
+In your copy of notebook 1, find the empty Exercise 1 chunk. Type `2 + 3` between its markers and run it. Replace it with `12 / 4`, predict the result, and run it again. Write one sentence outside the chunk, save, and Knit. Remove these rehearsal commands when you start Exercise 1 in class.
+
+You are ready when you can find your file, edit a command, run the chunk, find its output, and save your notes. You do not need to learn more R before day 1.
 
 ## Before day 1
 
