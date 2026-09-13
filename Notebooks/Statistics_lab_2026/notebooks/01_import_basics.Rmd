@@ -41,7 +41,7 @@ Run the following chunk. Then change the calculation to find `12 / 4` and run it
 
 We can store values in an **object** and give it a name. `<-` means “store the result on the right using the name on the left”. `c()` combines values into a **vector**.
 
-**Before running the next chunk, work through Exercise 1 below.**
+**Read the next chunk as an example. Before running it, work through Exercise 1 below.**
 
 ```{r first-vector}
 scores <- c(27, 28, 29, 30)
@@ -54,14 +54,18 @@ length(scores)
 
 ### Exercise 1
 
-Use the chunk directly above (`first-vector`); you do not need to create a new chunk for this exercise. Make your changes in your own saved copy of this notebook.
+Use the empty chunk below for your own commands. Keep the example above unchanged, and work in your own saved copy of this notebook. Type between the opening and closing chunk markers; leave the markers in place.
 
-1. Without running the chunk yet, predict what `mean(scores)` will return. Write your prediction below, outside the code chunk.
-2. Click the green triangle at the top right of the chunk to run it. Compare the result with your prediction.
-3. Add a fifth value, `26`, inside `c(...)`, after `30` and separated by a comma. Rerun the whole chunk so that R updates `scores` before calculating the mean. What changed?
+1. Before running any commands, predict what `mean(scores)` will return for the four values in the example. Write your prediction below, outside the code chunk.
+2. In the empty chunk, write a line that creates `scores` with the four values shown above, then a line that calculates their mean. Use the example to help you. Click the green triangle at the top right of your chunk to run it and compare the result with your prediction.
+3. In your own chunk, add a fifth value, `26`, inside `c(...)`, after `30` and separated by a comma. Rerun the whole chunk so that R updates `scores` before calculating the mean. What changed?
 4. Explain `scores <- c(27, 28, 29, 30)` to your partner without using the word “code”.
 
 **Your prediction:**
+
+```{r exercise-1}
+
+```
 
 **What changed after adding 26:**
 
