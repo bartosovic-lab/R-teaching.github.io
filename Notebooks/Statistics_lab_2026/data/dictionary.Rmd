@@ -12,15 +12,15 @@ output:
 
 # Small MMSE example: `mmse_small.csv`
 
-Twenty scores copied without changing values from the existing course workbook `excel_data.xlsx`, sheet **Mini Mental State exam**, cells A8:B17. The workbook's `Healthy` header is labelled `Control` in the new CSV, consistent with its description of ten controls versus ten AD cases. The other group remains `AD`.
+Synthetic MMSE scores for ten controls (`Control`) and ten people labelled `AD`, created for teaching. These values do not come from actual patient measurements.
 
 | Column | Definition |
 |---|---|
-| `Teaching_ID` | Added row label such as Control_01. Not an original clinical identifier. |
+| `Teaching_ID` | Identifier for each individual, such as Control_01. |
 | `Group` | Control or AD; nominal category. |
 | `MMSE` | Integer cognitive-assessment score, 0–30; higher indicates better performance on the assessment. |
 
-For the exercise, treat these as twenty independent individuals. The original clinical source and sampling design are not documented. Do not interpret these illustrative observations as a validated clinical study or use MMSE ratios as ratios of cognitive ability. No values are missing.
+For the exercise, treat these as twenty independent individuals. MMSE ratios should not be interpreted as ratios of cognitive ability. No values are missing.
 
 # Larger dataset: `mmse_baseline.csv`
 

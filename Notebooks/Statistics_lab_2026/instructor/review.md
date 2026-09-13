@@ -27,7 +27,7 @@ The main remaining uncertainty is pacing with actual beginners. The code can be 
 - Improved day 2 histogram scaling so the distributions are visible while retaining common bins and axes.
 - Included a pre-rendered violin to avoid an optional package blocking students.
 - Distinguished missing values in the original visit-level dataset from the first-visit dataset, which has eight missing SES values and no missing MMSE scores.
-- Preserved the limitations of the old data: undocumented clinical provenance for the small MMSE example, undocumented physical units for the synthetic neurites, and the source's longitudinal group selection in OASIS.
+- Preserved the limitations of the old data: synthetic scores in the small MMSE example, undocumented physical units for the synthetic neurites, and the source's longitudinal group selection in OASIS.
 - Kept day 2 correction primarily as a separate worked exercise while acknowledging multiplicity in the exploratory independent work.
 - Checked relative links and the student package; the extracted index does not link to an absent ZIP. Instructor answers and source archives are excluded.
 - Disabled the unused MathJax dependency so the rendered teaching content does not need an internet connection. External reference links still need one.

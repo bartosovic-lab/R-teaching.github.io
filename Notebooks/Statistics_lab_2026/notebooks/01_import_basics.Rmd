@@ -87,7 +87,7 @@ When R says an object is not found, check both its spelling and whether you ran 
 
 The Mini-Mental State Examination (MMSE) is a cognitive assessment scored from 0 to 30. Higher scores indicate better performance on this assessment. The score is bounded: someone already scoring 30 cannot score higher.
 
-Our small teaching example contains ten control scores and ten scores labelled AD. These values come from the workbook used in the previous course. Its original clinical provenance is not recorded, so use it to learn analysis rather than to make clinical claims. For this exercise, we treat the twenty entries as separate individuals. The IDs were added for teaching; they are not recovered patient identifiers.
+This synthetic dataset contains MMSE scores for ten controls and ten people labelled AD. The values were created for teaching and do not come from actual patient measurements. Each row represents a different individual in the exercise.
 
 ```{r import-small}
 small <- read.csv("data/mmse_small.csv")

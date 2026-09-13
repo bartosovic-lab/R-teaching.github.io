@@ -199,11 +199,11 @@ Introduce a deliberately missing value in a separate demonstration. Compare the 
 
 **Question:** How do the MMSE score distributions differ between the two groups in this teaching example?
 
-Introduce the small MMSE table already present in the Excel workbook. Explain the score's bounded scale, identify the groups, and describe the analysis as an educational comparison. The workbook does not establish its original clinical provenance.
+Introduce the small MMSE table already present in the Excel workbook. Explain the score's bounded scale, identify the groups, and describe the analysis as an educational comparison. The instructor has confirmed that these are synthetic teaching data, not actual patient measurements.
 
 Students calculate summaries by group and create a histogram and a boxplot with individual points. Compare a mean-only bar chart with a plot showing all observations. With ten observations per group, point displays should remain central.
 
-Explain that two columns of equal length do not establish pairing. In the teaching version, any assumption that the twenty entries represent separate individuals must be explicit; synthetic row labels must not be mistaken for recovered clinical identifiers.
+Explain that two columns of equal length do not establish pairing. In this synthetic example, the twenty entries represent separate individuals.
 
 **Checkpoint:** Each student produces a labelled figure and a two-sentence description of the group difference and within-group variation.
 
@@ -412,7 +412,7 @@ Provide equivalent function hints and instructor help for students without an LL
 | Existing file | What was found | Teaching implication |
 |---|---|---|
 | `R-teaching.github.io/data/03_neurites_synthetic.csv` | Twenty rows and three treatment columns | Useful small synthetic warm-up; document units and whether observations across columns are independent. Do not infer pairing from row position. |
-| `R-teaching.github.io/data/excel_data.xlsx`, “Mini Mental State exam” sheet | Ten control scores and ten AD scores, in cells A8:B17 | Provides the intended day 1 Alzheimer's example. A simple CSV would avoid making Excel import another learning hurdle. Clinical provenance is not documented in the workbook. |
+| `R-teaching.github.io/data/excel_data.xlsx`, “Mini Mental State exam” sheet | Ten control scores and ten AD scores, in cells A8:B17 | Provides the intended day 1 Alzheimer's example. A simple CSV would avoid making Excel import another learning hurdle. Synthetic teaching data, as confirmed by the instructor. |
 | `R-teaching.github.io/data/alzheimer_data.csv` | 336 rows; 146 labelled Demented and 190 Nondemented; 19 SES values and two MMSE values missing | The rows represent repeated visits, not 336 independent people. Subject IDs and visit information were removed from this copy. |
 
 ### Confirmed source issue in the larger MMSE file

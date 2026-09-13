@@ -35,7 +35,7 @@ Use the original teaching pattern: explain a concrete example, run it, ask stude
 - After normality: describe the evidence and uncertainty without claiming that a large Shapiro p-value proves normality.
 - After tests: identify the different targets of Welch and Wilcoxon. Agreement does not make their questions identical.
 
-Do not teach a binary normality decision tree. Teach a question/design/plot/assumption worksheet. Acknowledge that the small MMSE example is discrete, bounded, strongly separated, and of undocumented clinical provenance. Welch is introduced as an approximate mean comparison under an explicit teaching design, not a universally correct test for MMSE. Wilcoxon is not generally a test of medians when shapes differ.
+Do not teach a binary normality decision tree. Teach a question/design/plot/assumption worksheet. Acknowledge that the small MMSE example is discrete, bounded, strongly separated, and synthetic. Welch is introduced as an approximate mean comparison under an explicit teaching design, not a universally correct test for MMSE. Wilcoxon is not generally a test of medians when shapes differ.
 
 The existing synthetic neurite comparison has overlap but still a small Welch p-value. It illustrates individual variability versus precision of a mean difference, not a null result. We did not alter values to force disagreement or significance. Physical units and the original simulation generator are unknown, so use “recorded units”.
 
