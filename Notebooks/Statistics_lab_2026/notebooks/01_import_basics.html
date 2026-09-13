@@ -496,6 +496,8 @@ learn these setup commands today.</p>
 <code>&lt;-</code> means “store the result on the right using the name
 on the left”. <code>c()</code> combines values into a
 <strong>vector</strong>.</p>
+<p><strong>Before running the next chunk, work through Exercise 1
+below.</strong></p>
 <pre class="r"><code>scores &lt;- c(27, 28, 29, 30)
 scores</code></pre>
 <pre><code>## [1] 27 28 29 30</code></pre>
@@ -510,15 +512,32 @@ parentheses, and the information the function needs goes inside
 them.</p>
 <div id="exercise-1" class="section level3">
 <h3>Exercise 1</h3>
+<p>Use the chunk directly above (<code>first-vector</code>); you do not
+need to create a new chunk for this exercise. Make your changes in your
+own saved copy of this notebook.</p>
 <ol style="list-style-type: decimal">
-<li>Before running it, predict what <code>mean(scores)</code> will
-return.</li>
-<li>Add a fifth value, <code>26</code>, to the vector and rerun the
-chunk. What changed?</li>
+<li>Without running the chunk yet, predict what
+<code>mean(scores)</code> will return. Write your prediction below,
+outside the code chunk.</li>
+<li>Click the green triangle at the top right of the chunk to run it.
+Compare the result with your prediction.</li>
+<li>Add a fifth value, <code>26</code>, inside <code>c(...)</code>,
+after <code>30</code> and separated by a comma. Rerun the whole chunk so
+that R updates <code>scores</code> before calculating the mean. What
+changed?</li>
 <li>Explain <code>scores &lt;- c(27, 28, 29, 30)</code> to your partner
 without using the word “code”.</li>
 </ol>
+<p><strong>Your prediction:</strong></p>
+<p><strong>What changed after adding 26:</strong></p>
 <p><strong>Your explanation:</strong></p>
+<p><strong>When you need a new code chunk:</strong> place the cursor on
+a blank line outside an existing chunk in your <code>.Rmd</code> file.
+Press <strong>Ctrl+Alt+I</strong> on Windows or
+<strong>Cmd+Option+I</strong> on Mac, or choose <strong>Code → Insert
+Chunk</strong> from the RStudio menu. RStudio adds the opening and
+closing markers for you. Type R commands between them; write your
+explanations outside them.</p>
 </div>
 <div id="a-small-error-to-recognise" class="section level3">
 <h3>A small error to recognise</h3>
