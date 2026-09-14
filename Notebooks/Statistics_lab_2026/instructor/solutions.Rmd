@@ -168,11 +168,11 @@ All options have 136 complete pairs. Award credit for choosing a linear or monot
 
 Colouring the scatterplot by group can reveal that between-group separation contributes to the pooled association. It does not itself adjust for group or establish causality. The student need only investigate one limitation, not run more subgroup tests.
 
-## Minimum submission feedback
+## Feedback on the final submitted notebook
 
-Check for actual selected-test outputs; the blank template intentionally renders without doing inferential tests. Required work is one primary comparison, one correlation, and the separate correction explanation. If a student leaves selection messages, empty answer prompts, or only a screenshot of a result, ask them to complete the reasoning and code.
+When assessing the final submission, check for actual selected-test outputs; the blank template intentionally renders without doing inferential tests. Required work is one primary comparison, one correlation, and the separate correction explanation. If a student leaves selection messages, empty answer prompts, or only a screenshot of a result, ask them to complete the reasoning and code.
 
-Good work connects the question, observation unit, assumptions, result and limitation. Allow short, direct answers. Partners may share code, but each should explain it. Ask each student to interpret one figure or predict the effect of changing an argument. LLM use itself is neither rewarded nor penalised; understanding and verification matter.
+Good work connects the question, observation unit, assumptions, result and limitation. Allow short, direct answers. Partners may share code, but each should explain it. Use the explanations written in the submitted notebook to assess understanding. LLM use itself is neither rewarded nor penalised; understanding and verification matter.
 
 An overall discovery claim based on either of the two analyses needs multiplicity considered. Students can acknowledge the exploratory, unadjusted scope; an optional supplied two-test adjustment is available. Never encourage additional testing to find significance.
 

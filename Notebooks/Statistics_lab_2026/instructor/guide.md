@@ -28,9 +28,11 @@ Protect normality, the required Welch–Wilcoxon comparison, and the closing exp
 
 Use the original teaching pattern: explain a concrete example, run it, ask students to change or interpret something. Avoid narrating every function argument. The early challenge is predicting output and connecting commands to values; later it is explaining statistical choices. A student who cannot type a test command from memory can still meet the goals.
 
-### Checkpoints that matter
+### Student self-checks and partner discussion
 
-- After orientation: each student runs a chunk, selects a column, changes an argument, finds output, and saves. If several pairs cannot, spend another ten minutes here and shorten repetition later.
+These prompts are for students to use themselves or with a partner; they are not instructor assessments or approval steps. Instructors assess only the final submitted notebooks.
+
+- After orientation: students check that they can run a chunk, select a column, change an argument, find output, and save.
 - After summaries: distinguish centre, spread, missing values, and sample size.
 - After plots: explain why a box is not a confidence interval and why a smooth violin does not create more observations.
 - After normality: describe the evidence and uncertainty without claiming that a large Shapiro p-value proves normality.
@@ -46,7 +48,7 @@ Follow notebook 04's timetable. Work in pairs but have each student run and writ
 
 Begin with the separate 20-minute Bonferroni example. The independent assignment includes a descriptive overview (age summaries/histogram, M/F counts/bar chart, SES missingness, and an age-based selection), followed by one primary group comparison and one correlation. Within the 40-minute audit-and-plan block, allow 10 minutes for the audit, 20 for the overview, and 10 for the plan. Do not turn the day into a survey of additional tests. The blank method fields stop premature inference while keeping the template renderable.
 
-The group templates use MMSE. An alternative outcome is possible with instructor support, but requires changing all relevant selectors, axis labels, bins/ranges, and interpretation, not just the test command. Prefer the provided outcome if a pair is struggling. For correlation, Age and nWBV are both supported explicitly.
+The group templates use MMSE. An alternative outcome is possible, but requires changing all relevant selectors, axis labels, bins/ranges, and interpretation, not just the test command. The provided outcome offers the most guidance. For correlation, Age and nWBV are both supported explicitly.
 
 Hints in collapsible sections progress from function names to working code. They are not compulsory reading. Students can also use LLMs for debugging, hints, and conceptual explanations. Ask them to check actual variables, sample sizes, and outputs. The short assistance reflection should show one check, not document every interaction.
 
@@ -54,7 +56,7 @@ Hints in collapsible sections progress from function names to working code. They
 
 Each student submits one notebook, with its `.Rmd` and rendered HTML versions according to the course submission channel. No separate report. The minimum requirements are in notebook 04. A clean render with blank selection prompts is an incomplete assignment.
 
-Allow minor narrative completion after class if needed, but aim to finish the analysis during the session. Assess reasoning, not volume. Accept exploratory conclusions acknowledging multiplicity; if students make a joint discovery claim, direct them to the optional two-test adjustment and its scope.
+Allow minor narrative completion after class if needed, but aim to finish the analysis during the session. Assess reasoning in the final submission, not volume. Accept exploratory conclusions acknowledging multiplicity; assess any joint discovery claim in light of whether students accounted for the two tests.
 
 ## Data preparation choices
 

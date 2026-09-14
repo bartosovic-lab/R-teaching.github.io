@@ -181,7 +181,7 @@ The instructor introduces the RStudio panes through a tiny example, then helps s
 
 Keep the neurite example brief if retained. Its purpose here is to make a vector, a group, and a measurement concrete. Do not introduce several competing data organisations before students have completed their first successful import.
 
-**Checkpoint:** Every student can locate the saved analysis, run a line, and explain what an object and a row represent. Pause to resolve setup problems before moving into statistics.
+**Student self-check:** Every student can locate the saved analysis, run a line, and explain what an object and a row represent. Pause to resolve setup problems before moving into statistics.
 
 ### Block B: centre, spread, and variable meaning
 
@@ -193,7 +193,7 @@ Connect the arithmetic to interpretation: SD describes spread among observations
 
 Introduce a deliberately missing value in a separate demonstration. Compare the result with and without `na.rm = TRUE`, and report the observed sample size. Explain why silently removing missing values is not a complete data-cleaning strategy.
 
-**Checkpoint:** Students choose a summary for a skewed example and explain what information is lost by reporting only a mean.
+**Student self-check:** Students choose a summary for a skewed example and explain what information is lost by reporting only a mean.
 
 ### Block C: the small Alzheimer's disease example
 
@@ -205,7 +205,7 @@ Students calculate summaries by group and create a histogram and a boxplot with 
 
 Explain that two columns of equal length do not establish pairing. In this synthetic example, the twenty entries represent separate individuals.
 
-**Checkpoint:** Each student produces a labelled figure and a two-sentence description of the group difference and within-group variation.
+**Student self-check:** Each student produces a labelled figure and a two-sentence description of the group difference and within-group variation.
 
 ### Block D: from a plot to a statistical comparison
 
@@ -234,7 +234,7 @@ Use an explicitly hypothetical disagreement question if the existing data produc
 
 Annotate the test output together: method, group order, sample summaries, statistic, degrees of freedom where relevant, p-value, and confidence interval where provided. Use a consistent subtraction direction such as AD minus control. For MMSE, a difference in score points is more interpretable than a fold change; a score of twenty does not mean twice the cognitive ability of a score of ten.
 
-**Checkpoint:** Complete a result sentence with sample sizes, effect direction and magnitude, uncertainty, and one limitation. Explain a p-value as a probability of a result at least as extreme under the null model and assumptions, rather than the probability the null hypothesis is true. Statistical significance alone does not express effect size or biological importance. This interpretation follows the [ASA statement](https://magazine.amstat.org/blog/2016/03/07/pvalue-mar16/).
+**Student self-check:** Complete a result sentence with sample sizes, effect direction and magnitude, uncertainty, and one limitation. Explain a p-value as a probability of a result at least as extreme under the null model and assumptions, rather than the probability the null hypothesis is true. Statistical significance alone does not express effect size or biological importance. This interpretation follows the [ASA statement](https://magazine.amstat.org/blog/2016/03/07/pvalue-mar16/).
 
 ### Short contrasting exercise: overlapping observations
 
@@ -316,7 +316,7 @@ End by asking students to reconstruct the workflow from question to conclusion. 
 | 00:00–00:15 | 15 | Retrieval, normality/test-choice recap, and paired-work briefing |
 | 00:15–00:35 | 20 | Separate worked multiple-testing example; define a family, apply Bonferroni correction, and answer a short interpretation question |
 | 00:35–00:55 | 20 | Import, observation-unit check, missingness, and data description |
-| 00:55–01:15 | 20 | Select questions and record the plan; brief instructor feedback |
+| 00:55–01:15 | 20 | Select questions and record the plan; partner discussion |
 | 01:15–01:30 | 15 | Break |
 | 01:30–02:20 | 50 | Group plots, normality/assumption assessment, justified comparison, and interpretation |
 | 02:20–02:45 | 25 | One scatterplot and one correlation analysis using a supplied template |
@@ -359,7 +359,7 @@ MMSE versus group is a useful familiar comparison, but students should understan
 
 Before generating test results, students write the outcome, comparison or association, unit of observation, proposed plot, relevant missing-data rule, and provisional method. They can revise the plan after inspecting assumptions, but record why.
 
-**Support:** A short instructor check catches a mismatch between the question and method. This is formative feedback, not a requirement for students to predict the final result.
+**Self-check:** Students compare their chosen method with their written question and discuss it with their partner before continuing. No instructor review is required.
 
 ### Stage 3: explore, analyse, and interpret
 
@@ -401,7 +401,7 @@ Students should check:
 4. Does the proposed method answer the question?
 5. Does the written explanation agree with the actual R output?
 
-Use a light reflection within the notebook rather than a separate LLM report: “I asked for help with ___; I checked the suggestion by ___; I now understand ___.” One example is enough if LLMs were used. An instructor can ask a student to explain a retained command or predict what changing one argument would do. Do not require a chat transcript or make use of an LLM mandatory.
+Use a light reflection within the notebook rather than a separate LLM report: “I asked for help with ___; I checked the suggestion by ___; I now understand ___.” One example is enough if LLMs were used. Partners can explain a retained command to each other or predict what changing one argument would do. Do not require a chat transcript or make use of an LLM mandatory.
 
 Provide equivalent function hints and instructor help for students without an LLM account. For this workshop, students can usually seek help using the data dictionary and code rather than uploading an entire dataset. Any use of identifiable research data would require the institution's approved arrangements; none is needed for these exercises.
 
@@ -457,7 +457,7 @@ ANOVA need not be taught within the core two afternoons. A follow-on resource ca
 
 ## 11. Feedback and evidence of learning
 
-Assess the reasoning visible in the work, with emphasis determined by the agreed success criterion.
+Instructors assess only the final submitted notebooks. There are no instructor checks of individual plans, code, or results during the workshop. Assess the reasoning visible in the final work, with emphasis determined by the agreed success criterion.
 
 | Dimension | Satisfactory evidence | Feedback if missing |
 |---|---|---|
@@ -468,11 +468,11 @@ Assess the reasoning visible in the work, with emphasis determined by the agreed
 | Reproducibility | Saved code executes in order and reproduces key results | Restart and identify the first missing dependency or manual step |
 | Critical assistance use | Student explains and verifies the help used | Ask them to explain a chosen command and check its inputs |
 
-Useful formative evidence includes an initial retrieval exercise, day 1 checkpoints, a day 2 analysis plan, and a final explanation. A result that does not support an association can demonstrate excellent learning. Producing many tests should not itself earn credit.
+The initial retrieval exercise, day 1 self-checks, and day 2 analysis plan guide students during the workshop. Assessment uses the final submitted notebook. A result that does not support an association can demonstrate excellent learning. Producing many tests should not itself earn credit.
 
 ## 12. Materials to develop after agreeing the design
 
-1. A timed facilitator guide with breaks, checkpoints, common misconceptions, and a shorter fallback route.
+1. A timed facilitator guide with breaks, student self-checks, common misconceptions, and a shorter fallback route.
 2. A setup guide and short lecture companion with retrieval questions and clarifications.
 3. Revised day 1 notebooks with worked examples, gradual removal of code support, and interpretation exercises.
 4. A day 2 brief, notebook framework, question menu, staged hints, and agreed LLM policy.
@@ -486,4 +486,4 @@ The current repository has useful material to reuse, but the initial audit ident
 
 This draft incorporates the existing [goals](goals.md), statistics notebooks, lecture transcript, workbook examples, a source check of the larger dementia dataset, and the agreed priorities: two four-hour afternoons; reasoning using supplied R code; normality, test choice, comparison, correlation, correction, and visualisation as core; paired work with individual integrated notebooks; LLM support with understanding; and preservation of existing data values wherever possible.
 
-The next review should check the proposed pacing and depth, especially whether the 50-minute R introduction is sufficient for this cohort and whether the planned day 2 workload is manageable. The facilitator should be prepared to shorten repeated exercises in response to checkpoints. Student guides, notebooks, and source datasets have not yet been changed.
+The next review should check the proposed pacing and depth, especially whether the 50-minute R introduction is sufficient for this cohort and whether the planned day 2 workload is manageable. The facilitator should be prepared to shorten repeated exercises if students need more practice time. Student guides, notebooks, and source datasets have not yet been changed.

@@ -17,7 +17,7 @@ output:
 
 Today you will investigate a larger dementia dataset. Work with a partner: discuss questions, inspect plots, and help each other with code. Each of you should run the analysis in your own notebook and write your own explanations of what you did and why.
 
-**Submit one integrated notebook per student**, with code, figures, and narrative. Save its `.Rmd` source and rendered HTML; these are two versions of the same notebook, not a separate report. Follow the instructor's submission instructions for uploading them.
+**Submit one integrated notebook per student**, with code, figures, and narrative. Save its `.Rmd` source and rendered HTML; these are two versions of the same notebook, not a separate report. Follow the instructor's submission instructions for uploading them. Instructors assess only your final submitted notebook. You do not need to have your plan, code, or results checked during the workshop.
 
 You will first build a descriptive picture of the participants, then complete **one group comparison and one correlation**, plus a short response to the worked multiple-testing example. You do not need a large collection of tests. Write a few sentences beside each important result rather than leaving all the writing until the end.
 
@@ -166,7 +166,7 @@ Use `hist(mmse$Age, breaks = 8, xlab = "Age (years)", main = "Participant ages")
 
 ## 3. Plan two questions before looking at test results
 
-Our main group comparison is **MMSE between Demented and Nondemented participants**. What do you want to learn: **how much the average MMSE score differs between the groups**, or **whether scores tend to be higher in one group**? The first question compares means; the second uses the ordering of scores, called ranks. Start with the question you want to answer, then use the plots and checks below to justify your test. You may propose comparing another measurement, such as age, to the instructor, but the supplied templates below use MMSE.
+Our main group comparison is **MMSE between Demented and Nondemented participants**. What do you want to learn: **how much the average MMSE score differs between the groups**, or **whether scores tend to be higher in one group**? The first question compares means; the second uses the ordering of scores, called ranks. Start with the question you want to answer, then use the plots and checks below to justify your test. The supplied templates below use MMSE. If you choose another measurement, such as age, update the selected columns, plot labels, and interpretation throughout.
 
 Choose **one** association: age with MMSE, **or** nWBV with MMSE. Choosing an association because its plot is relevant to your question is different from testing many associations and retaining only a significant one.
 
@@ -179,7 +179,7 @@ Choose **one** association: age with MMSE, **or** nWBV with MMSE. Choosing an as
 - **Which values does a participant need for each analysis?** For example, can you include someone in the age–MMSE correlation if their age is missing?
 - **Which plots will you make, and what will you check before choosing a test?** Think about the shape and spread of each group, extreme values, and whether measurements come from different people:
 
-Show the plan to the instructor. You can change your initial choice of test after checking the data; explain why you changed it. Use the break after completing the plan.
+Read through your plan with your partner, then continue. You can change your initial choice of test after checking the data; explain why you changed it. Use the break after completing the plan.
 
 ## 4. Group comparison
 
@@ -234,7 +234,7 @@ qqline(demented)
 par(mfrow = c(1, 1))
 ```
 
-Both histograms use the same axes and bins. If you analyse a different outcome with the instructor, update these limits and labels as well as the selected values.
+Both histograms use the same axes and bins. If you analyse a different measurement, update these limits and labels as well as the selected values.
 
 ```{r shapiro-groups}
 shapiro.test(nondemented)

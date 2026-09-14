@@ -58,13 +58,13 @@ The main remaining uncertainty is pacing with actual beginners. The code can be 
 
 **Evidence to collect:** Can students recognise a design change without being prompted by a function name?
 
-### 4. Monitor both members of each pair
+### 4. Keep explanations individual
 
-**Why:** Individual notebook files alone do not guarantee individual understanding.
+**Why:** Partners may share commands, but each student's final notebook should show their own understanding.
 
-**How:** During two checkpoints, ask the student who was not operating the keyboard to explain the figure or a method choice. Ask their partner a different question at the next checkpoint. Keep the tone conversational; this is feedback, not a surprise oral exam.
+**How:** Students take turns explaining figures and method choices to one another, then write their own explanations. There are no instructor checks of individual plans, code, or results during the workshop.
 
-**Evidence to collect:** Whether both can identify the quantity being estimated and one limitation in their own words.
+**Evidence to collect:** Assess the explanations in each final submitted notebook. The final submission is the only instructor assessment.
 
 ### 5. Use the added practice to check transfer
 
