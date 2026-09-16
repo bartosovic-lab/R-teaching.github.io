@@ -21,6 +21,7 @@ students write and knit their own notebook.
 | `scripts/check_tutorial.R` | Runs every exercise, solution and demo chunk headlessly (`Rscript scripts/check_tutorial.R`) |
 | `scripts/render_preview.R` | Knits a static `day1_preview.html` for the website (learnr itself needs a live R session) |
 | `scripts/deploy_shinyapps.R` | Publishes the tutorial to shinyapps.io for a one-click online button |
+| `scripts/build_zip.sh` | Rebuilds `../Statistics_lab_2026.zip`, the student download linked from the course page |
 | `Launch_day1.command`, `Launch_day1.bat` | Double-click launchers for Mac and Windows |
 
 ## Student instructions (for the setup session)
