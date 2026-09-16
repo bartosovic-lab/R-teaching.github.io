@@ -5,7 +5,7 @@ Passed independently for this branch:
 - Original workbook SHA-256 and source-record reconciliation; no original values overwritten.
 - Animal IDs, group counts, selection/aggregation and tutorial CSV equality.
 - R Markdown dependency discovery (regression for the live-launch self-reference recursion).
-- All 15 solutions through the installed learnr evaluator, plus seven deliberately incorrect attempts.
+- All 18 solutions through the installed learnr evaluator, plus ten deliberately incorrect attempts.
 - Actual learnr state accessor in a fresh Shiny test session: empty, successful and revised incorrect states.
 - Histogram count/width extremes, outlier control and violin smoothing produce plot output.
 - All three download buttons preserve current submitted code and written notes; missing tasks remain marked.
@@ -23,3 +23,5 @@ Testing used the locally installed R and learnr 0.11.6. Browser click-by-click i
 Run `Rscript scripts/validate.R`, `python3 scripts/validate_data.py` (author Excel-reader dependency), and `python3 scripts/validate_package.py` to repeat the automated checks. The raw workbook is intentionally absent from the student ZIP.
 
 The chloride source discrepancy and mouse fixed-record limitation are documented in the data dictionary. The plateau cell-count discrepancy does not affect the chloride first-day core.
+
+Replication checks reconcile every measurement row with its source, exercise the owner reveal and copy slider, and verify that duplicating rows changes neither animal count nor mean while reducing the naive SE.

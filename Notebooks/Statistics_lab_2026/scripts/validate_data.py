@@ -59,3 +59,20 @@ else:
   assert math.isclose(float(r['NKCC1_GAPDH']),s.cell(rawrow,5).value/s.cell(rawrow,3).value,rel_tol=1e-8)
   assert r['blot_batch']==('February' if rawrow<12 else 'March')
 print('PASS',cfg['variant'],': source checksum; exact source values; selection/aggregation; sample counts; tutorial data copy')
+
+reps=rows('replicates.csv')
+assert (root/'data/replicates.csv').read_bytes()==(root/'tutorials/01_basics/data/replicates.csv').read_bytes()
+if cfg['variant']=='mouse':
+ assert len(reps)==1080 and len({r['sample_id'] for r in reps})==72
+ for r in reps:
+  raw=lookup[r['source_record']]
+  assert r['source_record']==r['sample_id']+'_'+r['record_number']
+  for f in ['BDNF','pCREB']: eq(r[f],raw[f+'_N'])
+else:
+ assert len(reps)==47 and len({r['sample_id'] for r in reps})==26
+ counts={}
+ for r,c in zip(reps,cells):
+  for key,value in c.items(): assert r[key]==value
+  counts[r['sample_id']]=counts.get(r['sample_id'],0)+1
+  assert int(r['record_number'])==counts[r['sample_id']]
+print('PASS: replication table source reconciliation and tutorial copy')

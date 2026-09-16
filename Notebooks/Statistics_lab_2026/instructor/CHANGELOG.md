@@ -30,3 +30,12 @@ This log describes authored changes. Actual validation results are recorded sepa
 - Named the selected animal tables `baseline_rats` / `acquisition_rats` and updated SD and histogram object names.
 - Updated hints, feedback, exports, statistical examples and validation.
 - Day-2 choices use `voltage_by_group`, indexed by actual group labels, to keep different biological comparisons correctly named.
+
+## Biological replication as the day-1 highlight
+
+- Added a required 35-minute investigation after the existing gentle warm-ups and visualisation.
+- Added three graded tasks: count 47 measurements versus 26 animals, follow one animal, and defend the original comparison sample sizes.
+- Added a shared-animal plot reveal and an explicitly incorrect copy-and-paste precision demonstration.
+- Exported new code, reflections and interactive settings into student notebooks.
+- Supplied a reproducible measurement-level CSV with provenance and independent reconciliation.
+- Moved the 20-minute rank-test and 15-minute correlation discussion to the start of day 2; both afternoons remain 240 minutes including breaks.

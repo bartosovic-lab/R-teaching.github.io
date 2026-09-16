@@ -15,17 +15,16 @@ each student writes an individual integrated HTML report on day 2. Rmd is retain
 | Learnr sections 1–5: R and descriptive basics | 70 |
 | Break | 15 |
 | Learnr sections 6–8: plots and association | 35 |
+| Learnr section 9: biological replication investigation | 35 |
 | Download and RStudio handoff | 5 |
 | Analysis notebook sections 1–2: recipe and diagnostics | 30 |
 | Break | 10 |
 | Welch estimate and uncertainty | 30 |
-| Rank comparison and headline workshop | 20 |
-| Correlation | 15 |
 | Reproducible finish | 5 |
 
-Day 2: question 20, selection 25, figures 30, break 15, group inference 35, association 30,
-break 10, multiple testing 20, peer review/write-up/render 40, welcome/recap 15 = 240 minutes.
-The notebook's sections account for 225 minutes; reserve the first 15 for recap and opening files.
+Day 2: rank comparison 20, correlation 15 (return to notebook 03), question 15,
+selection 20, figures 25, break 15, group inference 35, association 30,
+break 10, multiple testing 20, peer review/write-up/render 35 = 240 minutes.
 Protect interpretation time. Extras are optional; shorten repeated plot practice if needed.
 
 ## Facilitation
@@ -66,3 +65,20 @@ ordinal distinctions are taught using actual labels and an explicit ordinal exam
 than treating numeric assay measurements as ordinal scores. Independent animals remain a
 design assumption, not an inference from a histogram. All introduced terms have plain-language
 definitions in the student notebooks.
+
+## Day-1 highlight: more rows, more evidence? (35 minutes)
+
+Allow 7 minutes to count rows and animals, 8 to follow one animal, 10 for the owner
+reveal and copying experiment, and 10 to defend an animal-level analysis. Ask students
+to predict before revealing owners or moving the slider. The reveal shows four animals
+from one condition, not the whole dataset. Extra assay readings or cells can be useful,
+but they do not create independent animals. Technical measurements at different dilution
+levels are not interchangeable replicates. Treatment assignment, cage/litter and shared
+experimental batches still matter even after counting unique animal IDs.
+
+The copying demonstration deliberately violates independence: the mean and number of
+animals stay fixed while the naive standard error decreases. Standard error describes
+uncertainty in an estimated mean; it is different from SD, the spread of measurements.
+The animal-level reference assumes independent animals and is not a guarantee that the
+original design satisfies that assumption. Do not ask beginners to fit a multilevel model.
+Require a written sample-size justification before proceeding to inferential statistics.

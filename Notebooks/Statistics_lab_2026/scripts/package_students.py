@@ -7,7 +7,7 @@ files=[root/n for n in ['Statistics_lab.Rproj','README.md','course.json','index.
 files += [root/'scripts/run_pilot.R']
 files += list((root/'notebooks').glob('*.Rmd'))+list((root/'notebooks').glob('*.html'))
 files += list((root/'data').glob('*.csv'))+[root/'data/dictionary.html']
-files += [root/'tutorials/01_basics'/n for n in ['01_basics.Rmd','helpers.R','course.json','exercises.json','data/study.csv']]
+files += [root/'tutorials/01_basics'/n for n in ['01_basics.Rmd','helpers.R','course.json','exercises.json','data/study.csv','data/replicates.csv','replication.R']]
 with zipfile.ZipFile(root/'statistics_lab_student.zip','w',zipfile.ZIP_DEFLATED) as z:
  for f in sorted(files):
   assert f.is_file(),f
