@@ -1,0 +1,1 @@
+Source archives and original preparation scripts preserved from the reviewed variants. The archived scripts document the original layouts; use ../../scripts/validate_data.py in this course to verify the released tables against these sources. Do not run the archived scripts in place.

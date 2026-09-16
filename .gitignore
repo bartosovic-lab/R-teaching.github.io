@@ -4,3 +4,16 @@ Neurites_plot.pdf
 R_tutorial_final.Rmd
 Notebooks/neurites_ggplot.pdf
 R-teaching.github.io.code-workspace
+
+# Final workshop local runtime products
+.learnr-library/
+*_cache/
+*_files/
+Notebooks/Statistics_lab_final/tutorials/01_basics/01_basics.html
+Notebooks/Statistics_lab_final/tutorials/01_basics/01_basics.rds
+Notebooks/Statistics_lab_final/outputs/*
+!Notebooks/Statistics_lab_final/outputs/.gitkeep
+
+# Ignore local dependency symlinks and Python caches
+.learnr-library
+__pycache__/

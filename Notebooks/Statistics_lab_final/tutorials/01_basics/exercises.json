@@ -1,0 +1,149 @@
+{
+  "divide": {
+    "title": "Make R do the arithmetic",
+    "task": "Run the supplied addition. Then append `12 / 4` on a new line, run again and submit. `/` means divide.",
+    "success": "You ran two calculations. The second answer is 3.",
+    "hint": "Keep the example and append 12 / 4."
+  },
+  "multiply": {
+    "title": "Plan the plate",
+    "task": "Three plates, four wells each: how many wells? Predict first. Append `3 * 4`; `*` means multiply.",
+    "success": "Twelve wells. Addition and multiplication ask different questions.",
+    "hint": "Append 3 * 4 below the example."
+  },
+  "store": {
+    "title": "Give a result a name",
+    "task": "An **object** is information kept under a name. Read `wells <- 12` as \u201cstore 12 in wells\u201d. The arrow is `<` followed by `-`. A name on its own displays its value. Keep the example, then append `wells <- 16` and `wells` on separate lines.",
+    "success": "The same name now stores a new value. Assignment itself usually prints nothing.",
+    "hint": "Append wells <- 16, then wells."
+  },
+  "combine": {
+    "title": "Keep several measurements together: c()",
+    "task": "`c()` combines values into a **vector**, an ordered collection. A **function** is a named operation; its inputs go inside parentheses. In `c(2, 4, 6)`, commas separate three values. Nothing is being added yet! Run the example. Then append `counts <- c(2, 4, 6, 8)` and `counts` to keep and display four values.",
+    "success": "Four values are stored together. c() combines them without calculating their average.",
+    "hint": "Append counts <- c(2, 4, 6, 8), then counts."
+  },
+  "average": {
+    "title": "An average in two ways: mean()",
+    "task": "The **mean** is the sum divided by the number of observations. The example calculates it by hand. Append `mean(counts)`: give the stored vector to the function by putting its name inside parentheses. Does it agree? `length(counts)` reports how many values there are, not their average.",
+    "success": "Both methods give 4. The sample size is 3.",
+    "hint": "Append mean(counts) at the bottom."
+  },
+  "add_value": {
+    "title": "Predict before you press Run",
+    "task": "These are made-up assay readings. Before running, predict whether adding 9 will raise or lower the mean. Keep the example and append a new vector containing 4, 5, 6, 9, then calculate its mean. Explain the change to your partner.",
+    "success": "The mean rises from 5 to 6 because the added value exceeds the original mean.",
+    "hint": "Append readings <- c(4, 5, 6, 9), then mean(readings)."
+  },
+  "rescue": {
+    "title": "Recover from a small error",
+    "task": "Run this editor once. R names are case-sensitive: `Readings` and `readings` are different. Repair the capital letter and rerun. In RStudio, a Console prompt of `+` means an unfinished command; press Esc, then repair and rerun the complete command in your notebook.",
+    "success": "Recovered. An error is information about what R could not do.",
+    "hint": "Use readings with a lower-case r in both lines."
+  },
+  "import": {
+    "title": "Open the table",
+    "task": "`read.csv()` reads a comma-separated table. Quotes mark literal text, including a file path. `<-` stores the table as study. `head()` previews rows, `names()` lists columns, and `dim()` reports rows then columns. Run the supplied import, then append `head(study)`, `names(study)` and `dim(study)` in that order.",
+    "success": "You imported 72 mice with three protein signals and their experimental conditions.",
+    "hint": "Append head(study), names(study), then dim(study).",
+    "note": "row"
+  },
+  "replication": {
+    "title": "Are 1,080 readings 1,080 mice?",
+    "task": "The original assay has 15 records per mouse: replicates across a dilution series. They are not new animals. Our teaching table retains record 1 consistently for each mouse. `unique()` keeps distinct labels and `length()` counts them. Complete the two assignments by replacing `NULL`: use `nrow(records)` for measurements and `length(unique(records$sample_id))` for mice. Different IDs alone do not prove independence; cage, litter and allocation can also matter.",
+    "hint": "Use nrow(records) and length(unique(records$sample_id)).",
+    "success": "You counted 1,080 assay rows from 72 mice. Extra readings do not create extra independent animals.",
+    "note": "replication"
+  },
+  "select": {
+    "title": "Follow the Memantine animals",
+    "task": "Run the Saline example. Append a selection for `\"Memantine\"`, store it as `memantine_bdnf`, then append `length(memantine_bdnf)` and `mean(memantine_bdnf)`. Say which animals contributed before reading the mean.",
+    "success": "The selection and mean are correct. Check the printed sample size before interpreting the average.",
+    "hint": "Append memantine_bdnf <- study$BDNF[study$group == \"Memantine\"], then length(memantine_bdnf) and mean(memantine_bdnf).",
+    "note": "selection"
+  },
+  "spread": {
+    "title": "Which group varies more?",
+    "task": "Run the supplied mean and median calculations. Append `sd_saline_bdnf <- sd(saline_bdnf)` and `sd_memantine_bdnf <- sd(memantine_bdnf)`, then display each named result on its own line. Compare the SDs in your answer.",
+    "success": "Both SD calculations are correct. State which is larger and what that means biologically.",
+    "hint": "Append sd_saline_bdnf <- sd(saline_bdnf) and sd_memantine_bdnf <- sd(memantine_bdnf); display both.",
+    "note": "spread"
+  },
+  "quartiles": {
+    "title": "Where is the middle half?",
+    "task": "Quartiles mark positions in ordered observations. Q1 is the 25th percentile, Q2 the median, and Q3 the 75th percentile. **IQR = Q3 \u2212 Q1**, in the measurement's units. It describes spread of the middle half and is less sensitive to extremes than the range. The supplied commands calculate Saline quartiles. Add `memantine_q <- quantile(memantine_bdnf, probs = c(0.25, 0.5, 0.75))` and `memantine_iqr <- IQR(memantine_bdnf)`, then display both. Compare with `memantine_q[3] - memantine_q[1]`; square brackets here select a position in the vector.",
+    "hint": "Use quantile() with the three probabilities and IQR() on memantine_bdnf.",
+    "success": "The quartiles and IQR match. Explain the interval from Q1 to Q3, then its width.",
+    "note": "quartiles"
+  },
+  "outlier": {
+    "title": "Test the headline in code",
+    "task": "Keep the original readings. Append a new assay vector with your chosen fifth value, then `new_mean <- mean(assay)` and `new_median <- median(assay)`. Display both results. Bonus: with the other four readings fixed, which median values are even possible?",
+    "success": "The mean doubles to 10.8 while the median remains 5. Four observations have not changed.",
+    "hint": "The original sum is 27. Double it to 54; subtract the four fixed values. Store both new summaries.",
+    "note": "outlier"
+  },
+  "missing": {
+    "title": "Missing is a different claim from zero",
+    "task": "Run the starter: `mean(example)` returns NA. Count the recorded numbers by looking at the vector. Append `observed_n <- 3` and `observed_mean <- mean(example, na.rm = TRUE)`. The comma introduces another argument; `na.rm = TRUE` excludes missing entries for this calculation only. In a separate vector called `zero_example`, use 0 instead of NA; calculate `zero_mean <- mean(zero_example)`. Display the count and both means.",
+    "success": "Three observed values average 6. Inserting zero creates a fourth measurement and lowers the mean to 4.5.",
+    "hint": "Count the three recorded numbers. Use mean(example, na.rm = TRUE); calculate the zero substitution separately.",
+    "note": "missing"
+  },
+  "histogram": {
+    "title": "Make a histogram you can rerun",
+    "task": "`hist()` draws a histogram. The supplied `seq()` creates six shared bins spanning all 72 BDNF values. Both plots use these boundaries and the same x-axis limits, so the comparison stays fair. `main` sets the title and `xlab` labels the horizontal axis. Keep the Saline example and append `hist_memantine_bdnf <- hist(memantine_bdnf, breaks = shared_breaks, xlim = shared_xlim, main = \"Memantine\", xlab = \"BDNF assay signal (relative units)\")`.",
+    "success": "The histogram contains the Memantine group. The check verifies data and bins; inspect the labels yourself.",
+    "hint": "Use the supplied shared_breaks and shared_xlim for hist_memantine_bdnf.",
+    "note": "histogram"
+  },
+  "boxplot": {
+    "title": "Can the mean-only chart tell the whole story?",
+    "task": "Run the supplied bar chart, which shows only two means. Append the following worked template to add a boxplot with all animals. Run, inspect and submit. You do not need to invent the plotting syntax.\n\n```r\nstudy$group <- factor(study$group, levels=c(\"Saline\",\"Memantine\"))\ncomparison <- boxplot(BDNF ~ group, data=study, outline=FALSE,\n  ylab=\"BDNF assay signal (relative units)\", xlab=\"Group\", col=c(\"lightblue\",\"peachpuff\"))\nset.seed(7)\nstripchart(BDNF ~ group, data=study, vertical=TRUE, method=\"jitter\",\n  jitter=0.1, add=TRUE, pch=16)\n```",
+    "success": "The box summaries match the table and the point-layer command is present. Check visually that both groups have points.",
+    "hint": "Append the supplied boxplot and stripchart template below the mean-only example.",
+    "note": "boxplot"
+  },
+  "scatter": {
+    "title": "Does the pattern travel to the other group?",
+    "task": "In `study[condition, ]`, the part before the comma selects rows and the blank after it keeps all columns. Run the supplied Saline plot. Append the same three commands for Memantine, naming the selected table `memantine_mice`. Keep the same measurement axes and label the group.",
+    "success": "The Memantine table is correct and you included a plot command. Check the plotted axes and explain the pattern; a code check cannot judge your caption.",
+    "hint": "Append memantine_mice <- study[study$group == \"Memantine\", ], then plot(memantine_mice$BDNF, memantine_mice$pCREB, xlab=\"Measurement\", ylab=\"pCREB assay signal (relative units)\").",
+    "note": "scatter"
+  },
+  "normality": {
+    "title": "Inspect the other group",
+    "task": "Run the Saline example. Add `qqnorm(memantine_bdnf)` followed by `qqline(memantine_bdnf)`. Save `shapiro.test(memantine_bdnf)` as `normal_check` and display it. Explain the plots before reading the p-value.",
+    "hint": "Use qqnorm(), qqline(), then normal_check <- shapiro.test(memantine_bdnf).",
+    "success": "Your Shapiro result uses the Memantine observations. Check the plotted group and explain its shape.",
+    "note": "normality"
+  },
+  "welch": {
+    "title": "Estimate first; p-value second",
+    "task": "Complete the assignments: `mean_difference <- mean(memantine_bdnf) - mean(saline_bdnf)` and `welch_result <- t.test(memantine_bdnf, saline_bdnf)`. Display the difference, result and `welch_result$conf.int`. Read the means and confidence interval before the p-value. A 95% confidence-interval procedure covers the true difference in about 95% of repeated studies under its assumptions. It does not enclose 95% of mice. A p-value is not the probability that the null hypothesis is true and does not measure biological importance.",
+    "hint": "Use Memantine first in both the subtraction and t.test().",
+    "success": "The estimate and Welch test use the intended groups and direction. Explain the interval even if it includes zero.",
+    "note": "welch"
+  },
+  "ranks": {
+    "title": "Do the conclusions depend on the question?",
+    "task": "Ranks replace measurements with their order. Wilcoxon rank-sum uses ranks; it does not generally test a median difference unless additional shape assumptions apply. It still needs independent animals. Add `rank_result <- wilcox.test(memantine_bdnf, saline_bdnf, exact = FALSE)` and display it. `exact = FALSE` requests an approximation. Keep both results; never select the smaller p-value as your preferred method.",
+    "hint": "Use wilcox.test() with the same two groups; assign the result to rank_result.",
+    "success": "You compared ranks as well as means. Agreement does not make the questions identical.",
+    "note": "ranks"
+  },
+  "correlation": {
+    "title": "Choose an association method",
+    "task": "Write your reason in the answer box, then replace `\"choose\"` with `\"pearson\"` or `\"spearman\"`. Replace NULL with `cor.test(mice$BDNF, mice$pCREB, method = association_method, exact = FALSE)`. Either choice can pass the code check; your plot and scientific question must justify it. Read the coefficient, sample size and p-value. Report an interval if supplied; base R does not supply a Spearman interval.",
+    "hint": "Use cor.test() with method=association_method, then display association_result.",
+    "success": "Your result matches the chosen coefficient and Memantine measurements. The code check cannot justify your method for you.",
+    "note": "correlation"
+  },
+  "bonferroni": {
+    "title": "Keep every result in view",
+    "task": "Run the supplied three comparisons. Append `adjusted_p <- p.adjust(raw_p, method = \"bonferroni\")` and `data.frame(raw_p, adjusted_p)`. Compare both columns using a declared 0.05 threshold. A non-significant result still belongs in the report. The estimated group differences have not changed.",
+    "hint": "Use p.adjust(raw_p, method=\"bonferroni\") and retain all three rows.",
+    "success": "The adjustment matches the family of three treatment comparisons. No measurements or estimated effects changed.",
+    "note": "bonferroni"
+  }
+}

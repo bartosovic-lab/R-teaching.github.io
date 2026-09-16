@@ -1,0 +1,42 @@
+---
+title: "Statistics lab — from molecules to cognition"
+output:
+  html_document:
+    toc: true
+    self_contained: true
+    mathjax: null
+---
+
+## Your two-afternoon route
+
+Work in pairs, but keep your own code and explanations. You do not need prior R experience.
+
+[Download the complete student project](statistics_lab_student.zip). Extract it and open `Statistics_lab.Rproj`. Keep the folder together.
+
+### Before class
+
+[Setup and launch instructions](notebooks/00_setup.html). Install and test the tutorial before the first afternoon.
+
+### Day 1 — a molecule, a mouse, and a memory
+
+Use the live **learnr** tutorial: short code editors, feedback, interactive plots and answer boxes. In the project's RStudio Console run:
+
+```r
+source("scripts/run_day1.R")
+```
+
+[Read the day-1 preview](day1_preview.html). This is a static reading copy, not the live exercise. Download your practice Rmd before closing the live tutorial.
+
+### Day 2 — your MMSE investigation
+
+Open [02_mmse_investigation.Rmd](notebooks/02_mmse_investigation.Rmd) **in RStudio** and save your own copy. You will investigate human cognition using the same summaries, plots and statistical reasoning as yesterday.
+
+[Read the task preview](notebooks/02_mmse_investigation.html) · [R Notebook snapshot](notebooks/02_mmse_investigation.nb.html) · [Command reference](notebooks/03_command_reference.html)
+
+Submit one freshly knitted **HTML report** per student with your code, figures and own explanations. Keep your `.Rmd` source. The supplied preview is a draft with no student conclusions.
+
+### What you will be able to explain
+
+What one observation means; how variable type affects summaries; mean, median, SD, quartiles and IQR; the information in distributions and plots; why a test fits a question; effect and uncertainty; association versus causation; and why multiple testing matters.
+
+[Data dictionary and provenance](data/dictionary.html). Day 1 uses 72 mice; day 2 uses one first visit from each of 136 people. These are separate datasets, not measurements to combine.

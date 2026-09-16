@@ -1,0 +1,49 @@
+---
+title: "Before class — start RStudio and learnr"
+output:
+  html_document:
+    toc: true
+    self_contained: true
+    mathjax: null
+---
+
+## Prepare before day 1 — about 30 minutes
+
+Install [R](https://cran.r-project.org/) first and [RStudio Desktop](https://posit.co/download/rstudio-desktop/) second. Use a computer-room machine if installation cannot be resolved in the preparation session.
+
+1. Download the student ZIP from the [course index](../index.html), extract it, and move the complete folder to Documents (or Desktop on a room computer).
+2. Double-click `Statistics_lab.Rproj`. R computes; RStudio is the application around it.
+3. Find the **Console**, type `1 + 1`, then press Enter. The answer is 2; `[1]` labels its position.
+4. Install these packages once in the Console while online:
+
+```r
+install.packages(c("learnr", "shiny", "rmarkdown", "knitr", "jsonlite"))
+```
+
+5. In the same Console, launch the tutorial:
+
+```r
+source("scripts/run_day1.R")
+```
+
+R stays busy serving the tutorial. In the browser, type code in the designated editors and explanations in answer boxes. **Run Code** experiments; **Submit Answer** retains the latest attempt and requests feedback. Download a practice notebook and save it in `notebooks/`. Stop the tutorial with Esc or RStudio's Stop button only after downloading.
+
+Your readiness check: launch, run one editor, submit an answer and download. No notebook editing is required on day 1. We will introduce RStudio's Source editor and HTML rendering together at the start of day 2.
+
+## Keep your work
+
+Download before breaks, closing or refreshing: written answers are session-only. The download includes submitted code, current prose and slider reference views, not unsubmitted editor changes. Keep the whole project folder on storage you can access after leaving the computer room.
+
+## Troubleshooting
+
+| Problem | First action |
+|---|---|
+| Missing package | Install the named package in the Console |
+| Cannot open data file | Open the supplied `.Rproj` and keep the complete folder layout |
+| RStudio Console shows `+` | Press Esc; complete the quote/bracket and rerun the command |
+| Tutorial will not open | Read the first Console error; ask for help; use the static preview for reading |
+| Port already used | Stop another tutorial; optionally run `options(course.port=8766)` before launch |
+| Missing Pandoc | Launch from RStudio, which provides it |
+| Something worked in learnr but not in the notebook | Learnr editors start independently; notebook chunks run in order. Run the earlier import/setup chunks |
+
+The live lesson runs locally, not on a static website. No internet is needed after package installation and project download.

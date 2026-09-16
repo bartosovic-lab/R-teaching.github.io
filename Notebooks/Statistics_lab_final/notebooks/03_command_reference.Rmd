@@ -1,0 +1,47 @@
+---
+title: "R commands to keep beside you"
+output:
+  html_document:
+    self_contained: true
+    mathjax: null
+---
+
+[Course index](../index.html)
+
+These are reference examples, not an additional exercise. Replace the example object names with the objects in your notebook. Write commands in a chunk and run earlier chunks first.
+
+| Task | Example |
+|---|---|
+| Store values | `scores <- c(27, 28, 30)` |
+| Read a CSV | `mmse <- read.csv("data/mmse_baseline.csv")` |
+| Inspect a table | `head(mmse)`; `dim(mmse)`; `names(mmse)`; `str(mmse)` |
+| Select a column | `mmse$Age` |
+| Select rows and columns | `mmse[1:5, c("Age", "MMSE")]` |
+| Keep values above a threshold | `scores[scores > 25]` |
+| Count values meeting a condition | `sum(scores > 25)`; check missing values first |
+| Find positions | `which(scores > 25)` |
+| Count categories | `table(mmse$Group)` |
+| Count missing values per column | `colSums(is.na(mmse))` |
+| Count observed values | `sum(!is.na(mmse$MMSE))` |
+| Keep scores from one group | `mmse$MMSE[mmse$Group == "Demented"]` |
+| Centre and spread | `mean(scores)`; `median(scores)`; `sd(scores)`; `IQR(scores)` |
+| Quartiles | `quantile(scores, c(0.25, 0.5, 0.75))` |
+| Range | `range(scores)` |
+| Omit missing values in a summary | `mean(scores, na.rm = TRUE)` |
+| Histogram | `hist(scores, xlab = "MMSE score (points)")` |
+| Bar chart of category counts | `barplot(table(mmse$M.F), ylab = "Participants")` |
+| Multiple panels | `par(mfrow = c(2, 2))`; reset with `par(mfrow = c(1, 1))` |
+| Boxplot by group | `boxplot(MMSE ~ Group, data = mmse)` |
+| Scatterplot | `plot(mmse$Age, mmse$MMSE)`; add meaningful axis labels |
+| Normal Q–Q plot | `qqnorm(scores)` followed by `qqline(scores)` |
+| Shapiro–Wilk | `shapiro.test(scores)` |
+| Independent mean comparison | `result <- t.test(group1, group2)`; default is Welch |
+| Independent rank-sum comparison | `result <- wilcox.test(group1, group2, exact = FALSE)` |
+| Correlation value and a p-value | `cor.test(x, y, method = "spearman", exact = FALSE)` |
+| Adjust p-values for tests considered together | `p.adjust(p_values, method = "bonferroni")` |
+| Read a result | `result` first, then for example `result$p.value` |
+| Function help | `?t.test` in the Console |
+
+`<-` assigns; `==` compares. Text and file paths need quotes; object names do not. Capitals matter. If your Console shows `+`, check for an unclosed bracket or quote; Esc cancels an unfinished command.
+
+Before a test, explain your question, what one row represents, which measurements you are using, and what you checked about the data. After a test, give the size and direction of the difference or relationship, the number of observations, a confidence interval when available, and what the result cannot establish. A command running successfully does not establish that the analysis is appropriate.

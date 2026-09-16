@@ -1,0 +1,120 @@
+---
+title: "Instructor solutions — statistics final"
+output:
+  html_document:
+    toc: true
+    self_contained: true
+    mathjax: null
+---
+
+```{r setup, include=FALSE}
+root <- normalizePath("..")
+knitr::opts_knit$set(root.dir=root)
+knitr::opts_chunk$set(echo=TRUE,fig.width=7,fig.height=4.5)
+```
+
+## Day 1: reference values and acceptable reasoning
+
+All 22 coding exercises also include a Hint and Solution in learnr. Using them is permitted. A passed code check does not validate prose or plot captions.
+
+```{r mouse-reference}
+study <- read.csv("data/study.csv")
+a <- study$BDNF[study$group=="Saline"]
+b <- study$BDNF[study$group=="Memantine"]
+summary_row <- function(x) c(n=length(x),mean=mean(x),median=median(x),SD=sd(x),
+  Q1=unname(quantile(x,.25)),Q3=unname(quantile(x,.75)),IQR=IQR(x))
+rbind(Saline=summary_row(a),Memantine=summary_row(b))
+mean(b)-mean(a)
+t.test(b,a)
+wilcox.test(b,a,exact=FALSE)
+shapiro.test(a); shapiro.test(b)
+mice <- study[study$group=="Memantine",]
+cor.test(mice$BDNF,mice$pCREB,method="pearson")
+cor.test(mice$BDNF,mice$pCREB,method="spearman",exact=FALSE)
+raw_p <- vapply(c("BDNF","pCREB","NR1"),function(n)
+ t.test(study[study$group=="Memantine",n],study[study$group=="Saline",n])$p.value,numeric(1))
+data.frame(raw_p,adjusted=p.adjust(raw_p,"bonferroni"))
+```
+
+Replication: 1,080 assay records from 72 mice, with 34 Saline and 38 Memantine mice in the teaching table. Copying rows creates no new mice. Record 1 is a transparent fixed reduction, not an optimal abundance estimate. Independence may also depend on cage/litter.
+
+Types: treatment is nominal; ID is a label; the illustrative severity ordering is ordinal; assay values are continuous signals. An IQR is nonnegative and has assay units. Q1–Q3 describes the middle half, not confidence in a population estimate. A boxplot's hinges can differ slightly from interpolated quartiles.
+
+Outlier: replacing 7 with 34 in 4,5,5,6,7 doubles the mean from 5.4 to 10.8 and leaves the median at 5. Four values did not change. No automatic deletion is justified. Missingness: three observations average 6; inserting zero creates a fourth observation and yields 4.5. Exclusion can be biased if missingness relates to value.
+
+Graphics: bins and smoothing change appearance without changing measurements. Points reveal overlap and unusual observations hidden by a mean bar. A violin is estimated density, not extra data or a confidence interval. Accept different captions grounded in the actual figures.
+
+Tests: Welch targets mean differences; rank-sum uses order and is not generally a median test. Do not select by the smaller p-value. A large Shapiro p-value does not establish normality. Interpret an interval including zero without claiming equality. Correlation does not establish molecular regulation or improved memory. Both treatment groups mix genotype and protocol.
+
+Bonferroni: the family contains three treatment comparisons, not the separate association. Effects are unchanged. All three tests must remain visible, including nonsignificant results.
+
+## Day 2: audit and independent descriptive tasks
+
+```{r audit}
+mmse <- read.csv("data/mmse_baseline.csv")
+dim(mmse); names(mmse)
+length(unique(mmse$Subject_ID)); table(mmse$Group)
+colSums(is.na(mmse)); range(mmse$Age); range(mmse$MMSE)
+summary_row(mmse$Age)
+quantile(mmse$Age,c(.25,.5,.75)); IQR(mmse$Age)
+hist(mmse$Age,breaks=8,xlab="Age (years)",main="Participant ages")
+hist(mmse$Age,breaks=16,xlab="Age (years)",main="Same ages, different bins")
+barplot(table(mmse$M.F),ylab="Participants",xlab="Source-recorded M/F")
+table(mmse$SES,useNA="ifany")
+seniors <- mmse[mmse$Age>=80,]
+nrow(seniors); table(seniors$Group); nrow(seniors)/nrow(mmse)
+```
+
+There are 136 independent participant records by the supplied first-visit rule, rather than 336 independent visits. Eight SES values are missing; missing SES need not exclude a person from an MMSE–age analysis. SES is ordinal; means/SD imply spacing we have not established. The missing value is not category zero. MMSE is bounded and discrete; IDs have no meaningful mean. Between-person age associations do not measure within-person decline. Longitudinal classification and exclusion of Converted participants limit generalisation.
+
+## Day 2: group comparison
+
+```{r groups}
+group_data <- mmse[complete.cases(mmse[,c("Group","MMSE")]),]
+nondemented <- group_data$MMSE[group_data$Group=="Nondemented"]
+demented <- group_data$MMSE[group_data$Group=="Demented"]
+rbind(Nondemented=summary_row(nondemented),Demented=summary_row(demented))
+boxplot(list(Nondemented=nondemented,Demented=demented),outline=FALSE,ylab="MMSE (points)")
+set.seed(7)
+stripchart(list(Nondemented=nondemented,Demented=demented),vertical=TRUE,method="jitter",add=TRUE,pch=16)
+par(mfrow=c(1,2))
+qqnorm(nondemented);qqline(nondemented)
+qqnorm(demented);qqline(demented)
+par(mfrow=c(1,1))
+shapiro.test(nondemented);shapiro.test(demented)
+mean(demented)-mean(nondemented)
+group_welch <- t.test(demented,nondemented)
+group_rank <- wilcox.test(demented,nondemented,exact=FALSE)
+group_welch;group_rank
+```
+
+Accept a justified mean-based or rank-based question with its limitations. Scores show ceiling/tie issues; p-values alone do not select a method. A Welch interval is for Demented minus Nondemented mean points. Do not attach that interval to the rank test, or claim that the rank p-value tests the observed median difference. MMSE and clinical grouping are related; this is not an independent diagnostic validation or a causal treatment estimate.
+
+## Day 2: both allowed associations and methods
+
+```{r associations}
+for(variable in c("Age","nWBV")) {
+ x <- mmse[[variable]];y <- mmse$MMSE
+ plot(x,y,pch=16,xlab=variable,ylab="MMSE (points)")
+ print(cor.test(x,y,method="pearson"))
+ print(cor.test(x,y,method="spearman",exact=FALSE))
+ plot(x,y,pch=16,col=ifelse(mmse$Group=="Demented","#B34D22","#246B91"),
+      xlab=variable,ylab="MMSE (points)")
+}
+```
+
+Require a method explanation grounded in plot and question. Pearson is linear; Spearman monotonic in ranks. Zero need not exclude a curved relationship. Groups and other factors may explain a pooled pattern. Report n, coefficient, p and a Pearson interval when used; do not invent a Spearman interval.
+
+## Correction and categorical extension
+
+```{r correction}
+p <- c(.01,.03,.20)
+data.frame(raw=p,adjusted=p.adjust(p,"bonferroni"))
+counts <- table(mmse$M.F,mmse$Group)
+counts;prop.table(counts,margin=2)
+chi <- chisq.test(counts,correct=FALSE)
+chi$expected;chi
+fisher.test(counts)
+```
+
+The invented three-test adjustment gives 0.03, 0.09 and 0.60: only the first is below 0.05. The family is the three illustrative comparisons. For their own additional tests, students must describe what they explored and avoid selecting only significant results. Categorical analysis concerns association in counts, not mean MMSE or causation. Evaluate expected counts before using the approximation. No extension should displace the main written interpretation and fresh render.

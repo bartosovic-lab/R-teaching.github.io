@@ -1,0 +1,16 @@
+{
+  "variant": "mouse",
+  "folder": "final",
+  "title": "A molecule, a mouse, and a memory",
+  "question": "Do BDNF assay signals differ between Saline and Memantine mice, and do BDNF and pCREB vary together?",
+  "group_a": "Saline",
+  "group_b": "Memantine",
+  "measurement": "BDNF assay signal (relative units)",
+  "companion": "pCREB assay signal (relative units)",
+  "n_a": 34,
+  "n_b": 38,
+  "story": "We measure protein signals in mouse cortex. BDNF is involved in neuronal survival and plasticity. Compare Saline and Memantine groups, then investigate whether BDNF and phosphorylated CREB (pCREB) vary together. These are assay signals in relative units, not direct measurements of memory.",
+  "row": "One row is one mouse, using assay record 1 from that mouse. The original study measured each sample repeatedly; those repeated readings are not extra mice.",
+  "source": "https://archive.ics.uci.edu/dataset/342/mice+protein+expression",
+  "publication": "https://doi.org/10.1371/journal.pone.0129126"
+}
