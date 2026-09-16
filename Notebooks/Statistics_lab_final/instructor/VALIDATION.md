@@ -15,3 +15,7 @@ Completed 16 September 2026, with R 4.6.1 and learnr 0.11.6.
 The deliberately misspelled `Readings` attempt emits an expected exercise error during negative testing. A PDF-only diagnostic device substituted an ASCII dash for two Q–Q titles; those plot labels were changed to Q-Q and subsequent checks passed without that warning.
 
 These checks establish execution, data consistency and packaging, not student comprehension or completion time. Both timetables remain proposals to pilot with beginners. The tutorial requires a live R/Shiny session; its HTML reading preview is not a hosted interactive application.
+
+## Student wording revision checks
+
+Re-rendered the live tutorial and all HTML/notebook outputs. Re-ran the full 22-exercise evaluator, incorrect-answer, export, Shiny control/download and eight MMSE combination checks successfully. Confirmed all 22 starter editors have the code-entry prompt, all eight column questions appear in the rendered learnr output, student sources contain no minute allocations, and factor guidance sits beside its code lines. Rebuilt the 23-file student ZIP; integrity and all 20 local HTML links pass. No computer control was used for this revision.

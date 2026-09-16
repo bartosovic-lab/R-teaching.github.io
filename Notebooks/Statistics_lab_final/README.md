@@ -1,6 +1,6 @@
 # Statistics final: mouse proteins to human cognition
 
-Two four-hour afternoons for students new to R. Open `index.html` for the route.
+Two afternoons for students new to R. Open `index.html` for the route.
 
 - Day 1: mouse-protein learnr tutorial, including summaries, quartiles/IQR, graphics, assumptions, Welch/Wilcoxon, correlation and Bonferroni. All exercises run in designated tutorial editors.
 - Day 2: `notebooks/02_mmse_investigation.Rmd`, a real R Notebook with independent tasks, progressive hints and optional extensions. Its first output is `html_notebook`; `html_document` provides the reproducible final submission.

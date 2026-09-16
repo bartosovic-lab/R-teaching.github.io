@@ -7,7 +7,7 @@ output:
     mathjax: null
 ---
 
-## Prepare before day 1 — about 30 minutes
+## Prepare before day 1
 
 Install [R](https://cran.r-project.org/) first and [RStudio Desktop](https://posit.co/download/rstudio-desktop/) second. Use a computer-room machine if installation cannot be resolved in the preparation session.
 

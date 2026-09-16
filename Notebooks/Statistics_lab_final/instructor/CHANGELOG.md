@@ -12,3 +12,14 @@ New isolated branch `statistics-final`, based on the existing learnr branch HEAD
 - Source provenance, instructor solutions, data reconciliation, live-exercise and release checks supplied.
 - Fixed export handling of backticks in student prose using entities before knitr evaluation.
 - Separate `.nb.html` snapshot and freshly executed `.html` task preview are both distributed. Render order preserves both files.
+
+## Student wording and exercise revision
+
+- Replaced the protein lesson-routing paragraph with BDNF, pCREB and NR1 biological functions and source links.
+- Replaced the single ordinal question with eight multiple-choice questions, one for every mouse-table column. Identifiers and experimental labels are nominal; the three assay signals are continuous. No column in this table is ordinal.
+- Explained one-column selection with `$`, row comparisons with `==`, logical selection and whole-row subsets step by step.
+- Added `# your code goes here` to every learnr exercise editor and solution, and the independent day-2 exercise chunks.
+- Removed student-facing time allocations, including setup, section headings, break durations and extension timings. Instructor schedules remain available.
+- Moved factor display-order guidance into comments next to the code.
+- Expanded normal Q–Q axes and quartile reference-line interpretation, Shapiro–Wilk W and the normality null, and p < 0.05 versus p >= 0.05 interpretation, with numerical examples and cautions about sample size.
+- Rebuilt both student notebook formats, reading preview and student ZIP.

@@ -446,8 +446,8 @@ display: none;
 <li><a href="#day-2-work-in-pairs-explain-the-analysis-yourself" id="toc-day-2-work-in-pairs-explain-the-analysis-yourself">Day 2 — work
 in pairs, explain the analysis yourself</a>
 <ul>
-<li><a href="#todays-plan" id="toc-todays-plan">Today’s plan</a></li>
-<li><a href="#first-15-minutes-where-do-i-type" id="toc-first-15-minutes-where-do-i-type">First 15 minutes: where do I
+<li><a href="#todays-route" id="toc-todays-route">Today’s route</a></li>
+<li><a href="#start-here-where-do-i-type" id="toc-start-here-where-do-i-type">Start here: where do I
 type?</a></li>
 <li><a href="#setup-run-first" id="toc-setup-run-first">Setup — run
 first</a></li>
@@ -496,76 +496,24 @@ complete <strong>one group comparison and one correlation</strong>, plus
 an independent multiple-testing exercise. You do not need a large
 collection of tests. Write a few sentences beside each important result
 rather than leaving all the writing until the end.</p>
-<div id="todays-plan" class="section level2">
-<h2>Today’s plan</h2>
-<p>The core route takes about 180 minutes, plus 25 minutes of breaks.
-Use the remaining 35 minutes for an extension, more independent practice
-or catching up. Times are working targets, not speed marks.</p>
-<table>
-<thead>
-<tr class="header">
-<th>Activity</th>
-<th align="right">Core minutes</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>RStudio orientation, first run and first HTML</td>
-<td align="right">15</td>
-</tr>
-<tr class="even">
-<td>Data audit and participant overview</td>
-<td align="right">30</td>
-</tr>
-<tr class="odd">
-<td>Plan one comparison and one association</td>
-<td align="right">10</td>
-</tr>
-<tr class="even">
-<td>Summaries, quartiles/IQR, plots and assumptions</td>
-<td align="right">30</td>
-</tr>
-<tr class="odd">
-<td>Break</td>
-<td align="right">15</td>
-</tr>
-<tr class="even">
-<td>Group test and interpretation</td>
-<td align="right">25</td>
-</tr>
-<tr class="odd">
-<td>Association and interpretation</td>
-<td align="right">25</td>
-</tr>
-<tr class="even">
-<td>Break</td>
-<td align="right">10</td>
-</tr>
-<tr class="odd">
-<td>Multiple testing and challenge a conclusion</td>
-<td align="right">15</td>
-</tr>
-<tr class="even">
-<td>Own conclusions, partner review and assistance reflection</td>
-<td align="right">10</td>
-</tr>
-<tr class="odd">
-<td>Restart, Knit and inspect the final HTML</td>
-<td align="right">20</td>
-</tr>
-<tr class="even">
-<td>Extension or catch-up time, placed where needed</td>
-<td align="right">35</td>
-</tr>
-<tr class="odd">
-<td><strong>Total</strong></td>
-<td align="right"><strong>240</strong></td>
-</tr>
-</tbody>
-</table>
+<div id="todays-route" class="section level2">
+<h2>Today’s route</h2>
+<ol style="list-style-type: decimal">
+<li>Get comfortable in RStudio and create your first HTML.</li>
+<li>Inspect the data and describe the participants.</li>
+<li>Plan one group comparison and one association.</li>
+<li>Calculate summaries, quartiles and IQR; make plots and assess
+assumptions.</li>
+<li>Run your chosen analyses and explain the results.</li>
+<li>Consider multiple testing and challenge one conclusion.</li>
+<li>Complete your own narrative, restart R, Knit and inspect the final
+HTML.</li>
+</ol>
+<p>Take breaks with the class. Use the extension menu after completing
+the core investigation, or revisit an earlier task with help.</p>
 </div>
-<div id="first-15-minutes-where-do-i-type" class="section level2">
-<h2>First 15 minutes: where do I type?</h2>
+<div id="start-here-where-do-i-type" class="section level2">
+<h2>Start here: where do I type?</h2>
 <ol style="list-style-type: decimal">
 <li>Open <code>Statistics_lab.Rproj</code>, then this <code>.Rmd</code>
 in the <strong>Source editor</strong>. Save a personal copy in
@@ -597,7 +545,9 @@ belong in the Console; your analyses belong in the notebook.</li>
 practice chunk below and run the chunk: now the saved file contains the
 step. Remove this practice calculation from your final report if you
 wish.</p>
-<pre class="r"><code># Add temporary_number &lt;- 10, then display temporary_number.</code></pre>
+<pre class="r"><code># Add temporary_number &lt;- 10, then display temporary_number.
+
+# your code goes here</code></pre>
 <p><strong>Stuck at a <code>+</code> Console prompt?</strong> Press Esc.
 Complete the missing quote or bracket in the Source editor, then rerun
 the full command. To add a code chunk use <strong>Code → Insert
@@ -733,7 +683,9 @@ the dictionary?</li>
 <li>Why should we avoid calculating a mean SES as if the categories were
 equally spaced measurements?</li>
 </ol>
-<pre class="r"><code># Add your checks here.</code></pre>
+<pre class="r"><code># Add your checks here.
+
+# your code goes here</code></pre>
 <p><strong>Your data description:</strong></p>
 <details>
 <summary>
@@ -782,6 +734,7 @@ group counts. State the denominator when reporting their proportion of
 the full sample. This threshold is a descriptive exercise, not a new
 definition of disease.</li>
 </ol>
+<pre class="r"><code># your code goes here</code></pre>
 <p><strong>What kind of sample are we analysing? Include the age
 summary, category counts, and missingness in three or four
 sentences.</strong></p>
@@ -868,7 +821,9 @@ that Q3 minus Q1 equals IQR. Compare the spread described by SD and IQR;
 justify which summaries best describe these bounded scores. Reuse day 1
 and the command reference. Report sample sizes. A summary table is
 useful, but a list of clearly labelled results is sufficient.</p>
-<pre class="r"><code># Your summary commands here.</code></pre>
+<pre class="r"><code># Your summary commands here.
+
+# your code goes here</code></pre>
 <p>Adapt the following plot labels if needed. The dots show individual
 observations; horizontal jitter separates tied values without changing
 their scores.</p>
@@ -960,6 +915,7 @@ if (group_method == &quot;welch&quot;) {
   cat(&quot;Choose welch or wilcoxon in group_method after writing your justification.\n&quot;)
 }</code></pre>
 <pre><code>## Choose welch or wilcoxon in group_method after writing your justification.</code></pre>
+<pre class="r"><code># your code goes here</code></pre>
 </div>
 <div id="task-f-explain-the-result" class="section level3">
 <h3>Task F — explain the result</h3>
@@ -993,6 +949,7 @@ if (correlation_variable %in% c(&quot;Age&quot;, &quot;nWBV&quot;)) {
   cat(&quot;Choose Age or nWBV in correlation_variable to draw your scatterplot.\n&quot;)
 }</code></pre>
 <pre><code>## Choose Age or nWBV in correlation_variable to draw your scatterplot.</code></pre>
+<pre class="r"><code># your code goes here</code></pre>
 <p><code>mmse[[correlation_variable]]</code> selects the column whose
 name is stored in that object. For example, when the name is
 <code>&quot;Age&quot;</code>, it selects the same values as <code>mmse$Age</code>.
@@ -1024,6 +981,7 @@ if (correlation_variable %in% c(&quot;Age&quot;, &quot;nWBV&quot;) &amp;&amp;
   cat(&quot;Choose your variable, run its plot chunk, then choose pearson or spearman.\n&quot;)
 }</code></pre>
 <pre><code>## Choose your variable, run its plot chunk, then choose pearson or spearman.</code></pre>
+<pre class="r"><code># your code goes here</code></pre>
 <p>For Spearman we request an approximate p-value because some
 participants have the same values (called ties). For Pearson, the usual
 p-value and confidence interval assume independent pairs of measurements
@@ -1054,7 +1012,9 @@ result at 1.</p>
 reproduce them using the command from yesterday and display raw and
 adjusted values together.</p>
 <pre class="r"><code>p_values &lt;- c(Treatment_A = 0.01, Treatment_B = 0.03, Treatment_C = 0.20)
-# Your adjustment and result table here.</code></pre>
+# Your adjustment and result table here.
+
+# your code goes here</code></pre>
 <details>
 <summary>
 Hint
@@ -1134,10 +1094,9 @@ hints are equally acceptable.</p>
 </div>
 <div id="finish-your-notebook" class="section level2">
 <h2>9. Finish your notebook</h2>
-<p>Write interpretations as you go. Use the final 10 minutes of writing
-and partner review to finish them, then protect 20 minutes for a fresh
-render. Use the flexible practice time earlier if you need more
-support.</p>
+<p>Write interpretations as you go. Review them with your partner, then
+restart R and render your saved notebook. Ask for help with any task you
+cannot yet explain.</p>
 <ul class="task-list">
 <li><label><input type="checkbox"></input>I explained what each row
 represents, which groups are included, and which values are
@@ -1177,10 +1136,10 @@ worth explaining.</p>
 </div>
 <div id="extension-menu-choose-after-finishing-the-core" class="section level2">
 <h2>Extension menu — choose after finishing the core</h2>
-<p>Use up to 35 minutes for one or two extensions. Depth and explanation
-matter more than the number completed. These are optional.</p>
-<div id="a.-a-four-panel-figure-15-minutes" class="section level3">
-<h3>A. A four-panel figure — 15 minutes</h3>
+<p>Choose one or two extensions. Depth and explanation matter more than
+the number completed. These are optional.</p>
+<div id="a.-a-four-panel-figure" class="section level3">
+<h3>A. A four-panel figure</h3>
 <p>Once the required analysis and writing are complete, bring your
 findings together in a figure: age histogram, MMSE boxplot by group,
 your chosen scatterplot, and SES category counts. Reuse the commands you
@@ -1195,18 +1154,20 @@ ses_labels &lt;- names(ses_counts)
 ses_labels[is.na(ses_labels)] &lt;- &quot;Missing&quot;
 barplot(ses_counts, names.arg = ses_labels, main = &quot;SES including missing values&quot;,
         xlab = &quot;SES category&quot;, ylab = &quot;Participants&quot;)</code></pre>
+<pre class="r"><code># your code goes here</code></pre>
 <p><strong>Caption:</strong> Name the sample, describe one finding from
 each panel, and state a limitation. What does the combined figure make
 easier to understand? Which details would need a larger separate
 plot?</p>
 </div>
-<div id="b.-explore-another-measurement-10-minutes" class="section level3">
-<h3>B. Explore another measurement — 10 minutes</h3>
+<div id="b.-explore-another-measurement" class="section level3">
+<h3>B. Explore another measurement</h3>
 <p>Choose <strong>EDUC or nWBV</strong>. Before running anything, use
 the dictionary to state its meaning and units. Make a histogram,
 calculate appropriate summaries, and describe the values by group using
 a boxplot. Write one question the plots raise that your two planned
 analyses cannot answer. Do not turn it into another test today.</p>
+<pre class="r"><code># your code goes here</code></pre>
 <p><strong>Your observation and unanswered question:</strong></p>
 </div>
 <div id="c.-adjustment-for-your-two-planned-tests" class="section level3">
@@ -1222,8 +1183,8 @@ data.frame(raw_p = my_p_values,
 <p><a href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/p.adjust.html">R
 reference for multiple-testing adjustment</a></p>
 </div>
-<div id="d.-do-counts-tell-a-different-story-1520-minutes" class="section level3">
-<h3>D. Do counts tell a different story? — 15–20 minutes</h3>
+<div id="d.-do-counts-tell-a-different-story" class="section level3">
+<h3>D. Do counts tell a different story?</h3>
 <p>Ask whether source-recorded M/F category is associated with the
 source Group label. This question concerns <strong>counts</strong>, not
 mean MMSE. Predict, make a table with
@@ -1232,7 +1193,9 @@ proportions. Check expected counts before interpreting a chi-square
 approximation. This is an additional exploratory test: disclose it in
 your analysis record; the earlier three invented comparisons do not
 adjust it.</p>
-<pre class="r"><code># Your table, proportions and optional test here.</code></pre>
+<pre class="r"><code># Your table, proportions and optional test here.
+
+# your code goes here</code></pre>
 <details>
 <summary>
 Worked code to adapt after making your table

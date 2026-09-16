@@ -36,7 +36,7 @@ A normal model is a judgement using design and plots; never teach a Shapiro cuto
 
 ## Day 2: four hours including breaks
 
-The student notebook gives 180 minutes of core work, 25 minutes of breaks and 35 minutes for extensions or catch-up. Start with 15 minutes of real RStudio orientation. Students save a personal copy in notebooks/, run setup and import, and produce their first HTML before substantial editing. Explain that notebook chunks share a working session, unlike independent learnr editors.
+Allow 180 minutes of core work, 25 minutes of breaks and 35 minutes for extensions or catch-up. Timing allocations are instructor-only; the student notebook gives an untimed route. Start with 15 minutes of real RStudio orientation. Students save a personal copy in notebooks/, run setup and import, and produce their first HTML before substantial editing. Explain that notebook chunks share a working session, unlike independent learnr editors.
 
 The template's primary output is html_notebook, so it opens as a real R Notebook. Preview produces an .nb.html snapshot. For the final deliverable choose the HTML document output (Knit to HTML), which executes the saved recipe. The notebook gives a render command as a fallback if menus differ. Do not accept an unchanged task preview as a completed report.
 
@@ -53,3 +53,7 @@ Assess the final individual HTML, not how many green checks or tests a student o
 The original working directories are unchanged. The combined course copies the reviewed mouse and MMSE CSVs without editing measurements. Source archives, original preparation scripts and hashes remain in instructor/source; current reconciliation is scripts/validate_data.py. The student ZIP excludes all instructor material and runtime libraries.
 
 Run scripts/validate.R for actual learnr solution evaluation, wrong answers, Shiny controls/downloads, completed export rendering and all supported day-2 method combinations. Render the static pages with scripts/render.R and build the ZIP with scripts/package_students.py. See VALIDATION.md for results from this build; a successful technical check does not establish classroom pacing.
+
+## Student-facing revision
+
+All section, break, setup and extension time allocations are hidden from students. Keep the schedules above for facilitation. The variable-type quiz asks separately about all eight mouse-table columns; none is ordinal. Protein descriptions explain biological function. The normality section now teaches Q–Q axes, the quartile reference line, W, the normality null and p < 0.05 versus p >= 0.05 with examples and limitations. All 22 exercise editors include `# your code goes here`.

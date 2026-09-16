@@ -448,11 +448,13 @@ data.frame(raw_p,adjusted=p.adjust(raw_p,&quot;bonferroni&quot;))</code></pre>
 Memantine mice in the teaching table. Copying rows creates no new mice.
 Record 1 is a transparent fixed reduction, not an optimal abundance
 estimate. Independence may also depend on cage/litter.</p>
-<p>Types: treatment is nominal; ID is a label; the illustrative severity
-ordering is ordinal; assay values are continuous signals. An IQR is
-nonnegative and has assay units. Q1–Q3 describes the middle half, not
-confidence in a population estimate. A boxplot’s hinges can differ
-slightly from interpolated quartiles.</p>
+<p>Types: sample_id, group, genotype, learning and source_record are
+nominal; BDNF, pCREB and NR1 are continuous. No column in this teaching
+table is ordinal. C/S versus S/C describes event order inside a
+protocol, not a ranking of protocol labels. The illustrative severity
+ordering is ordinal. An IQR is nonnegative and has assay units. Q1–Q3
+describes the middle half, not confidence in a population estimate. A
+boxplot’s hinges can differ slightly from interpolated quartiles.</p>
 <p>Outlier: replacing 7 with 34 in 4,5,5,6,7 doubles the mean from 5.4
 to 10.8 and leaves the median at 5. Four values did not change. No
 automatic deletion is justified. Missingness: three observations average

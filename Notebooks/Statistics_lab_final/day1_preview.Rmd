@@ -28,7 +28,7 @@ measurements into a figure. You are allowed to be surprised by the data. A resul
 not support your prediction is still a result worth explaining.
 
 Work in pairs. One person types and the other predicts or explains; swap after each section.
-Keep your own written answers. Today stays in this interactive tutorial, including statistics. Aim for about 195 minutes of core activities, 25 minutes of breaks and 20 minutes for extra practice or catching up. The section times are guides, not deadlines. Tomorrow you will use an RStudio notebook with human MMSE data.
+Keep your own written answers. Today stays in this interactive tutorial, including statistics. Tomorrow you will use an RStudio notebook with human MMSE data.
 
 - **Code editor:** type R commands in the box containing code. Click **Run Code** to see results below it.
 - **Answer box:** type your scientific explanation in ordinary words.
@@ -43,7 +43,7 @@ Download regularly. Written answers are session-only; download before closing or
 Your notebook contains your submitted code, your explanations and your current slider views.
 It will become an ordinary editable R notebook in RStudio.
 
-## 1. First successful runs — 12 minutes
+## 1. First successful runs
 
 Click inside the editor and press Enter for a new line. Running an editor runs every line,
 top to bottom. Output appears in the same order. The printed `[1]` marks the position of the
@@ -57,6 +57,8 @@ Run the supplied addition. Then append `12 / 4` on a new line, run again and sub
 2 + 3
 
 # Add your command below.
+
+# your code goes here
 ```
 
 
@@ -68,6 +70,8 @@ Three plates, four wells each: how many wells? Predict first. Append `3 * 4`; `*
 3 + 4
 
 # Add your command below.
+
+# your code goes here
 ```
 
 
@@ -78,6 +82,8 @@ An **object** is information kept under a name. Read `wells <- 12` as “store 1
 ```{r store, eval=FALSE, echo=TRUE}
 wells <- 12
 wells
+
+# your code goes here
 ```
 
 
@@ -88,6 +94,8 @@ wells
 ```{r combine, eval=FALSE, echo=TRUE}
 counts <- c(2, 4, 6)
 counts
+
+# your code goes here
 ```
 
 
@@ -99,6 +107,8 @@ The **mean** is the sum divided by the number of observations. The example calcu
 counts <- c(2, 4, 6)
 (2 + 4 + 6) / 3
 length(counts)
+
+# your code goes here
 ```
 
 
@@ -109,6 +119,8 @@ These are made-up assay readings. Before running, predict whether adding 9 will 
 ```{r add_value, eval=FALSE, echo=TRUE}
 readings <- c(4, 5, 6)
 mean(readings)
+
+# your code goes here
 ```
 
 
@@ -119,10 +131,12 @@ Run this editor once. R names are case-sensitive: `Readings` and `readings` are 
 ```{r rescue, eval=FALSE, echo=TRUE}
 readings <- c(4, 5, 6)
 mean(Readings)
+
+# your code goes here
 ```
 
 
-## 2. Meet the mice — 18 minutes
+## 2. Meet the mice
 
 One row is one mouse, using assay record 1 from that mouse. The original study measured each sample repeatedly; those repeated readings are not extra mice.
 
@@ -141,7 +155,12 @@ are in `data/dictionary.html`. [Dataset](https://archive.ics.uci.edu/dataset/342
 | `learning` | C/S or S/C protocol |
 | `source_record` | Original assay record retained for traceability |
 
-`BDNF` is the brain-derived neurotrophic factor assay signal. `pCREB` is the signal for phosphorylated CREB, a protein involved in regulating gene activity. All three proteins have relative assay signals from the same mouse. Use BDNF to learn the analysis. pCREB gives us a second measurement for association; NR1 appears in a supplied multiple-testing example.
+### What do these proteins do?
+
+- **BDNF — brain-derived neurotrophic factor:** supports neuronal survival and development, and helps synapses change their strength. These changes in connections are part of synaptic plasticity. [BDNF reference](https://www.ncbi.nlm.nih.gov/gene/627).
+- **pCREB — phosphorylated CREB:** CREB is a transcription factor, a protein that helps regulate which genes are expressed. Phosphorylation adds a phosphate group and can link signals arriving in a neuron to changes in gene expression. BDNF can stimulate CREB phosphorylation; our pCREB column measures a modified protein signal, not the amount of its RNA. [Experimental study of BDNF and CREB](https://pubmed.ncbi.nlm.nih.gov/9390517/).
+- **NR1, also called GluN1:** an essential subunit of the NMDA receptor, a glutamate receptor that forms an ion channel. NMDA receptors contribute to synaptic plasticity involved in learning and memory. Measuring the subunit's assay signal does not directly measure receptor current. [NR1 reference](https://www.ncbi.nlm.nih.gov/gene/2902).
+
 
 A table in R is called a **data frame**. A row holds information about one animal;
 a column holds one variable. A **nominal** category names groups with no ranking;
@@ -154,6 +173,8 @@ can take intermediate values even if the instrument rounds them. Biological mean
 
 ```{r import, eval=FALSE, echo=TRUE}
 study <- read.csv("data/study.csv")
+
+# your code goes here
 ```
 
 
@@ -171,6 +192,8 @@ measurement_n <- NULL # Replace NULL
 mouse_n <- NULL       # Replace NULL
 measurement_n
 mouse_n
+
+# your code goes here
 ```
 
 
@@ -178,16 +201,40 @@ mouse_n
 cat(note_labels[["replication"]])
 ```
 
+### Classify every column
 
-**Self-check:** Which is ordinal: mouse ID, treatment group, severity (mild/moderate/severe), or BDNF signal? Explain.
+For each column in `study`, choose **ordinal**, **nominal** or **continuous** based on its meaning. You may use the same answer more than once; not every answer has to occur. Identifiers belong with nominal labels in this exercise. Submit each answer to see feedback.
 
 
-## 3. Follow one group — 10 minutes
+| Column | Your choice: ordinal, nominal or continuous |
+|---|---|
+| `sample_id` | Write your choice |
+| `group` | Write your choice |
+| `BDNF` | Write your choice |
+| `pCREB` | Write your choice |
+| `NR1` | Write your choice |
+| `genotype` | Write your choice |
+| `learning` | Write your choice |
+| `source_record` | Write your choice |
 
-`study$BDNF` retrieves the measurement column. `study$group == "Saline"` asks a yes/no
-question for each row. **Two equals signs compare; `<-` assigns.** Square brackets keep
-the values whose group comparison is TRUE. The selection code is supplied: you need to
-explain and adapt it, not memorise it.
+
+## 3. Follow one group
+
+Sometimes we want **one column** from a table, such as all BDNF measurements. Sometimes we want **a subset of rows**, such as only mice that received Saline. We can combine these two selections.
+
+1. **Take a column with `$`.** `study$BDNF` means “the BDNF column of study”. `study$group` gives the treatment label for every mouse, in the same row order.
+2. **Compare with `==`.** `study$group == "Saline"` asks “is this value equal to Saline?” for each row. It returns `TRUE` for a Saline mouse and `FALSE` otherwise. Quotes tell R that `"Saline"` is literal text. **Two equals signs compare; `<-` stores a result.**
+3. **Keep the selected values with `[ ]`.** `study$BDNF[study$group == "Saline"]` starts with the BDNF column and keeps the entries whose treatment comparison is `TRUE`.
+
+
+```{r selection-walkthrough, echo=TRUE}
+study <- read.csv("data/study.csv")
+head(study$group)             # One column: the first treatment labels
+head(study$group == "Saline") # One TRUE/FALSE decision for each of these rows
+head(study$BDNF[study$group == "Saline"]) # BDNF values only for Saline mice
+```
+
+If we want **all columns for the selected mice**, use `study[study$group == "Saline", ]`. For a table, the position before the comma selects rows; the empty position after it keeps every column. Compare that with selecting just the BDNF values above. The templates are here to adapt, not memorise.
 
 The name `saline_bdnf` tells us both the biological measurement and its group. We will use `memantine_bdnf` for the other group. Descriptive names help you check which animals a calculation includes.
 
@@ -200,6 +247,8 @@ study <- read.csv("data/study.csv")
 saline_bdnf <- study$BDNF[study$group == "Saline"]
 length(saline_bdnf)
 mean(saline_bdnf)
+
+# your code goes here
 ```
 
 
@@ -207,7 +256,7 @@ mean(saline_bdnf)
 cat(note_labels[["selection"]])
 ```
 
-## 4. Centre, spread and the middle half — 20 minutes
+## 4. Centre, spread and the middle half
 
 The mean gives each observation equal weight. The **median** is the middle of the ordered
 observations (the mean of the two middle ones when there is an even number).
@@ -227,6 +276,8 @@ mean(saline_bdnf)
 median(saline_bdnf)
 mean(memantine_bdnf)
 median(memantine_bdnf)
+
+# your code goes here
 ```
 
 
@@ -245,6 +296,8 @@ memantine_bdnf <- study$BDNF[study$group == "Memantine"]
 quantile(saline_bdnf, probs=c(0.25,0.5,0.75))
 IQR(saline_bdnf)
 # Add the Memantine calculations here.
+
+# your code goes here
 ```
 
 
@@ -271,6 +324,8 @@ Keep the original readings. Append a new assay vector with your chosen fifth val
 assay <- c(4, 5, 5, 6, 7)
 mean(assay)
 median(assay)
+
+# your code goes here
 ```
 
 
@@ -278,7 +333,7 @@ median(assay)
 cat(note_labels[["outlier"]])
 ```
 
-## 5. The assay that failed — 10 minutes
+## 5. The assay that failed
 
 `NA` means missing. It does not mean zero. Imagine one assay failed: would writing zero
 describe what happened? First predict what R should do when a required input is unknown.
@@ -292,6 +347,8 @@ Run the starter: `mean(example)` returns NA. Count the recorded numbers by looki
 example <- c(4, 6, NA, 8)
 mean(example)
 observed_n <- length(example) # Change: count observed values, excluding NAs
+
+# your code goes here
 ```
 
 
@@ -303,9 +360,9 @@ Excluding a missing value does not recover it. If high values fail more often, t
 values may systematically miss the high end of the distribution.
 
 
-**Take a 15-minute break.** On return, swap typing and explanation roles.
+**Take a break.** On return, swap typing and explanation roles.
 
-## 6. How many bars tell the story? — 15 minutes
+## 6. How many bars tell the story?
 
 A **histogram** groups measurements into intervals called bins. Bar height counts observations
 inside each interval. A few broad bins can hide structure; many narrow bins can make a small
@@ -333,6 +390,8 @@ memantine_bdnf <- study$BDNF[study$group == "Memantine"]
 shared_xlim <- range(study$BDNF)
 shared_breaks <- seq(shared_xlim[1], shared_xlim[2], length.out=7)
 hist(saline_bdnf, breaks=shared_breaks, xlim=shared_xlim, main="Saline", xlab="BDNF assay signal (relative units)")
+
+# your code goes here
 ```
 
 
@@ -340,9 +399,7 @@ hist(saline_bdnf, breaks=shared_breaks, xlim=shared_xlim, main="Saline", xlab="B
 cat(note_labels[["histogram"]])
 ```
 
-## 7. Show the animals behind the average — 15 minutes
-
-`factor()` below fixes the display order so colours and group positions stay consistent across figures. It does not change any measurements.
+## 7. Show the animals behind the average
 
 A **boxplot** puts the middle half of the observations inside a box. The line is the median.
 Whiskers extend to the most distant observations within 1.5 box lengths of the box; more distant observations
@@ -359,7 +416,7 @@ makes that sideways movement repeatable.
 Run the supplied bar chart, which shows only two means. Append the following worked template to add a boxplot with all animals. Run, inspect and submit. You do not need to invent the plotting syntax.
 
 ```r
-study$group <- factor(study$group, levels=c("Saline","Memantine"))
+study$group <- factor(study$group, levels=c("Saline","Memantine")) # Fix group order for consistent plots; measurements stay unchanged.
 comparison <- boxplot(BDNF ~ group, data=study, outline=FALSE,
   ylab="BDNF assay signal (relative units)", xlab="Group", col=c("lightblue","peachpuff"))
 set.seed(7)
@@ -373,6 +430,8 @@ saline_bdnf <- study$BDNF[study$group == "Saline"]
 memantine_bdnf <- study$BDNF[study$group == "Memantine"]
 barplot(c(mean(saline_bdnf),mean(memantine_bdnf)),names.arg=c("Saline","Memantine"),
   ylab="Mean: BDNF assay signal (relative units)",main="Only the means")
+
+# your code goes here
 ```
 
 
@@ -394,7 +453,7 @@ cat(note_labels[["violin"]])
 violin_view(read.csv("data/study.csv"))
 ```
 
-## 8. Two measurements from the same animal — 10 minutes
+## 8. Two measurements from the same animal
 
 A **scatterplot** gives each animal one point. Its horizontal and vertical positions show
 two different measurements from that animal. A rising pattern suggests positive association;
@@ -410,6 +469,8 @@ study <- read.csv("data/study.csv")
 saline_mice <- study[study$group == "Saline", ]
 plot(saline_mice$BDNF, saline_mice$pCREB,
   xlab="BDNF assay signal (relative units)", ylab="pCREB assay signal (relative units)", main="Saline", pch=19)
+
+# your code goes here
 ```
 
 
@@ -417,11 +478,40 @@ plot(saline_mice$BDNF, saline_mice$pCREB,
 cat(note_labels[["scatter"]])
 ```
 
-## 9. Is a normal model a useful approximation? — 15 minutes
+## 9. Is a normal model a useful approximation?
 
-A normal distribution is a symmetric bell-shaped model. Real observations may be skewed (one tail longer), bounded or contain unusual values. Similar means and medians do not prove normality. Inspect groups separately: pooling groups can hide or invent shapes.
+A **normal distribution** is a symmetric bell-shaped model. Real observations may be skewed (one tail longer), bounded or contain unusual values. Similar means and medians do not prove normality. Inspect groups separately: pooling groups can hide or invent shapes.
 
-A Q–Q plot compares ordered observations with a normal model. Points roughly following the line are compatible with that model; bends and isolated tail points raise questions. Shapiro–Wilk supplies another check. Its p-value is not the probability that the data are normal. A large p-value does not prove normality; a small one does not choose the next test for you.
+### What does a Q–Q plot compare?
+
+Q–Q means **quantile–quantile**. You already used quartiles to locate the lower quarter, middle and upper quarter of your measurements. A Q–Q plot extends that idea across the whole distribution: it compares many ordered positions, not just three quartiles.
+
+For a **normal Q–Q plot**, R sorts your measurements from smallest to largest. Each dot compares an observed value on the **vertical axis** with the position expected in a standard normal distribution on the **horizontal axis**. The horizontal values are theoretical quantiles, not additional mice. The vertical axis stays in assay units.
+
+- **Dots roughly follow a straight line:** the observed distribution is reasonably compatible with a normal shape. The line need not have slope 1; different means and SDs move or tilt it.
+- **Systematic bends or an S-shaped pattern:** the distribution may have skew or tails that differ from a normal model.
+- **A few end points far from the line:** inspect the extreme observations. This is a reason to investigate, not automatically delete them.
+
+`qqnorm()` draws the dots. `qqline()` adds a reference line through the first and third quartiles, linking this plot to the summaries you calculated earlier. Random variation means that real data rarely sit exactly on the line, especially in small samples. [R Q–Q plot reference](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/qqnorm.html).
+
+### What does the Shapiro–Wilk test tell us?
+
+**Shapiro–Wilk** is a statistical test of the null hypothesis that the independent observations come from a normal distribution. It compares the pattern of ordered measurements with the pattern expected under normality. R reports a statistic called **W** and a **p-value**. W values closer to 1 indicate closer agreement with the normal pattern; use the p-value, sample size and plots to interpret the evidence, rather than a fixed W cutoff.
+
+The **p-value** asks: *if the normal model and the test's assumptions held, how likely would we be to get a test statistic showing at least this much departure from normality?* It is **not** the probability that our data are normal.
+
+For this exercise, choose a significance threshold of **0.05** before reading the result:
+
+| Shapiro–Wilk result | Interpretation | Example |
+|---|---|---|
+| **p < 0.05** | Reject the normality null at this threshold: there is evidence of a departure from a normal distribution. Inspect the plot to understand the departure. | p = 0.02: evidence against a normal model. It does not mean a 2% probability that the data are normal. |
+| **p ≥ 0.05** | Do not reject the normality null: this test has not provided enough evidence of a departure. This does **not prove normality**. | p = 0.30: insufficient evidence against normality, not a 30% probability of normality. |
+
+We use p < 0.05 as the rejection rule here; an exactly reported 0.05 is the boundary, and rounded values can hide which side it falls on. Values just either side of the threshold are not sharply different biological findings.
+
+With few observations, the test may miss substantial departures; with many, it can detect small departures that have little practical impact. A p-value above 0.05 does not override a clearly curved Q–Q plot, and one below 0.05 does not automatically require a rank test. We must still ask what we want to compare, whether observations are independent, and whether the departures matter for the proposed analysis. [R Shapiro–Wilk reference](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/shapiro.test.html).
+
+**Before running:** explain to your partner how you would describe p = 0.02 and p = 0.30. Then check both the plots and test results for our mice.
 
 ### Inspect the other group
 
@@ -434,6 +524,8 @@ memantine_bdnf <- study$BDNF[study$group == "Memantine"]
 qqnorm(saline_bdnf, main="Saline: normal Q-Q plot")
 qqline(saline_bdnf)
 shapiro.test(saline_bdnf)
+
+# your code goes here
 ```
 
 
@@ -441,10 +533,10 @@ shapiro.test(saline_bdnf)
 cat(note_labels[["normality"]])
 ```
 
-**Take a 10-minute break. Submit your latest attempts and download a checkpoint before leaving.**
+**Take a break. Submit your latest attempts and download a checkpoint before leaving.**
 
 
-## 10. Compare groups, then defend the claim — 30 minutes
+## 10. Compare groups, then defend the claim
 
 Our question is about **Memantine minus Saline** BDNF signal. Predict the direction before testing. Welch's t-test compares population means while allowing unequal variances. Independent animals are essential; strong skew and influential values can make small-sample inference fragile. The null hypothesis is equal population means. We do not need a preliminary equal-variance test.
 
@@ -460,6 +552,8 @@ mean_difference <- NULL # Replace NULL
 welch_result <- NULL    # Replace NULL
 mean_difference
 welch_result
+
+# your code goes here
 ```
 
 
@@ -476,6 +570,8 @@ study <- read.csv("data/study.csv")
 saline_bdnf <- study$BDNF[study$group == "Saline"]
 memantine_bdnf <- study$BDNF[study$group == "Memantine"]
 t.test(memantine_bdnf, saline_bdnf)
+
+# your code goes here
 ```
 
 
@@ -492,7 +588,7 @@ table(study$group, study$genotype)
 table(study$group, study$learning)
 ```
 
-## 11. Put a number on an association — 15 minutes
+## 11. Put a number on an association
 
 Use two measurements from the **same mouse**, with different mice independent. Pearson describes a linear association; Spearman describes monotonic rank association (generally rising or falling). Both range from −1 to +1. Zero does not exclude every curved relationship. Inspect the scatterplot before choosing; separate Shapiro tests do not select a correlation method. The usual Pearson test and interval additionally need an appropriate model for the paired measurements. Neither coefficient proves causation.
 
@@ -508,6 +604,8 @@ plot(mice$BDNF, mice$pCREB, pch=19,
 association_method <- "choose"
 association_result <- NULL # Replace NULL after selecting a method
 association_result
+
+# your code goes here
 ```
 
 
@@ -515,7 +613,7 @@ association_result
 cat(note_labels[["correlation"]])
 ```
 
-## 12. Three proteins, three chances for a small p-value — 15 minutes
+## 12. Three proteins, three chances for a small p-value
 
 Suppose we planned three treatment comparisons, one each for BDNF, pCREB and NR1 (an NMDA receptor subunit signal). They form a family of three tests. We supply their Welch p-values below; you do not need to write a loop or repeat three complete analyses. The assumptions and cohort limitations still apply to each comparison.
 
@@ -533,6 +631,8 @@ raw_p <- c(BDNF=t.test(memantine$BDNF, saline$BDNF)$p.value,
            pCREB=t.test(memantine$pCREB, saline$pCREB)$p.value,
            NR1=t.test(memantine$NR1, saline$NR1)$p.value)
 raw_p
+
+# your code goes here
 ```
 
 
@@ -540,7 +640,7 @@ raw_p
 cat(note_labels[["bonferroni"]])
 ```
 
-## 13. Your evidence briefing — 10 minutes
+## 13. Your evidence briefing
 
 Choose your best plot. Explain its axes, sample, result and biggest limitation to your partner. Then swap. A result that contradicts your prediction can make a good report.
 

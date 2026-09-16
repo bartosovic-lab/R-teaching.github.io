@@ -99,7 +99,7 @@
   },
   "boxplot": {
     "title": "Can the mean-only chart tell the whole story?",
-    "task": "Run the supplied bar chart, which shows only two means. Append the following worked template to add a boxplot with all animals. Run, inspect and submit. You do not need to invent the plotting syntax.\n\n```r\nstudy$group <- factor(study$group, levels=c(\"Saline\",\"Memantine\"))\ncomparison <- boxplot(BDNF ~ group, data=study, outline=FALSE,\n  ylab=\"BDNF assay signal (relative units)\", xlab=\"Group\", col=c(\"lightblue\",\"peachpuff\"))\nset.seed(7)\nstripchart(BDNF ~ group, data=study, vertical=TRUE, method=\"jitter\",\n  jitter=0.1, add=TRUE, pch=16)\n```",
+    "task": "Run the supplied bar chart, which shows only two means. Append the following worked template to add a boxplot with all animals. Run, inspect and submit. You do not need to invent the plotting syntax.\n\n```r\nstudy$group <- factor(study$group, levels=c(\"Saline\",\"Memantine\")) # Fix group order for consistent plots; measurements stay unchanged.\ncomparison <- boxplot(BDNF ~ group, data=study, outline=FALSE,\n  ylab=\"BDNF assay signal (relative units)\", xlab=\"Group\", col=c(\"lightblue\",\"peachpuff\"))\nset.seed(7)\nstripchart(BDNF ~ group, data=study, vertical=TRUE, method=\"jitter\",\n  jitter=0.1, add=TRUE, pch=16)\n```",
     "success": "The box summaries match the table and the point-layer command is present. Check visually that both groups have points.",
     "hint": "Append the supplied boxplot and stripchart template below the mean-only example.",
     "note": "boxplot"

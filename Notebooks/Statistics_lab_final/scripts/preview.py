@@ -15,7 +15,11 @@ def chunk(m):
  if label=='histogram-controls':out+='\n```{r preview-hist}\nhist_view(read.csv("data/study.csv"))\n```'
  if label=='violin-controls':out+='\n```{r preview-violin}\nviolin_view(read.csv("data/study.csv"))\n```'
  if label=='design-reveal':out+='\n```{r design-reveal, echo=TRUE}\n'+code+'```'
- if label=='types-quiz':out+='\n**Self-check:** Which is ordinal: mouse ID, treatment group, severity (mild/moderate/severe), or BDNF signal? Explain.\n'
+ if label=='types-quiz':
+  out+='\n| Column | Your choice: ordinal, nominal or continuous |\n|---|---|\n'
+  for column in ['sample_id','group','BDNF','pCREB','NR1','genotype','learning','source_record']:
+   out+='| `'+column+'` | Write your choice |\n'
+ if label=='selection-walkthrough':out+='\n```{r selection-walkthrough, echo=TRUE}\n'+code+'```'
  if label=='slider-outlier':out+='\n*Live slider: change the fifth reading, observe mean and median, then test your prediction in code.*\n'
  return out
 body=re.sub(r'```\{r ([^\n]+)\}\n(.*?)```',chunk,body,flags=re.S)

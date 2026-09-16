@@ -27,27 +27,19 @@ Yesterday you used mouse proteins in learnr. Today the same commands address hum
 
 You will first build a descriptive picture of the participants, then complete **one group comparison and one correlation**, plus an independent multiple-testing exercise. You do not need a large collection of tests. Write a few sentences beside each important result rather than leaving all the writing until the end.
 
-## Today's plan
+## Today's route
 
-The core route takes about 180 minutes, plus 25 minutes of breaks. Use the remaining 35 minutes for an extension, more independent practice or catching up. Times are working targets, not speed marks.
+1. Get comfortable in RStudio and create your first HTML.
+2. Inspect the data and describe the participants.
+3. Plan one group comparison and one association.
+4. Calculate summaries, quartiles and IQR; make plots and assess assumptions.
+5. Run your chosen analyses and explain the results.
+6. Consider multiple testing and challenge one conclusion.
+7. Complete your own narrative, restart R, Knit and inspect the final HTML.
 
-| Activity | Core minutes |
-|---|---:|
-| RStudio orientation, first run and first HTML | 15 |
-| Data audit and participant overview | 30 |
-| Plan one comparison and one association | 10 |
-| Summaries, quartiles/IQR, plots and assumptions | 30 |
-| Break | 15 |
-| Group test and interpretation | 25 |
-| Association and interpretation | 25 |
-| Break | 10 |
-| Multiple testing and challenge a conclusion | 15 |
-| Own conclusions, partner review and assistance reflection | 10 |
-| Restart, Knit and inspect the final HTML | 20 |
-| Extension or catch-up time, placed where needed | 35 |
-| **Total** | **240** |
+Take breaks with the class. Use the extension menu after completing the core investigation, or revisit an earlier task with help.
 
-## First 15 minutes: where do I type?
+## Start here: where do I type?
 
 1. Open `Statistics_lab.Rproj`, then this `.Rmd` in the **Source editor**. Save a personal copy in `notebooks/`. This is an R Notebook: code, output and your explanations in one editable document.
 2. Type R **inside** a grey code chunk, between its markers. Click the green triangle to run the whole chunk. Ctrl+Enter (Windows/Linux) or Cmd+Enter (Mac) runs the current line. Write explanations **outside** chunks.
@@ -59,6 +51,8 @@ The core route takes about 180 minutes, plus 25 minutes of breaks. Use the remai
 
 ```{r workspace-practice}
 # Add temporary_number <- 10, then display temporary_number.
+
+# your code goes here
 ```
 
 **Stuck at a `+` Console prompt?** Press Esc. Complete the missing quote or bracket in the Source editor, then rerun the full command. To add a code chunk use **Code → Insert Chunk**, or Ctrl+Alt+I / Cmd+Option+I. Do not paste chunk markers into the Console.
@@ -117,6 +111,8 @@ Use the day 1 commands to answer:
 
 ```{r student-audit}
 # Add your checks here.
+
+# your code goes here
 ```
 
 **Your data description:**
@@ -156,6 +152,8 @@ Build a short descriptive overview before the hypothesis tests. Use the mouse-pr
 
 ```{r student-descriptive-overview}
 
+
+# your code goes here
 ```
 
 **What kind of sample are we analysing? Include the age summary, category counts, and missingness in three or four sentences.**
@@ -205,6 +203,8 @@ Calculate mean, median, SD, Q1, Q3 and IQR for each group. Verify that Q3 minus 
 
 ```{r student-summaries}
 # Your summary commands here.
+
+# your code goes here
 ```
 
 Adapt the following plot labels if needed. The dots show individual observations; horizontal jitter separates tied values without changing their scores.
@@ -276,6 +276,8 @@ if (group_method == "welch") {
 } else {
   cat("Choose welch or wilcoxon in group_method after writing your justification.\n")
 }
+
+# your code goes here
 ```
 
 ### Task F — explain the result
@@ -305,6 +307,8 @@ if (correlation_variable %in% c("Age", "nWBV")) {
 } else {
   cat("Choose Age or nWBV in correlation_variable to draw your scatterplot.\n")
 }
+
+# your code goes here
 ```
 
 `mmse[[correlation_variable]]` selects the column whose name is stored in that object. For example, when the name is `"Age"`, it selects the same values as `mmse$Age`. `%in%` checks whether your choice is one of the two allowed names.
@@ -326,6 +330,8 @@ if (correlation_variable %in% c("Age", "nWBV") &&
 } else {
   cat("Choose your variable, run its plot chunk, then choose pearson or spearman.\n")
 }
+
+# your code goes here
 ```
 
 For Spearman we request an approximate p-value because some participants have the same values (called ties). For Pearson, the usual p-value and confidence interval assume independent pairs of measurements and an appropriate model for their joint distribution. A clear curve or a few extreme points should make you question this analysis; R returning a number does not settle whether the method fits. Base R does not return a Spearman confidence interval.
@@ -343,6 +349,8 @@ Before running R, calculate the adjusted values by hand. Then reproduce them usi
 ```{r bonferroni-example}
 p_values <- c(Treatment_A = 0.01, Treatment_B = 0.03, Treatment_C = 0.20)
 # Your adjustment and result table here.
+
+# your code goes here
 ```
 
 <details><summary>Hint</summary>
@@ -398,7 +406,7 @@ Check that suggested code uses the intended variables, groups, and sample sizes.
 
 ## 9. Finish your notebook
 
-Write interpretations as you go. Use the final 10 minutes of writing and partner review to finish them, then protect 20 minutes for a fresh render. Use the flexible practice time earlier if you need more support.
+Write interpretations as you go. Review them with your partner, then restart R and render your saved notebook. Ask for help with any task you cannot yet explain.
 
 - [ ] I explained what each row represents, which groups are included, and which values are missing.
 - [ ] I completed the age, M/F, SES, and age-selection overview with plots and explanations.
@@ -426,9 +434,9 @@ cat(if (choices_filled) "Analysis choices are filled. Check every independent ta
 
 ## Extension menu — choose after finishing the core
 
-Use up to 35 minutes for one or two extensions. Depth and explanation matter more than the number completed. These are optional.
+Choose one or two extensions. Depth and explanation matter more than the number completed. These are optional.
 
-### A. A four-panel figure — 15 minutes
+### A. A four-panel figure
 
 Once the required analysis and writing are complete, bring your findings together in a figure: age histogram, MMSE boxplot by group, your chosen scatterplot, and SES category counts. Reuse the commands you already understand.
 
@@ -444,16 +452,20 @@ barplot(ses_counts, names.arg = ses_labels, main = "SES including missing values
 
 ```{r student-four-panel, fig.width=9, fig.height=7}
 
+
+# your code goes here
 ```
 
 **Caption:** Name the sample, describe one finding from each panel, and state a limitation. What does the combined figure make easier to understand? Which details would need a larger separate plot?
 
-### B. Explore another measurement — 10 minutes
+### B. Explore another measurement
 
 Choose **EDUC or nWBV**. Before running anything, use the dictionary to state its meaning and units. Make a histogram, calculate appropriate summaries, and describe the values by group using a boxplot. Write one question the plots raise that your two planned analyses cannot answer. Do not turn it into another test today.
 
 ```{r student-extra-measurement}
 
+
+# your code goes here
 ```
 
 **Your observation and unanswered question:**
@@ -470,12 +482,14 @@ data.frame(raw_p = my_p_values,
 
 [R reference for multiple-testing adjustment](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/p.adjust.html)
 
-### D. Do counts tell a different story? — 15–20 minutes
+### D. Do counts tell a different story?
 
 Ask whether source-recorded M/F category is associated with the source Group label. This question concerns **counts**, not mean MMSE. Predict, make a table with `table(mmse$M.F, mmse$Group)`, and report within-group proportions. Check expected counts before interpreting a chi-square approximation. This is an additional exploratory test: disclose it in your analysis record; the earlier three invented comparisons do not adjust it.
 
 ```{r student-categorical-extension}
 # Your table, proportions and optional test here.
+
+# your code goes here
 ```
 
 <details><summary>Worked code to adapt after making your table</summary>
