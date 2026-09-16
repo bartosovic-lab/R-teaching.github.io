@@ -1,4 +1,4 @@
-sample_id,group,value,companion
+sample_id,group,BDNF,pCREB
 309,Memantine,0.4301753,0.232223754
 311,Memantine,0.377741793,0.19446489
 320,Memantine,0.446958318,0.232256853

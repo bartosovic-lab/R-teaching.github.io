@@ -391,21 +391,20 @@ are not extra mice.</p>
 <td>Saline or Memantine</td>
 </tr>
 <tr class="odd">
-<td>value</td>
+<td>BDNF</td>
 <td>BDNF assay signal (relative units)</td>
 </tr>
 <tr class="even">
-<td>companion</td>
+<td>pCREB</td>
 <td>pCREB assay signal (relative units)</td>
 </tr>
 </tbody>
 </table>
-<p>The filenames and short column names let beginners reuse a small
-amount of R syntax; always give the full measurement and units in a plot
-caption or report. CSVs are UTF-8, comma-separated, with a header.
-<code>NA</code> denotes missing. Raw files are not changed by the
-interactive controls or by the made-up outlier/missingness
-exercises.</p>
+<p>The column names identify the biological measurements; always give
+the full measurement and units in a plot caption or report. CSVs are
+UTF-8, comma-separated, with a header. <code>NA</code> denotes missing.
+Raw files are not changed by the interactive controls or by the made-up
+outlier/missingness exercises.</p>
 </div>
 <div id="mouse-data-preparation-and-limits" class="section level2">
 <h2>Mouse data: preparation and limits</h2>
@@ -481,12 +480,13 @@ must be handled for each analysis. Correlations between assay signals
 can also reflect shared measurement procedures; they do not establish
 direct molecular regulation.</p>
 <p><code>study.csv</code> restricts to Control genotype and C/S
-protocol: 9 Saline and 10 Memantine mice. Its <code>value</code> is BDNF
-and <code>companion</code> is pCREB. Both measurements are available for
-all 19. The comparison therefore holds genotype and protocol fixed.
-Animal IDs are unique; the table does not document all potential
-litter/cage dependence. Treat animal independence as a design assumption
-to discuss, not a property guaranteed merely by unique IDs.</p>
+protocol: 9 Saline and 10 Memantine mice. The <code>BDNF</code> and
+<code>pCREB</code> columns retain the original assay signals. Both
+measurements are available for all 19. The comparison therefore holds
+genotype and protocol fixed. Animal IDs are unique; the table does not
+document all potential litter/cage dependence. Treat animal independence
+as a design assumption to discuss, not a property guaranteed merely by
+unique IDs.</p>
 </div>
 <div id="reproducibility" class="section level2">
 <h2>Reproducibility</h2>

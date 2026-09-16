@@ -372,8 +372,8 @@ not assess whether their hypothesis was supported. This calculation uses
 the same prepared animal table as the course. The subtraction and
 interval are <strong>Memantine minus Saline</strong>.</p>
 <pre class="r"><code>d &lt;- read.csv(&quot;data/study.csv&quot;)
-first &lt;- d$value[d$group == &quot;Saline&quot;]
-second &lt;- d$value[d$group == &quot;Memantine&quot;]
+first &lt;- d$BDNF[d$group == &quot;Saline&quot;]
+second &lt;- d$BDNF[d$group == &quot;Memantine&quot;]
 data.frame(group=c(&quot;Saline&quot;,&quot;Memantine&quot;),n=c(length(first),length(second)),
  mean=c(mean(first),mean(second)),median=c(median(first),median(second)),
  SD=c(sd(first),sd(second)))</code></pre>
@@ -432,14 +432,14 @@ the first meets the declared &lt;= 0.05 threshold.</li>
 <pre class="r"><code>for(g in c(&quot;Saline&quot;,&quot;Memantine&quot;)) {
  cat(&quot;Group:&quot;,g,&quot;\n&quot;)
  s&lt;-d[d$group==g,]
- print(cor.test(s$value,s$companion,method=&quot;pearson&quot;))
- print(cor.test(s$value,s$companion,method=&quot;spearman&quot;,exact=FALSE))
+ print(cor.test(s$BDNF,s$pCREB,method=&quot;pearson&quot;))
+ print(cor.test(s$BDNF,s$pCREB,method=&quot;spearman&quot;,exact=FALSE))
 }</code></pre>
 <pre><code>## Group: Saline 
 ## 
 ##  Pearson&#39;s product-moment correlation
 ## 
-## data:  s$value and s$companion
+## data:  s$BDNF and s$pCREB
 ## t = 1.7533, df = 7, p-value = 0.123
 ## alternative hypothesis: true correlation is not equal to 0
 ## 95 percent confidence interval:
@@ -451,7 +451,7 @@ the first meets the declared &lt;= 0.05 threshold.</li>
 ## 
 ##  Spearman&#39;s rank correlation rho
 ## 
-## data:  s$value and s$companion
+## data:  s$BDNF and s$pCREB
 ## S = 50, p-value = 0.09919
 ## alternative hypothesis: true rho is not equal to 0
 ## sample estimates:
@@ -462,7 +462,7 @@ the first meets the declared &lt;= 0.05 threshold.</li>
 ## 
 ##  Pearson&#39;s product-moment correlation
 ## 
-## data:  s$value and s$companion
+## data:  s$BDNF and s$pCREB
 ## t = 2.0007, df = 8, p-value = 0.08043
 ## alternative hypothesis: true correlation is not equal to 0
 ## 95 percent confidence interval:
@@ -474,7 +474,7 @@ the first meets the declared &lt;= 0.05 threshold.</li>
 ## 
 ##  Spearman&#39;s rank correlation rho
 ## 
-## data:  s$value and s$companion
+## data:  s$BDNF and s$pCREB
 ## S = 76, p-value = 0.1076
 ## alternative hypothesis: true rho is not equal to 0
 ## sample estimates:

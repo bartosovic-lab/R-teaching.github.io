@@ -10,7 +10,7 @@ testServer(server,{
  session$setInputs(hist_mode='count',hist_bins=6,hist_width=.1,smooth=1,extreme=34,student='Student',partner='Partner',note_row='One row is one animal.')
  stopifnot(grepl('0 of 15',output$completion,fixed=TRUE),grepl('10.8',output$assay_stats,fixed=TRUE))
  stopifnot(nzchar(output$hist_explorer$src),nzchar(output$violin$src),nzchar(output$assay_plot$src))
- session$setInputs(hist_mode='width',hist_width=diff(range(read.csv('data/study.csv')$value))/30,smooth=.4)
+ session$setInputs(hist_mode='width',hist_width=diff(range(read.csv('data/study.csv')$BDNF))/30,smooth=.4)
  stopifnot(nzchar(output$hist_explorer$src),nzchar(output$violin$src))
  session$setInputs(hist_bins=20,hist_mode='count',smooth=2.5)
  stopifnot(nzchar(output$hist_explorer$src),nzchar(output$violin$src))

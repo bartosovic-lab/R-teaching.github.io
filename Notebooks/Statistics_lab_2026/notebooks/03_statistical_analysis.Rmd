@@ -41,8 +41,8 @@ closing bracket or quote in the Source editor. Save often.
 study <- read.csv("data/study.csv")
 head(study)
 study$group <- factor(study$group, levels=c("Saline","Memantine"))
-first <- study$value[study$group == "Saline"]
-second <- study$value[study$group == "Memantine"]
+first <- study$BDNF[study$group == "Saline"]
+second <- study$BDNF[study$group == "Memantine"]
 length(first)
 length(second)
 ```
@@ -59,10 +59,10 @@ would like to learn about, under comparable conditions. A plot describes our sam
 inference asks what it supports beyond those particular observations.
 
 ```{r distributions}
-boxplot(value ~ group, data=study, outline=FALSE, ylab="BDNF assay signal (relative units)",
+boxplot(BDNF ~ group, data=study, outline=FALSE, ylab="BDNF assay signal (relative units)",
         col=c("lightblue","peachpuff"))
 set.seed(7)
-stripchart(value ~ group, data=study, vertical=TRUE, method="jitter", add=TRUE,pch=19)
+stripchart(BDNF ~ group, data=study, vertical=TRUE, method="jitter", add=TRUE,pch=19)
 mean(first)
 mean(second)
 sd(first)
@@ -160,10 +160,10 @@ lined up by spreadsheet position.
 
 ```{r association}
 one_group <- study[study$group == "Saline", ]
-plot(one_group$value, one_group$companion, pch=19,
+plot(one_group$BDNF, one_group$pCREB, pch=19,
      xlab="BDNF assay signal (relative units)", ylab="pCREB assay signal (relative units)")
-cor.test(one_group$value, one_group$companion, method="pearson")
-cor.test(one_group$value, one_group$companion, method="spearman", exact=FALSE)
+cor.test(one_group$BDNF, one_group$pCREB, method="pearson")
+cor.test(one_group$BDNF, one_group$pCREB, method="spearman", exact=FALSE)
 ```
 
 Pearson's r describes a **linear** association and is sensitive to extreme values. Spearman's

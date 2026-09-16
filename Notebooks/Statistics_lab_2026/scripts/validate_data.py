@@ -5,6 +5,7 @@ root=Path(__file__).resolve().parents[1]
 cfg=json.loads((root/'course.json').read_text())
 def rows(name): return list(csv.DictReader((root/'data'/name).open()))
 core=rows('study.csv'); full=rows('investigation.csv')
+assert list(core[0]) == ['sample_id','group','BDNF','pCREB']
 assert len({r['sample_id'] for r in core})==len(core)
 assert len({r['sample_id'] for r in full})==len(full)
 assert sum(r['group']==cfg['group_a'] for r in core)==cfg['n_a']
@@ -29,7 +30,7 @@ if cfg['variant']=='mouse':
  for r in core:
   v=next(x for x in full if x['sample_id']==r['sample_id'])
   assert v['genotype']=='Control' and v['learning']=='C/S' and r['group']==v['treatment']
-  eq(r['value'],v['BDNF']); eq(r['companion'],v['pCREB'])
+  eq(r['BDNF'],v['BDNF']); eq(r['pCREB'],v['pCREB'])
 else:
  import openpyxl
  w=openpyxl.load_workbook(source,read_only=True,data_only=True); s=w['Figure 1G+1H']; cells=rows('cells.csv')
@@ -45,7 +46,7 @@ else:
  for r in core:
   v=next(x for x in full if x['sample_id']==r['sample_id'])
   assert v['conditioning']=='Paired' and r['group']==v['phase']
-  eq(r['value'],v['reversal_mV']); eq(r['companion'],v['resting_mV'])
+  eq(r['reversal_mV'],v['reversal_mV']); eq(r['resting_mV'],v['resting_mV'])
  protein=rows('nkcc1.csv'); s=w['Figure S1N']
  assert len(protein)==16 and len({r['sample_id'] for r in protein})==16
  for r in protein:

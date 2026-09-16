@@ -229,8 +229,10 @@ are in `data/dictionary.html`. [Dataset](https://archive.ics.uci.edu/dataset/342
 |---|---|
 | `sample_id` | Animal identifier; a label, not a measured quantity |
 | `group` | Saline or Memantine |
-| `value` | BDNF assay signal (relative units) |
-| `companion` | pCREB assay signal (relative units), from the same animal |
+| `BDNF` | BDNF assay signal (relative units) |
+| `pCREB` | pCREB assay signal (relative units), from the same animal |
+
+`BDNF` is the brain-derived neurotrophic factor assay signal. `pCREB` is the signal for phosphorylated CREB, a protein involved in regulating gene activity. Both are relative assay signals from the same mouse.
 
 A table in R is called a **data frame**. A row holds information about one animal;
 a column holds one variable. A **nominal** category names groups with no ranking;
@@ -267,7 +269,7 @@ note("row")
 
 ## 3. Follow one group — 10 minutes
 
-`study$value` retrieves the measurement column. `study$group == "Saline"` asks a yes/no
+`study$BDNF` retrieves the measurement column. `study$group == "Saline"` asks a yes/no
 question for each row. **Two equals signs compare; `<-` assigns.** Square brackets keep
 the values whose group comparison is TRUE. The selection code is supplied: you need to
 explain and adapt it, not memorise it.
@@ -278,7 +280,7 @@ Run the Saline example. Append a selection for `"Memantine"`, store it as `secon
 
 ```{r select, exercise=TRUE}
 study <- read.csv("data/study.csv")
-first <- study$value[study$group == "Saline"]
+first <- study$BDNF[study$group == "Saline"]
 length(first)
 mean(first)
 ```
@@ -288,15 +290,15 @@ mean(first)
 ```
 
 ```{r select-hint-1}
-# Append second <- study$value[study$group == "Memantine"], then length(second) and mean(second).
+# Append second <- study$BDNF[study$group == "Memantine"], then length(second) and mean(second).
 ```
 
 ```{r select-solution}
 study <- read.csv("data/study.csv")
-first <- study$value[study$group == "Saline"]
+first <- study$BDNF[study$group == "Saline"]
 length(first)
 mean(first)
-second <- study$value[study$group == "Memantine"]
+second <- study$BDNF[study$group == "Memantine"]
 length(second)
 mean(second)
 ```
@@ -319,8 +321,8 @@ Run the supplied mean and median calculations. Append `sd_first <- sd(first)` an
 
 ```{r spread, exercise=TRUE}
 study <- read.csv("data/study.csv")
-first <- study$value[study$group == "Saline"]
-second <- study$value[study$group == "Memantine"]
+first <- study$BDNF[study$group == "Saline"]
+second <- study$BDNF[study$group == "Memantine"]
 mean(first)
 median(first)
 mean(second)
@@ -337,8 +339,8 @@ median(second)
 
 ```{r spread-solution}
 study <- read.csv("data/study.csv")
-first <- study$value[study$group == "Saline"]
-second <- study$value[study$group == "Memantine"]
+first <- study$BDNF[study$group == "Saline"]
+second <- study$BDNF[study$group == "Memantine"]
 mean(first)
 median(first)
 mean(second)
@@ -477,8 +479,8 @@ textOutput("bin_summary")
 
 ```{r histogram, exercise=TRUE}
 study <- read.csv("data/study.csv")
-first <- study$value[study$group == "Saline"]
-second <- study$value[study$group == "Memantine"]
+first <- study$BDNF[study$group == "Saline"]
+second <- study$BDNF[study$group == "Memantine"]
 hist(first, breaks=5, main="Saline", xlab="BDNF assay signal (relative units)")
 ```
 
@@ -492,8 +494,8 @@ hist(first, breaks=5, main="Saline", xlab="BDNF assay signal (relative units)")
 
 ```{r histogram-solution}
 study <- read.csv("data/study.csv")
-first <- study$value[study$group == "Saline"]
-second <- study$value[study$group == "Memantine"]
+first <- study$BDNF[study$group == "Saline"]
+second <- study$BDNF[study$group == "Memantine"]
 hist(first, breaks=5, main="Saline", xlab="BDNF assay signal (relative units)")
 second_hist <- hist(second, breaks=5, main="Memantine", xlab="BDNF assay signal (relative units)")
 ```
@@ -511,7 +513,7 @@ Whiskers extend to observations within 1.5 box lengths of the box; more distant 
 are conventionally drawn separately. These points deserve investigation, not automatic deletion.
 With small samples, always look at the actual observations as well.
 
-In R's plot formula `value ~ group`, read `~` as “shown by group”. `data = study` tells R where
+In R's plot formula `BDNF ~ group`, read `~` as “shown by group”. `data = study` tells R where
 those column names live. `stripchart()` adds individual observations. Jitter moves points
 sideways slightly to reveal overlap; it never changes their measured height. `set.seed(7)`
 makes that sideways movement repeatable.
@@ -522,17 +524,17 @@ Run the supplied bar chart, which shows only two means. Append the following wor
 
 ```r
 study$group <- factor(study$group, levels=c("Saline","Memantine"))
-comparison <- boxplot(value ~ group, data=study, outline=FALSE,
+comparison <- boxplot(BDNF ~ group, data=study, outline=FALSE,
   ylab="BDNF assay signal (relative units)", xlab="Group", col=c("lightblue","peachpuff"))
 set.seed(7)
-stripchart(value ~ group, data=study, vertical=TRUE, method="jitter",
+stripchart(BDNF ~ group, data=study, vertical=TRUE, method="jitter",
   jitter=0.1, add=TRUE, pch=16)
 ```
 
 ```{r boxplot, exercise=TRUE}
 study <- read.csv("data/study.csv")
-first <- study$value[study$group == "Saline"]
-second <- study$value[study$group == "Memantine"]
+first <- study$BDNF[study$group == "Saline"]
+second <- study$BDNF[study$group == "Memantine"]
 barplot(c(mean(first),mean(second)),names.arg=c("Saline","Memantine"),
   ylab="Mean: BDNF assay signal (relative units)",main="Only the means")
 ```
@@ -547,14 +549,14 @@ barplot(c(mean(first),mean(second)),names.arg=c("Saline","Memantine"),
 
 ```{r boxplot-solution}
 study <- read.csv("data/study.csv")
-first <- study$value[study$group == "Saline"]
-second <- study$value[study$group == "Memantine"]
+first <- study$BDNF[study$group == "Saline"]
+second <- study$BDNF[study$group == "Memantine"]
 barplot(c(mean(first),mean(second)),names.arg=c("Saline","Memantine"),ylab="Mean: BDNF assay signal (relative units)")
 study$group <- factor(study$group, levels=c("Saline","Memantine"))
-comparison <- boxplot(value ~ group, data=study, outline=FALSE,
+comparison <- boxplot(BDNF ~ group, data=study, outline=FALSE,
   ylab="BDNF assay signal (relative units)", xlab="Group", col=c("lightblue","peachpuff"))
 set.seed(7)
-stripchart(value ~ group, data=study, vertical=TRUE, method="jitter",
+stripchart(BDNF ~ group, data=study, vertical=TRUE, method="jitter",
   jitter=0.1, add=TRUE, pch=16)
 ```
 
@@ -589,7 +591,7 @@ In `study[condition, ]`, the part before the comma selects rows and the blank af
 ```{r scatter, exercise=TRUE}
 study <- read.csv("data/study.csv")
 first_data <- study[study$group == "Saline", ]
-plot(first_data$value, first_data$companion,
+plot(first_data$BDNF, first_data$pCREB,
   xlab="BDNF assay signal (relative units)", ylab="pCREB assay signal (relative units)", main="Saline", pch=19)
 ```
 
@@ -598,16 +600,16 @@ plot(first_data$value, first_data$companion,
 ```
 
 ```{r scatter-hint-1}
-# Append second_data <- study[study$group == "Memantine", ], then plot(second_data$value, second_data$companion, xlab="Measurement", ylab="Companion measurement").
+# Append second_data <- study[study$group == "Memantine", ], then plot(second_data$BDNF, second_data$pCREB, xlab="Measurement", ylab="pCREB assay signal (relative units)").
 ```
 
 ```{r scatter-solution}
 study <- read.csv("data/study.csv")
 first_data <- study[study$group == "Saline", ]
-plot(first_data$value, first_data$companion,
+plot(first_data$BDNF, first_data$pCREB,
   xlab="BDNF assay signal (relative units)", ylab="pCREB assay signal (relative units)", main="Saline", pch=19)
 second_data <- study[study$group == "Memantine", ]
-plot(second_data$value, second_data$companion,
+plot(second_data$BDNF, second_data$pCREB,
   xlab="BDNF assay signal (relative units)", ylab="pCREB assay signal (relative units)", main="Memantine", pch=19)
 ```
 

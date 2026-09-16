@@ -552,10 +552,6 @@ data. The preparation and exact source are in
 · <a href="https://doi.org/10.1371/journal.pone.0129126">Original
 study</a>.</p>
 <table>
-<colgroup>
-<col width="50%" />
-<col width="50%" />
-</colgroup>
 <thead>
 <tr class="header">
 <th>Column</th>
@@ -572,15 +568,19 @@ study</a>.</p>
 <td>Saline or Memantine</td>
 </tr>
 <tr class="odd">
-<td><code>value</code></td>
+<td><code>BDNF</code></td>
 <td>BDNF assay signal (relative units)</td>
 </tr>
 <tr class="even">
-<td><code>companion</code></td>
+<td><code>pCREB</code></td>
 <td>pCREB assay signal (relative units), from the same animal</td>
 </tr>
 </tbody>
 </table>
+<p><code>BDNF</code> is the brain-derived neurotrophic factor assay
+signal. <code>pCREB</code> is the signal for phosphorylated CREB, a
+protein involved in regulating gene activity. Both are relative assay
+signals from the same mouse.</p>
 <p>A table in R is called a <strong>data frame</strong>. A row holds
 information about one animal; a column holds one variable. A
 <strong>nominal</strong> category names groups with no ranking; an
@@ -604,7 +604,7 @@ live tutorial.</p>
 </div>
 <div id="follow-one-group-10-minutes" class="section level2">
 <h2>3. Follow one group — 10 minutes</h2>
-<p><code>study$value</code> retrieves the measurement column.
+<p><code>study$BDNF</code> retrieves the measurement column.
 <code>study$group == &quot;Saline&quot;</code> asks a yes/no question for each
 row. <strong>Two equals signs compare; <code>&lt;-</code>
 assigns.</strong> Square brackets keep the values whose group comparison
@@ -617,7 +617,7 @@ it, not memorise it.</p>
 <code>length(second)</code> and <code>mean(second)</code>. Say which
 animals contributed before reading the mean.</p>
 <pre class="r"><code>study &lt;- read.csv(&quot;data/study.csv&quot;)
-first &lt;- study$value[study$group == &quot;Saline&quot;]
+first &lt;- study$BDNF[study$group == &quot;Saline&quot;]
 length(first)
 mean(first)</code></pre>
 <p><strong>Pause and explain:</strong> selection. Write your answer in
@@ -641,8 +641,8 @@ mean is. Sample size also matters for that.</p>
 <code>sd_second &lt;- sd(second)</code>, then display each named result
 on its own line. Compare the SDs in your answer.</p>
 <pre class="r"><code>study &lt;- read.csv(&quot;data/study.csv&quot;)
-first &lt;- study$value[study$group == &quot;Saline&quot;]
-second &lt;- study$value[study$group == &quot;Memantine&quot;]
+first &lt;- study$BDNF[study$group == &quot;Saline&quot;]
+second &lt;- study$BDNF[study$group == &quot;Memantine&quot;]
 mean(first)
 median(first)
 mean(second)
@@ -724,8 +724,8 @@ actual count can differ. The slider above uses exact boundaries.
 horizontal axis. Keep the Saline example and append
 <code>second_hist &lt;- hist(second, breaks = 5, main = &quot;Memantine&quot;, xlab = &quot;BDNF assay signal (relative units)&quot;)</code>.</p>
 <pre class="r"><code>study &lt;- read.csv(&quot;data/study.csv&quot;)
-first &lt;- study$value[study$group == &quot;Saline&quot;]
-second &lt;- study$value[study$group == &quot;Memantine&quot;]
+first &lt;- study$BDNF[study$group == &quot;Saline&quot;]
+second &lt;- study$BDNF[study$group == &quot;Memantine&quot;]
 hist(first, breaks=5, main=&quot;Saline&quot;, xlab=&quot;BDNF assay signal (relative units)&quot;)</code></pre>
 <p><strong>Pause and explain:</strong> histogram. Write your answer in
 the live tutorial.</p>
@@ -742,26 +742,26 @@ within 1.5 box lengths of the box; more distant observations are
 conventionally drawn separately. These points deserve investigation, not
 automatic deletion. With small samples, always look at the actual
 observations as well.</p>
-<p>In R’s plot formula <code>value ~ group</code>, read <code>~</code>
-as “shown by group”. <code>data = study</code> tells R where those
-column names live. <code>stripchart()</code> adds individual
-observations. Jitter moves points sideways slightly to reveal overlap;
-it never changes their measured height. <code>set.seed(7)</code> makes
-that sideways movement repeatable.</p>
+<p>In R’s plot formula <code>BDNF ~ group</code>, read <code>~</code> as
+“shown by group”. <code>data = study</code> tells R where those column
+names live. <code>stripchart()</code> adds individual observations.
+Jitter moves points sideways slightly to reveal overlap; it never
+changes their measured height. <code>set.seed(7)</code> makes that
+sideways movement repeatable.</p>
 <div id="can-the-mean-only-chart-tell-the-whole-story" class="section level3">
 <h3>Can the mean-only chart tell the whole story?</h3>
 <p>Run the supplied bar chart, which shows only two means. Append the
 following worked template to add a boxplot with all animals. Run,
 inspect and submit. You do not need to invent the plotting syntax.</p>
 <pre class="r"><code>study$group &lt;- factor(study$group, levels=c(&quot;Saline&quot;,&quot;Memantine&quot;))
-comparison &lt;- boxplot(value ~ group, data=study, outline=FALSE,
+comparison &lt;- boxplot(BDNF ~ group, data=study, outline=FALSE,
   ylab=&quot;BDNF assay signal (relative units)&quot;, xlab=&quot;Group&quot;, col=c(&quot;lightblue&quot;,&quot;peachpuff&quot;))
 set.seed(7)
-stripchart(value ~ group, data=study, vertical=TRUE, method=&quot;jitter&quot;,
+stripchart(BDNF ~ group, data=study, vertical=TRUE, method=&quot;jitter&quot;,
   jitter=0.1, add=TRUE, pch=16)</code></pre>
 <pre class="r"><code>study &lt;- read.csv(&quot;data/study.csv&quot;)
-first &lt;- study$value[study$group == &quot;Saline&quot;]
-second &lt;- study$value[study$group == &quot;Memantine&quot;]
+first &lt;- study$BDNF[study$group == &quot;Saline&quot;]
+second &lt;- study$BDNF[study$group == &quot;Memantine&quot;]
 barplot(c(mean(first),mean(second)),names.arg=c(&quot;Saline&quot;,&quot;Memantine&quot;),
   ylab=&quot;Mean: BDNF assay signal (relative units)&quot;,main=&quot;Only the means&quot;)</code></pre>
 <p><strong>Pause and explain:</strong> boxplot. Write your answer in the
@@ -797,7 +797,7 @@ table <code>second_data</code>. Keep the same measurement axes and label
 the group.</p>
 <pre class="r"><code>study &lt;- read.csv(&quot;data/study.csv&quot;)
 first_data &lt;- study[study$group == &quot;Saline&quot;, ]
-plot(first_data$value, first_data$companion,
+plot(first_data$BDNF, first_data$pCREB,
   xlab=&quot;BDNF assay signal (relative units)&quot;, ylab=&quot;pCREB assay signal (relative units)&quot;, main=&quot;Saline&quot;, pch=19)</code></pre>
 <p><strong>Pause and explain:</strong> scatter. Write your answer in the
 live tutorial.</p>

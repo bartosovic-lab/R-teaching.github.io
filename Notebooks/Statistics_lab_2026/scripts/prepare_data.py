@@ -32,8 +32,8 @@ if cfg['variant'] == 'mouse':
             NR1=r['NR1_N'] if r['NR1_N'] != '' else 'NA',
             source_record=r['MouseID']))
     write('investigation.csv', rows)
-    core = [dict(sample_id=r['sample_id'], group=r['treatment'], value=r['BDNF'],
-                 companion=r['pCREB']) for r in rows
+    core = [dict(sample_id=r['sample_id'], group=r['treatment'], BDNF=r['BDNF'],
+                 pCREB=r['pCREB']) for r in rows
             if r['genotype'] == 'Control' and r['learning'] == 'C/S']
     assert len(core) == 19 and len({r['sample_id'] for r in core}) == 19
     write('study.csv', core)
@@ -60,7 +60,7 @@ else:
             for k,v in groups.items()]
     assert len(rows)==26 and len({r['sample_id'] for r in rows})==26
     write('investigation.csv',rows)
-    core = [dict(sample_id=r['sample_id'],group=r['phase'],value=r['reversal_mV'],companion=r['resting_mV'])
+    core = [dict(sample_id=r['sample_id'],group=r['phase'],reversal_mV=r['reversal_mV'],resting_mV=r['resting_mV'])
             for r in rows if r['conditioning']=='Paired' and r['phase'] in ['Baseline','Acquisition']]
     assert len(core)==13
     write('study.csv',core)
@@ -73,7 +73,8 @@ else:
     assert len(protein)==16 and len({r['sample_id'] for r in protein})==16
     write('nkcc1.csv',protein)
 
-assert all(r['value']!='NA' and r['companion']!='NA' for r in core)
+measurements = ('BDNF','pCREB') if cfg['variant']=='mouse' else ('reversal_mV','resting_mV')
+assert all(r[name]!='NA' for r in core for name in measurements)
 dest=root/'tutorials/01_basics/data'
 dest.mkdir(parents=True,exist_ok=True)
 shutil.copy2(root/'data/study.csv',dest/'study.csv')

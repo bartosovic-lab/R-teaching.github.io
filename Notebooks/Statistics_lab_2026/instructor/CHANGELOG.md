@@ -17,3 +17,9 @@
 - Added evaluator, incorrect-answer, server, download, fresh-render and data-provenance checks.
 
 This log describes authored changes. Actual validation results are recorded separately after testing.
+
+## Biological column names
+
+- Renamed the first-day measurement columns from `value` and `companion` to `BDNF` and `pCREB`.
+- Updated selections, plots, feedback, exports, references, dictionaries and data-generation checks.
+- Preserved all measurements, sample IDs, group labels and the separate investigation dataset.
