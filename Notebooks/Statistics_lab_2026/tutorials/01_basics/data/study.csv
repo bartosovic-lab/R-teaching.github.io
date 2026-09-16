@@ -1,4 +1,4 @@
-sample_id,group,value,companion
+sample_id,group,reversal_mV,resting_mV
 g+292.2,Baseline,-73.85,-60.15
 g+296.4,Baseline,-84.48681727748692,-56.830339115646254
 g+292.12,Baseline,-76.0108,-70.7561

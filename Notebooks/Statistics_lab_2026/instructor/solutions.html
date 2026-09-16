@@ -372,8 +372,8 @@ not assess whether their hypothesis was supported. This calculation uses
 the same prepared animal table as the course. The subtraction and
 interval are <strong>Acquisition minus Baseline</strong>.</p>
 <pre class="r"><code>d &lt;- read.csv(&quot;data/study.csv&quot;)
-first &lt;- d$value[d$group == &quot;Baseline&quot;]
-second &lt;- d$value[d$group == &quot;Acquisition&quot;]
+first &lt;- d$reversal_mV[d$group == &quot;Baseline&quot;]
+second &lt;- d$reversal_mV[d$group == &quot;Acquisition&quot;]
 data.frame(group=c(&quot;Baseline&quot;,&quot;Acquisition&quot;),n=c(length(first),length(second)),
  mean=c(mean(first),mean(second)),median=c(median(first),median(second)),
  SD=c(sd(first),sd(second)))</code></pre>
@@ -432,14 +432,14 @@ the first meets the declared &lt;= 0.05 threshold.</li>
 <pre class="r"><code>for(g in c(&quot;Baseline&quot;,&quot;Acquisition&quot;)) {
  cat(&quot;Group:&quot;,g,&quot;\n&quot;)
  s&lt;-d[d$group==g,]
- print(cor.test(s$value,s$companion,method=&quot;pearson&quot;))
- print(cor.test(s$value,s$companion,method=&quot;spearman&quot;,exact=FALSE))
+ print(cor.test(s$reversal_mV,s$resting_mV,method=&quot;pearson&quot;))
+ print(cor.test(s$reversal_mV,s$resting_mV,method=&quot;spearman&quot;,exact=FALSE))
 }</code></pre>
 <pre><code>## Group: Baseline 
 ## 
 ##  Pearson&#39;s product-moment correlation
 ## 
-## data:  s$value and s$companion
+## data:  s$reversal_mV and s$resting_mV
 ## t = -0.14109, df = 5, p-value = 0.8933
 ## alternative hypothesis: true correlation is not equal to 0
 ## 95 percent confidence interval:
@@ -451,7 +451,7 @@ the first meets the declared &lt;= 0.05 threshold.</li>
 ## 
 ##  Spearman&#39;s rank correlation rho
 ## 
-## data:  s$value and s$companion
+## data:  s$reversal_mV and s$resting_mV
 ## S = 58, p-value = 0.9394
 ## alternative hypothesis: true rho is not equal to 0
 ## sample estimates:
@@ -462,7 +462,7 @@ the first meets the declared &lt;= 0.05 threshold.</li>
 ## 
 ##  Pearson&#39;s product-moment correlation
 ## 
-## data:  s$value and s$companion
+## data:  s$reversal_mV and s$resting_mV
 ## t = -3.6179, df = 4, p-value = 0.0224
 ## alternative hypothesis: true correlation is not equal to 0
 ## 95 percent confidence interval:
@@ -474,7 +474,7 @@ the first meets the declared &lt;= 0.05 threshold.</li>
 ## 
 ##  Spearman&#39;s rank correlation rho
 ## 
-## data:  s$value and s$companion
+## data:  s$reversal_mV and s$resting_mV
 ## S = 64, p-value = 0.04156
 ## alternative hypothesis: true rho is not equal to 0
 ## sample estimates:

@@ -7,7 +7,7 @@ checker <- function(label,envir_result,last_value,stage,user_code='',...) {
   if(stage=='error_check') return(reply(FALSE,'','Read the first error. Check spelling, capitals and brackets. Each editor starts fresh: keep its import and setup lines. Open a hint and try again.'))
   if(stage!='check') return(NULL)
   obj <- function(n) if(exists(n,envir_result,inherits=FALSE))get(n,envir_result) else NULL
-  d<-read.csv('data/study.csv'); a<-d$value[d$group==course$group_a]; b<-d$value[d$group==course$group_b]
+  d<-read.csv('data/study.csv'); a<-d$reversal_mV[d$group==course$group_a]; b<-d$reversal_mV[d$group==course$group_b]
   ok<-switch(label,
     divide=near(last_value,3), multiply=near(last_value,12),
     store=near(obj('wells'),16)&&near(last_value,16),
@@ -21,12 +21,12 @@ checker <- function(label,envir_result,last_value,stage,user_code='',...) {
     outlier=near(obj('assay'),c(4,5,5,6,34))&&near(obj('new_mean'),10.8)&&near(obj('new_median'),5),
     missing=near(obj('observed_n'),3)&&near(obj('observed_mean'),6)&&near(obj('zero_mean'),4.5),
     histogram={h<-obj('second_hist'); expected<-hist(b,breaks=5,plot=FALSE); inherits(h,'histogram')&&near(h$breaks,expected$breaks)&&near(h$counts,expected$counts)},
-    boxplot={z<-obj('comparison'); d$group<-factor(d$group,levels=c(course$group_a,course$group_b)); ref<-boxplot(value~group,data=d,plot=FALSE); is.list(z)&&isTRUE(all.equal(z$stats,ref$stats))&&'stripchart'%in%all.names(parse(text=user_code))},
+    boxplot={z<-obj('comparison'); d$group<-factor(d$group,levels=c(course$group_a,course$group_b)); ref<-boxplot(reversal_mV~group,data=d,plot=FALSE); is.list(z)&&isTRUE(all.equal(z$stats,ref$stats))&&'stripchart'%in%all.names(parse(text=user_code))},
     scatter={v<-obj('second_data'); is.data.frame(v)&&isTRUE(all.equal(v,d[d$group==course$group_b,]))&&'plot'%in%all.names(parse(text=user_code))},
     FALSE)
   reply(ok,exercise_info[[label]]$success,exercise_info[[label]]$hint)
 }
-note_labels <- c(row='Describe one row, the measurement and its unit. Is group nominal or ordinal? Is value a continuous measurement? Explain why an ID is a label even when it contains digits.',
+note_labels <- c(row='Describe one row, the measurement and its unit. Is group nominal or ordinal? Is reversal_mV a continuous measurement? Explain why an ID is a label even when it contains digits.',
  selection='Which animals contributed to second? Explain the selection to your partner.',
  spread='Write both SDs with units. Which group varies more? Does that tell you how precisely its mean is known?',
  outlier='Which fifth reading doubles the mean? Why can the median stay fixed? Critique: “The average doubled, so every culture responded twice as much.” What would you check before deleting the unusual reading?',
@@ -43,19 +43,19 @@ literal <- function(x) {
  x<-gsub('`','\\`',x,fixed=TRUE); gsub('<','&lt;',x,fixed=TRUE)
 }
 hist_edges <- function(d,mode='count',bins=6,width=1) {
- r<-range(d$value); padding<-diff(r)*.02; lo<-r[1]-padding; hi<-r[2]+padding
+ r<-range(d$reversal_mV); padding<-diff(r)*.02; lo<-r[1]-padding; hi<-r[2]+padding
  if(mode=='count') seq(lo,hi,length.out=bins+1) else seq(lo,by=width,length.out=ceiling((hi-lo)/width)+1)
 }
 hist_view <- function(d,mode='count',bins=6,width=1) {
  edges<-hist_edges(d,mode,bins,width)
- values<-list(d$value[d$group==course$group_a],d$value[d$group==course$group_b])
+ values<-list(d$reversal_mV[d$group==course$group_a],d$reversal_mV[d$group==course$group_b])
  hs<-lapply(values,hist,breaks=edges,plot=FALSE); ymax<-max(vapply(hs,function(h)max(h$counts),numeric(1)))
  old<-par(mfrow=c(1,2),mar=c(5,4,3,1)); on.exit(par(old))
  for(i in 1:2) {plot(hs[[i]],col=c('#90c9cf','#edb18b')[i],main=c(course$group_a,course$group_b)[i],xlab=course$measurement,xlim=range(edges),ylim=c(0,ymax+1)); rug(values[[i]])}
 }
 violin_view <- function(d,adjust=1) {
- values<-list(d$value[d$group==course$group_a],d$value[d$group==course$group_b])
- plot(NA,xlim=c(.5,2.5),ylim=range(d$value),xaxt='n',xlab='Group',ylab=course$measurement,main='Measured dots, estimated shapes')
+ values<-list(d$reversal_mV[d$group==course$group_a],d$reversal_mV[d$group==course$group_b])
+ plot(NA,xlim=c(.5,2.5),ylim=range(d$reversal_mV),xaxt='n',xlab='Group',ylab=course$measurement,main='Measured dots, estimated shapes')
  axis(1,1:2,c(course$group_a,course$group_b))
  for(i in 1:2) {
   x<-values[[i]]; den<-density(x,adjust=adjust,from=min(x),to=max(x)); width<-.32*den$y/max(den$y)

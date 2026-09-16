@@ -402,21 +402,20 @@ name does not mean our statistical samples are paired.</p>
 <td>Baseline or Acquisition</td>
 </tr>
 <tr class="odd">
-<td>value</td>
+<td>reversal_mV</td>
 <td>Mean GABA reversal potential (mV)</td>
 </tr>
 <tr class="even">
-<td>companion</td>
+<td>resting_mV</td>
 <td>Mean resting membrane potential (mV)</td>
 </tr>
 </tbody>
 </table>
-<p>The filenames and short column names let beginners reuse a small
-amount of R syntax; always give the full measurement and units in a plot
-caption or report. CSVs are UTF-8, comma-separated, with a header.
-<code>NA</code> denotes missing. Raw files are not changed by the
-interactive controls or by the made-up outlier/missingness
-exercises.</p>
+<p>The column names identify the biological measurements; always give
+the full measurement and units in a plot caption or report. CSVs are
+UTF-8, comma-separated, with a header. <code>NA</code> denotes missing.
+Raw files are not changed by the interactive controls or by the made-up
+outlier/missingness exercises.</p>
 </div>
 <div id="chloride-data-preparation-and-limits" class="section level2">
 <h2>Chloride data: preparation and limits</h2>
@@ -502,8 +501,9 @@ paired samples. Unique IDs do not rule out all other clustering, such as
 shared litters or cages.</p>
 <p><code>study.csv</code> keeps only Paired-protocol baseline and
 acquisition animals, <strong>13 rats</strong> in total.
-<code>group</code> is phase, <code>value</code> is reversal_mV, and
-<code>companion</code> is resting_mV. There are no missing values in
+<code>group</code> identifies the learning phase. The
+<code>reversal_mV</code> and <code>resting_mV</code> columns retain the
+animal-mean voltages described above. There are no missing values in
 this core table. Negative voltages are ordinary measurements; “larger”
 here means less negative, not a larger absolute magnitude. An electrical
 change alone does not identify which transporter caused it.</p>

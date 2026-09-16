@@ -229,8 +229,10 @@ are in `data/dictionary.html`. [Dataset](https://datadryad.org/dataset/doi:10.50
 |---|---|
 | `sample_id` | Animal identifier; a label, not a measured quantity |
 | `group` | Baseline or Acquisition |
-| `value` | Mean GABA reversal potential (mV) |
-| `companion` | Mean resting membrane potential (mV), from the same animal |
+| `reversal_mV` | Mean GABA reversal potential (mV) |
+| `resting_mV` | Mean resting membrane potential (mV), from the same animal |
+
+`reversal_mV` is the GABA reversal potential; `resting_mV` is the resting membrane potential. The suffix `_mV` means millivolts. Each value is the mean of the recorded cells from one rat.
 
 A table in R is called a **data frame**. A row holds information about one animal;
 a column holds one variable. A **nominal** category names groups with no ranking;
@@ -267,7 +269,7 @@ note("row")
 
 ## 3. Follow one group — 10 minutes
 
-`study$value` retrieves the measurement column. `study$group == "Baseline"` asks a yes/no
+`study$reversal_mV` retrieves the measurement column. `study$group == "Baseline"` asks a yes/no
 question for each row. **Two equals signs compare; `<-` assigns.** Square brackets keep
 the values whose group comparison is TRUE. The selection code is supplied: you need to
 explain and adapt it, not memorise it.
@@ -278,7 +280,7 @@ Run the Baseline example. Append a selection for `"Acquisition"`, store it as `s
 
 ```{r select, exercise=TRUE}
 study <- read.csv("data/study.csv")
-first <- study$value[study$group == "Baseline"]
+first <- study$reversal_mV[study$group == "Baseline"]
 length(first)
 mean(first)
 ```
@@ -288,15 +290,15 @@ mean(first)
 ```
 
 ```{r select-hint-1}
-# Append second <- study$value[study$group == "Acquisition"], then length(second) and mean(second).
+# Append second <- study$reversal_mV[study$group == "Acquisition"], then length(second) and mean(second).
 ```
 
 ```{r select-solution}
 study <- read.csv("data/study.csv")
-first <- study$value[study$group == "Baseline"]
+first <- study$reversal_mV[study$group == "Baseline"]
 length(first)
 mean(first)
-second <- study$value[study$group == "Acquisition"]
+second <- study$reversal_mV[study$group == "Acquisition"]
 length(second)
 mean(second)
 ```
@@ -319,8 +321,8 @@ Run the supplied mean and median calculations. Append `sd_first <- sd(first)` an
 
 ```{r spread, exercise=TRUE}
 study <- read.csv("data/study.csv")
-first <- study$value[study$group == "Baseline"]
-second <- study$value[study$group == "Acquisition"]
+first <- study$reversal_mV[study$group == "Baseline"]
+second <- study$reversal_mV[study$group == "Acquisition"]
 mean(first)
 median(first)
 mean(second)
@@ -337,8 +339,8 @@ median(second)
 
 ```{r spread-solution}
 study <- read.csv("data/study.csv")
-first <- study$value[study$group == "Baseline"]
-second <- study$value[study$group == "Acquisition"]
+first <- study$reversal_mV[study$group == "Baseline"]
+second <- study$reversal_mV[study$group == "Acquisition"]
 mean(first)
 median(first)
 mean(second)
@@ -477,8 +479,8 @@ textOutput("bin_summary")
 
 ```{r histogram, exercise=TRUE}
 study <- read.csv("data/study.csv")
-first <- study$value[study$group == "Baseline"]
-second <- study$value[study$group == "Acquisition"]
+first <- study$reversal_mV[study$group == "Baseline"]
+second <- study$reversal_mV[study$group == "Acquisition"]
 hist(first, breaks=5, main="Baseline", xlab="Mean GABA reversal potential (mV)")
 ```
 
@@ -492,8 +494,8 @@ hist(first, breaks=5, main="Baseline", xlab="Mean GABA reversal potential (mV)")
 
 ```{r histogram-solution}
 study <- read.csv("data/study.csv")
-first <- study$value[study$group == "Baseline"]
-second <- study$value[study$group == "Acquisition"]
+first <- study$reversal_mV[study$group == "Baseline"]
+second <- study$reversal_mV[study$group == "Acquisition"]
 hist(first, breaks=5, main="Baseline", xlab="Mean GABA reversal potential (mV)")
 second_hist <- hist(second, breaks=5, main="Acquisition", xlab="Mean GABA reversal potential (mV)")
 ```
@@ -511,7 +513,7 @@ Whiskers extend to observations within 1.5 box lengths of the box; more distant 
 are conventionally drawn separately. These points deserve investigation, not automatic deletion.
 With small samples, always look at the actual observations as well.
 
-In R's plot formula `value ~ group`, read `~` as “shown by group”. `data = study` tells R where
+In R's plot formula `reversal_mV ~ group`, read `~` as “shown by group”. `data = study` tells R where
 those column names live. `stripchart()` adds individual observations. Jitter moves points
 sideways slightly to reveal overlap; it never changes their measured height. `set.seed(7)`
 makes that sideways movement repeatable.
@@ -522,17 +524,17 @@ Run the supplied bar chart, which shows only two means. Append the following wor
 
 ```r
 study$group <- factor(study$group, levels=c("Baseline","Acquisition"))
-comparison <- boxplot(value ~ group, data=study, outline=FALSE,
+comparison <- boxplot(reversal_mV ~ group, data=study, outline=FALSE,
   ylab="Mean GABA reversal potential (mV)", xlab="Group", col=c("lightblue","peachpuff"))
 set.seed(7)
-stripchart(value ~ group, data=study, vertical=TRUE, method="jitter",
+stripchart(reversal_mV ~ group, data=study, vertical=TRUE, method="jitter",
   jitter=0.1, add=TRUE, pch=16)
 ```
 
 ```{r boxplot, exercise=TRUE}
 study <- read.csv("data/study.csv")
-first <- study$value[study$group == "Baseline"]
-second <- study$value[study$group == "Acquisition"]
+first <- study$reversal_mV[study$group == "Baseline"]
+second <- study$reversal_mV[study$group == "Acquisition"]
 barplot(c(mean(first),mean(second)),names.arg=c("Baseline","Acquisition"),
   ylab="Mean: Mean GABA reversal potential (mV)",main="Only the means")
 ```
@@ -547,14 +549,14 @@ barplot(c(mean(first),mean(second)),names.arg=c("Baseline","Acquisition"),
 
 ```{r boxplot-solution}
 study <- read.csv("data/study.csv")
-first <- study$value[study$group == "Baseline"]
-second <- study$value[study$group == "Acquisition"]
+first <- study$reversal_mV[study$group == "Baseline"]
+second <- study$reversal_mV[study$group == "Acquisition"]
 barplot(c(mean(first),mean(second)),names.arg=c("Baseline","Acquisition"),ylab="Mean: Mean GABA reversal potential (mV)")
 study$group <- factor(study$group, levels=c("Baseline","Acquisition"))
-comparison <- boxplot(value ~ group, data=study, outline=FALSE,
+comparison <- boxplot(reversal_mV ~ group, data=study, outline=FALSE,
   ylab="Mean GABA reversal potential (mV)", xlab="Group", col=c("lightblue","peachpuff"))
 set.seed(7)
-stripchart(value ~ group, data=study, vertical=TRUE, method="jitter",
+stripchart(reversal_mV ~ group, data=study, vertical=TRUE, method="jitter",
   jitter=0.1, add=TRUE, pch=16)
 ```
 
@@ -589,7 +591,7 @@ In `study[condition, ]`, the part before the comma selects rows and the blank af
 ```{r scatter, exercise=TRUE}
 study <- read.csv("data/study.csv")
 first_data <- study[study$group == "Baseline", ]
-plot(first_data$value, first_data$companion,
+plot(first_data$reversal_mV, first_data$resting_mV,
   xlab="Mean GABA reversal potential (mV)", ylab="Mean resting membrane potential (mV)", main="Baseline", pch=19)
 ```
 
@@ -598,16 +600,16 @@ plot(first_data$value, first_data$companion,
 ```
 
 ```{r scatter-hint-1}
-# Append second_data <- study[study$group == "Acquisition", ], then plot(second_data$value, second_data$companion, xlab="Measurement", ylab="Companion measurement").
+# Append second_data <- study[study$group == "Acquisition", ], then plot(second_data$reversal_mV, second_data$resting_mV, xlab="Measurement", ylab="Mean resting membrane potential (mV)").
 ```
 
 ```{r scatter-solution}
 study <- read.csv("data/study.csv")
 first_data <- study[study$group == "Baseline", ]
-plot(first_data$value, first_data$companion,
+plot(first_data$reversal_mV, first_data$resting_mV,
   xlab="Mean GABA reversal potential (mV)", ylab="Mean resting membrane potential (mV)", main="Baseline", pch=19)
 second_data <- study[study$group == "Acquisition", ]
-plot(second_data$value, second_data$companion,
+plot(second_data$reversal_mV, second_data$resting_mV,
   xlab="Mean GABA reversal potential (mV)", ylab="Mean resting membrane potential (mV)", main="Acquisition", pch=19)
 ```
 

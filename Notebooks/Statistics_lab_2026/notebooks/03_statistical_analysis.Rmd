@@ -41,8 +41,8 @@ closing bracket or quote in the Source editor. Save often.
 study <- read.csv("data/study.csv")
 head(study)
 study$group <- factor(study$group, levels=c("Baseline","Acquisition"))
-first <- study$value[study$group == "Baseline"]
-second <- study$value[study$group == "Acquisition"]
+first <- study$reversal_mV[study$group == "Baseline"]
+second <- study$reversal_mV[study$group == "Acquisition"]
 length(first)
 length(second)
 ```
@@ -59,10 +59,10 @@ would like to learn about, under comparable conditions. A plot describes our sam
 inference asks what it supports beyond those particular observations.
 
 ```{r distributions}
-boxplot(value ~ group, data=study, outline=FALSE, ylab="Mean GABA reversal potential (mV)",
+boxplot(reversal_mV ~ group, data=study, outline=FALSE, ylab="Mean GABA reversal potential (mV)",
         col=c("lightblue","peachpuff"))
 set.seed(7)
-stripchart(value ~ group, data=study, vertical=TRUE, method="jitter", add=TRUE,pch=19)
+stripchart(reversal_mV ~ group, data=study, vertical=TRUE, method="jitter", add=TRUE,pch=19)
 mean(first)
 mean(second)
 sd(first)
@@ -160,10 +160,10 @@ lined up by spreadsheet position.
 
 ```{r association}
 one_group <- study[study$group == "Baseline", ]
-plot(one_group$value, one_group$companion, pch=19,
+plot(one_group$reversal_mV, one_group$resting_mV, pch=19,
      xlab="Mean GABA reversal potential (mV)", ylab="Mean resting membrane potential (mV)")
-cor.test(one_group$value, one_group$companion, method="pearson")
-cor.test(one_group$value, one_group$companion, method="spearman", exact=FALSE)
+cor.test(one_group$reversal_mV, one_group$resting_mV, method="pearson")
+cor.test(one_group$reversal_mV, one_group$resting_mV, method="spearman", exact=FALSE)
 ```
 
 Pearson's r describes a **linear** association and is sensitive to extreme values. Spearman's

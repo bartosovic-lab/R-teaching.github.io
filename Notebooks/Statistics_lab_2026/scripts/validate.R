@@ -19,8 +19,8 @@ for(label in names(exercises)) {
 }
 wrong_codes<-list(divide='12 / 3',rescue='mean(Readings)',select='second <- c(1,2,3); mean(second)',
  spread='sd_first <- 0; sd_second <- 0',histogram='second_hist <- hist(c(1,2,3),breaks=5)',
- boxplot='study <- read.csv("data/study.csv"); comparison <- boxplot(value~group,data=study)',
- scatter='study <- read.csv("data/study.csv"); second_data <- study; plot(study$value,study$companion)')
+ boxplot='study <- read.csv("data/study.csv"); comparison <- boxplot(reversal_mV~group,data=study)',
+ scatter='study <- read.csv("data/study.csv"); second_data <- study; plot(study$reversal_mV,study$resting_mV)')
 for(label in names(wrong_codes)) {
  ex<-exercises[[label]]; ex$code<-wrong_codes[[label]]; ex$tutorial<-list(language='en')
  result<-learnr:::evaluate_exercise(ex,new.env(parent=globalenv()),data_dir=file.path(tutorial,'data'))

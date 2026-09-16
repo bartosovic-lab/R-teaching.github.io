@@ -52,7 +52,7 @@
     "title": "Follow the Acquisition animals",
     "task": "Run the Baseline example. Append a selection for `\"Acquisition\"`, store it as `second`, then append `length(second)` and `mean(second)`. Say which animals contributed before reading the mean.",
     "success": "The selection and mean are correct. Check the printed sample size before interpreting the average.",
-    "hint": "Append second <- study$value[study$group == \"Acquisition\"], then length(second) and mean(second).",
+    "hint": "Append second <- study$reversal_mV[study$group == \"Acquisition\"], then length(second) and mean(second).",
     "note": "selection"
   },
   "spread": {
@@ -85,7 +85,7 @@
   },
   "boxplot": {
     "title": "Can the mean-only chart tell the whole story?",
-    "task": "Run the supplied bar chart, which shows only two means. Append the following worked template to add a boxplot with all animals. Run, inspect and submit. You do not need to invent the plotting syntax.\n\n```r\nstudy$group <- factor(study$group, levels=c(\"Baseline\",\"Acquisition\"))\ncomparison <- boxplot(value ~ group, data=study, outline=FALSE,\n  ylab=\"Mean GABA reversal potential (mV)\", xlab=\"Group\", col=c(\"lightblue\",\"peachpuff\"))\nset.seed(7)\nstripchart(value ~ group, data=study, vertical=TRUE, method=\"jitter\",\n  jitter=0.1, add=TRUE, pch=16)\n```",
+    "task": "Run the supplied bar chart, which shows only two means. Append the following worked template to add a boxplot with all animals. Run, inspect and submit. You do not need to invent the plotting syntax.\n\n```r\nstudy$group <- factor(study$group, levels=c(\"Baseline\",\"Acquisition\"))\ncomparison <- boxplot(reversal_mV ~ group, data=study, outline=FALSE,\n  ylab=\"Mean GABA reversal potential (mV)\", xlab=\"Group\", col=c(\"lightblue\",\"peachpuff\"))\nset.seed(7)\nstripchart(reversal_mV ~ group, data=study, vertical=TRUE, method=\"jitter\",\n  jitter=0.1, add=TRUE, pch=16)\n```",
     "success": "The box summaries match the table and the point-layer command is present. Check visually that both groups have points.",
     "hint": "Append the supplied boxplot and stripchart template below the mean-only example.",
     "note": "boxplot"
@@ -94,7 +94,7 @@
     "title": "Does the pattern travel to the other group?",
     "task": "In `study[condition, ]`, the part before the comma selects rows and the blank after it keeps all columns. Run the supplied Baseline plot. Append the same three commands for Acquisition, naming the selected table `second_data`. Keep the same measurement axes and label the group.",
     "success": "The second-group table is correct and you included a plot command. Check the plotted axes and explain the pattern; a code check cannot judge your caption.",
-    "hint": "Append second_data <- study[study$group == \"Acquisition\", ], then plot(second_data$value, second_data$companion, xlab=\"Measurement\", ylab=\"Companion measurement\").",
+    "hint": "Append second_data <- study[study$group == \"Acquisition\", ], then plot(second_data$reversal_mV, second_data$resting_mV, xlab=\"Measurement\", ylab=\"Mean resting membrane potential (mV)\").",
     "note": "scatter"
   }
 }

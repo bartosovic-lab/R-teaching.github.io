@@ -17,10 +17,10 @@ One row is one rat, summarised by the mean of its recorded cells. Baseline and a
 |---|---|
 | sample_id | Animal identifier |
 | group | Baseline or Acquisition |
-| value | Mean GABA reversal potential (mV) |
-| companion | Mean resting membrane potential (mV) |
+| reversal_mV | Mean GABA reversal potential (mV) |
+| resting_mV | Mean resting membrane potential (mV) |
 
-The filenames and short column names let beginners reuse a small amount of R syntax;
+The column names identify the biological measurements;
 always give the full measurement and units in a plot caption or report. CSVs are UTF-8,
 comma-separated, with a header. `NA` denotes missing. Raw files are not changed by the
 interactive controls or by the made-up outlier/missingness exercises.
@@ -68,7 +68,7 @@ Paired describes cue–reward timing; it does **not** make the animal groups pai
 Unique IDs do not rule out all other clustering, such as shared litters or cages.
 
 `study.csv` keeps only Paired-protocol baseline and acquisition animals, **13 rats** in total.
-`group` is phase, `value` is reversal_mV, and `companion` is resting_mV. There are no missing
+`group` identifies the learning phase. The `reversal_mV` and `resting_mV` columns retain the animal-mean voltages described above. There are no missing
 values in this core table. Negative voltages are ordinary measurements; “larger” here means
 less negative, not a larger absolute magnitude. An electrical change alone does not identify
 which transporter caused it.

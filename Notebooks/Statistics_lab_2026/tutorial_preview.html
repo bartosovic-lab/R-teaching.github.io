@@ -577,15 +577,19 @@ study</a>.</p>
 <td>Baseline or Acquisition</td>
 </tr>
 <tr class="odd">
-<td><code>value</code></td>
+<td><code>reversal_mV</code></td>
 <td>Mean GABA reversal potential (mV)</td>
 </tr>
 <tr class="even">
-<td><code>companion</code></td>
+<td><code>resting_mV</code></td>
 <td>Mean resting membrane potential (mV), from the same animal</td>
 </tr>
 </tbody>
 </table>
+<p><code>reversal_mV</code> is the GABA reversal potential;
+<code>resting_mV</code> is the resting membrane potential. The suffix
+<code>_mV</code> means millivolts. Each value is the mean of the
+recorded cells from one rat.</p>
 <p>A table in R is called a <strong>data frame</strong>. A row holds
 information about one animal; a column holds one variable. A
 <strong>nominal</strong> category names groups with no ranking; an
@@ -609,7 +613,7 @@ live tutorial.</p>
 </div>
 <div id="follow-one-group-10-minutes" class="section level2">
 <h2>3. Follow one group — 10 minutes</h2>
-<p><code>study$value</code> retrieves the measurement column.
+<p><code>study$reversal_mV</code> retrieves the measurement column.
 <code>study$group == &quot;Baseline&quot;</code> asks a yes/no question for each
 row. <strong>Two equals signs compare; <code>&lt;-</code>
 assigns.</strong> Square brackets keep the values whose group comparison
@@ -622,7 +626,7 @@ it, not memorise it.</p>
 <code>length(second)</code> and <code>mean(second)</code>. Say which
 animals contributed before reading the mean.</p>
 <pre class="r"><code>study &lt;- read.csv(&quot;data/study.csv&quot;)
-first &lt;- study$value[study$group == &quot;Baseline&quot;]
+first &lt;- study$reversal_mV[study$group == &quot;Baseline&quot;]
 length(first)
 mean(first)</code></pre>
 <p><strong>Pause and explain:</strong> selection. Write your answer in
@@ -646,8 +650,8 @@ mean is. Sample size also matters for that.</p>
 <code>sd_second &lt;- sd(second)</code>, then display each named result
 on its own line. Compare the SDs in your answer.</p>
 <pre class="r"><code>study &lt;- read.csv(&quot;data/study.csv&quot;)
-first &lt;- study$value[study$group == &quot;Baseline&quot;]
-second &lt;- study$value[study$group == &quot;Acquisition&quot;]
+first &lt;- study$reversal_mV[study$group == &quot;Baseline&quot;]
+second &lt;- study$reversal_mV[study$group == &quot;Acquisition&quot;]
 mean(first)
 median(first)
 mean(second)
@@ -729,8 +733,8 @@ actual count can differ. The slider above uses exact boundaries.
 horizontal axis. Keep the Baseline example and append
 <code>second_hist &lt;- hist(second, breaks = 5, main = &quot;Acquisition&quot;, xlab = &quot;Mean GABA reversal potential (mV)&quot;)</code>.</p>
 <pre class="r"><code>study &lt;- read.csv(&quot;data/study.csv&quot;)
-first &lt;- study$value[study$group == &quot;Baseline&quot;]
-second &lt;- study$value[study$group == &quot;Acquisition&quot;]
+first &lt;- study$reversal_mV[study$group == &quot;Baseline&quot;]
+second &lt;- study$reversal_mV[study$group == &quot;Acquisition&quot;]
 hist(first, breaks=5, main=&quot;Baseline&quot;, xlab=&quot;Mean GABA reversal potential (mV)&quot;)</code></pre>
 <p><strong>Pause and explain:</strong> histogram. Write your answer in
 the live tutorial.</p>
@@ -747,9 +751,9 @@ within 1.5 box lengths of the box; more distant observations are
 conventionally drawn separately. These points deserve investigation, not
 automatic deletion. With small samples, always look at the actual
 observations as well.</p>
-<p>In R’s plot formula <code>value ~ group</code>, read <code>~</code>
-as “shown by group”. <code>data = study</code> tells R where those
-column names live. <code>stripchart()</code> adds individual
+<p>In R’s plot formula <code>reversal_mV ~ group</code>, read
+<code>~</code> as “shown by group”. <code>data = study</code> tells R
+where those column names live. <code>stripchart()</code> adds individual
 observations. Jitter moves points sideways slightly to reveal overlap;
 it never changes their measured height. <code>set.seed(7)</code> makes
 that sideways movement repeatable.</p>
@@ -759,14 +763,14 @@ that sideways movement repeatable.</p>
 following worked template to add a boxplot with all animals. Run,
 inspect and submit. You do not need to invent the plotting syntax.</p>
 <pre class="r"><code>study$group &lt;- factor(study$group, levels=c(&quot;Baseline&quot;,&quot;Acquisition&quot;))
-comparison &lt;- boxplot(value ~ group, data=study, outline=FALSE,
+comparison &lt;- boxplot(reversal_mV ~ group, data=study, outline=FALSE,
   ylab=&quot;Mean GABA reversal potential (mV)&quot;, xlab=&quot;Group&quot;, col=c(&quot;lightblue&quot;,&quot;peachpuff&quot;))
 set.seed(7)
-stripchart(value ~ group, data=study, vertical=TRUE, method=&quot;jitter&quot;,
+stripchart(reversal_mV ~ group, data=study, vertical=TRUE, method=&quot;jitter&quot;,
   jitter=0.1, add=TRUE, pch=16)</code></pre>
 <pre class="r"><code>study &lt;- read.csv(&quot;data/study.csv&quot;)
-first &lt;- study$value[study$group == &quot;Baseline&quot;]
-second &lt;- study$value[study$group == &quot;Acquisition&quot;]
+first &lt;- study$reversal_mV[study$group == &quot;Baseline&quot;]
+second &lt;- study$reversal_mV[study$group == &quot;Acquisition&quot;]
 barplot(c(mean(first),mean(second)),names.arg=c(&quot;Baseline&quot;,&quot;Acquisition&quot;),
   ylab=&quot;Mean: Mean GABA reversal potential (mV)&quot;,main=&quot;Only the means&quot;)</code></pre>
 <p><strong>Pause and explain:</strong> boxplot. Write your answer in the
@@ -802,7 +806,7 @@ selected table <code>second_data</code>. Keep the same measurement axes
 and label the group.</p>
 <pre class="r"><code>study &lt;- read.csv(&quot;data/study.csv&quot;)
 first_data &lt;- study[study$group == &quot;Baseline&quot;, ]
-plot(first_data$value, first_data$companion,
+plot(first_data$reversal_mV, first_data$resting_mV,
   xlab=&quot;Mean GABA reversal potential (mV)&quot;, ylab=&quot;Mean resting membrane potential (mV)&quot;, main=&quot;Baseline&quot;, pch=19)</code></pre>
 <p><strong>Pause and explain:</strong> scatter. Write your answer in the
 live tutorial.</p>
