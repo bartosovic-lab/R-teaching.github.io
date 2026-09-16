@@ -372,21 +372,21 @@ not assess whether their hypothesis was supported. This calculation uses
 the same prepared animal table as the course. The subtraction and
 interval are <strong>Memantine minus Saline</strong>.</p>
 <pre class="r"><code>d &lt;- read.csv(&quot;data/study.csv&quot;)
-first &lt;- d$BDNF[d$group == &quot;Saline&quot;]
-second &lt;- d$BDNF[d$group == &quot;Memantine&quot;]
-data.frame(group=c(&quot;Saline&quot;,&quot;Memantine&quot;),n=c(length(first),length(second)),
- mean=c(mean(first),mean(second)),median=c(median(first),median(second)),
- SD=c(sd(first),sd(second)))</code></pre>
+saline_bdnf &lt;- d$BDNF[d$group == &quot;Saline&quot;]
+memantine_bdnf &lt;- d$BDNF[d$group == &quot;Memantine&quot;]
+data.frame(group=c(&quot;Saline&quot;,&quot;Memantine&quot;),n=c(length(saline_bdnf),length(memantine_bdnf)),
+ mean=c(mean(saline_bdnf),mean(memantine_bdnf)),median=c(median(saline_bdnf),median(memantine_bdnf)),
+ SD=c(sd(saline_bdnf),sd(memantine_bdnf)))</code></pre>
 <pre><code>##       group  n      mean    median         SD
 ## 1    Saline  9 0.4093777 0.4149799 0.04754932
 ## 2 Memantine 10 0.3901155 0.3981383 0.04488342</code></pre>
-<pre class="r"><code>mean(second)-mean(first)</code></pre>
+<pre class="r"><code>mean(memantine_bdnf)-mean(saline_bdnf)</code></pre>
 <pre><code>## [1] -0.01926225</code></pre>
-<pre class="r"><code>t.test(second,first)</code></pre>
+<pre class="r"><code>t.test(memantine_bdnf,saline_bdnf)</code></pre>
 <pre><code>## 
 ##  Welch Two Sample t-test
 ## 
-## data:  second and first
+## data:  memantine_bdnf and saline_bdnf
 ## t = -0.90535, df = 16.528, p-value = 0.3783
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
@@ -394,11 +394,11 @@ data.frame(group=c(&quot;Saline&quot;,&quot;Memantine&quot;),n=c(length(first),l
 ## sample estimates:
 ## mean of x mean of y 
 ## 0.3901155 0.4093777</code></pre>
-<pre class="r"><code>wilcox.test(second,first,exact=FALSE)</code></pre>
+<pre class="r"><code>wilcox.test(memantine_bdnf,saline_bdnf,exact=FALSE)</code></pre>
 <pre><code>## 
 ##  Wilcoxon rank sum test with continuity correction
 ## 
-## data:  second and first
+## data:  memantine_bdnf and saline_bdnf
 ## W = 37, p-value = 0.5403
 ## alternative hypothesis: true location shift is not equal to 0</code></pre>
 </div>

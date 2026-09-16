@@ -50,16 +50,16 @@
   },
   "select": {
     "title": "Follow the Memantine animals",
-    "task": "Run the Saline example. Append a selection for `\"Memantine\"`, store it as `second`, then append `length(second)` and `mean(second)`. Say which animals contributed before reading the mean.",
+    "task": "Run the Saline example. Append a selection for `\"Memantine\"`, store it as `memantine_bdnf`, then append `length(memantine_bdnf)` and `mean(memantine_bdnf)`. Say which animals contributed before reading the mean.",
     "success": "The selection and mean are correct. Check the printed sample size before interpreting the average.",
-    "hint": "Append second <- study$BDNF[study$group == \"Memantine\"], then length(second) and mean(second).",
+    "hint": "Append memantine_bdnf <- study$BDNF[study$group == \"Memantine\"], then length(memantine_bdnf) and mean(memantine_bdnf).",
     "note": "selection"
   },
   "spread": {
     "title": "Which group varies more?",
-    "task": "Run the supplied mean and median calculations. Append `sd_first <- sd(first)` and `sd_second <- sd(second)`, then display each named result on its own line. Compare the SDs in your answer.",
+    "task": "Run the supplied mean and median calculations. Append `sd_saline_bdnf <- sd(saline_bdnf)` and `sd_memantine_bdnf <- sd(memantine_bdnf)`, then display each named result on its own line. Compare the SDs in your answer.",
     "success": "Both SD calculations are correct. State which is larger and what that means biologically.",
-    "hint": "Append sd_first <- sd(first) and sd_second <- sd(second); display both.",
+    "hint": "Append sd_saline_bdnf <- sd(saline_bdnf) and sd_memantine_bdnf <- sd(memantine_bdnf); display both.",
     "note": "spread"
   },
   "outlier": {
@@ -78,9 +78,9 @@
   },
   "histogram": {
     "title": "Make a histogram you can rerun",
-    "task": "`hist()` draws a histogram. `breaks = 5` requests roughly five bins; base R chooses convenient boundaries, so the actual count can differ. The slider above uses exact boundaries. `main` sets the title and `xlab` labels the horizontal axis. Keep the Saline example and append `second_hist <- hist(second, breaks = 5, main = \"Memantine\", xlab = \"BDNF assay signal (relative units)\")`.",
-    "success": "The histogram contains the selected second group. The check verifies data and bins; inspect the labels yourself.",
-    "hint": "Keep the first plot and append second_hist <- hist(second, breaks=5, main=\"Second group\", xlab=\"Measurement units\").",
+    "task": "`hist()` draws a histogram. `breaks = 5` requests roughly five bins; base R chooses convenient boundaries, so the actual count can differ. The slider above uses exact boundaries. `main` sets the title and `xlab` labels the horizontal axis. Keep the Saline example and append `hist_memantine_bdnf <- hist(memantine_bdnf, breaks = 5, main = \"Memantine\", xlab = \"BDNF assay signal (relative units)\")`.",
+    "success": "The histogram contains the Memantine group. The check verifies data and bins; inspect the labels yourself.",
+    "hint": "Keep the first plot and append hist_memantine_bdnf <- hist(memantine_bdnf, breaks=5, main=\"Memantine\", xlab=\"Measurement units\").",
     "note": "histogram"
   },
   "boxplot": {
@@ -92,9 +92,9 @@
   },
   "scatter": {
     "title": "Does the pattern travel to the other group?",
-    "task": "In `study[condition, ]`, the part before the comma selects rows and the blank after it keeps all columns. Run the supplied Saline plot. Append the same three commands for Memantine, naming the selected table `second_data`. Keep the same measurement axes and label the group.",
-    "success": "The second-group table is correct and you included a plot command. Check the plotted axes and explain the pattern; a code check cannot judge your caption.",
-    "hint": "Append second_data <- study[study$group == \"Memantine\", ], then plot(second_data$BDNF, second_data$pCREB, xlab=\"Measurement\", ylab=\"pCREB assay signal (relative units)\").",
+    "task": "In `study[condition, ]`, the part before the comma selects rows and the blank after it keeps all columns. Run the supplied Saline plot. Append the same three commands for Memantine, naming the selected table `memantine_mice`. Keep the same measurement axes and label the group.",
+    "success": "The Memantine table is correct and you included a plot command. Check the plotted axes and explain the pattern; a code check cannot judge your caption.",
+    "hint": "Append memantine_mice <- study[study$group == \"Memantine\", ], then plot(memantine_mice$BDNF, memantine_mice$pCREB, xlab=\"Measurement\", ylab=\"pCREB assay signal (relative units)\").",
     "note": "scatter"
   }
 }

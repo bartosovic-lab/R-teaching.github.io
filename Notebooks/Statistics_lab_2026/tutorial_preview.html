@@ -610,16 +610,21 @@ row. <strong>Two equals signs compare; <code>&lt;-</code>
 assigns.</strong> Square brackets keep the values whose group comparison
 is TRUE. The selection code is supplied: you need to explain and adapt
 it, not memorise it.</p>
+<p>The name <code>saline_bdnf</code> tells us both the biological
+measurement and its group. We will use <code>memantine_bdnf</code> for
+the other group. Descriptive names help you check which animals a
+calculation includes.</p>
 <div id="follow-the-memantine-animals" class="section level3">
 <h3>Follow the Memantine animals</h3>
 <p>Run the Saline example. Append a selection for
-<code>&quot;Memantine&quot;</code>, store it as <code>second</code>, then append
-<code>length(second)</code> and <code>mean(second)</code>. Say which
-animals contributed before reading the mean.</p>
+<code>&quot;Memantine&quot;</code>, store it as <code>memantine_bdnf</code>, then
+append <code>length(memantine_bdnf)</code> and
+<code>mean(memantine_bdnf)</code>. Say which animals contributed before
+reading the mean.</p>
 <pre class="r"><code>study &lt;- read.csv(&quot;data/study.csv&quot;)
-first &lt;- study$BDNF[study$group == &quot;Saline&quot;]
-length(first)
-mean(first)</code></pre>
+saline_bdnf &lt;- study$BDNF[study$group == &quot;Saline&quot;]
+length(saline_bdnf)
+mean(saline_bdnf)</code></pre>
 <p><strong>Pause and explain:</strong> selection. Write your answer in
 the live tutorial.</p>
 </div>
@@ -637,16 +642,16 @@ mean is. Sample size also matters for that.</p>
 <div id="which-group-varies-more" class="section level3">
 <h3>Which group varies more?</h3>
 <p>Run the supplied mean and median calculations. Append
-<code>sd_first &lt;- sd(first)</code> and
-<code>sd_second &lt;- sd(second)</code>, then display each named result
-on its own line. Compare the SDs in your answer.</p>
+<code>sd_saline_bdnf &lt;- sd(saline_bdnf)</code> and
+<code>sd_memantine_bdnf &lt;- sd(memantine_bdnf)</code>, then display
+each named result on its own line. Compare the SDs in your answer.</p>
 <pre class="r"><code>study &lt;- read.csv(&quot;data/study.csv&quot;)
-first &lt;- study$BDNF[study$group == &quot;Saline&quot;]
-second &lt;- study$BDNF[study$group == &quot;Memantine&quot;]
-mean(first)
-median(first)
-mean(second)
-median(second)</code></pre>
+saline_bdnf &lt;- study$BDNF[study$group == &quot;Saline&quot;]
+memantine_bdnf &lt;- study$BDNF[study$group == &quot;Memantine&quot;]
+mean(saline_bdnf)
+median(saline_bdnf)
+mean(memantine_bdnf)
+median(memantine_bdnf)</code></pre>
 <p><strong>Pause and explain:</strong> spread. Write your answer in the
 live tutorial.</p>
 </div>
@@ -722,11 +727,11 @@ requests roughly five bins; base R chooses convenient boundaries, so the
 actual count can differ. The slider above uses exact boundaries.
 <code>main</code> sets the title and <code>xlab</code> labels the
 horizontal axis. Keep the Saline example and append
-<code>second_hist &lt;- hist(second, breaks = 5, main = &quot;Memantine&quot;, xlab = &quot;BDNF assay signal (relative units)&quot;)</code>.</p>
+<code>hist_memantine_bdnf &lt;- hist(memantine_bdnf, breaks = 5, main = &quot;Memantine&quot;, xlab = &quot;BDNF assay signal (relative units)&quot;)</code>.</p>
 <pre class="r"><code>study &lt;- read.csv(&quot;data/study.csv&quot;)
-first &lt;- study$BDNF[study$group == &quot;Saline&quot;]
-second &lt;- study$BDNF[study$group == &quot;Memantine&quot;]
-hist(first, breaks=5, main=&quot;Saline&quot;, xlab=&quot;BDNF assay signal (relative units)&quot;)</code></pre>
+saline_bdnf &lt;- study$BDNF[study$group == &quot;Saline&quot;]
+memantine_bdnf &lt;- study$BDNF[study$group == &quot;Memantine&quot;]
+hist(saline_bdnf, breaks=5, main=&quot;Saline&quot;, xlab=&quot;BDNF assay signal (relative units)&quot;)</code></pre>
 <p><strong>Pause and explain:</strong> histogram. Write your answer in
 the live tutorial.</p>
 </div>
@@ -760,9 +765,9 @@ set.seed(7)
 stripchart(BDNF ~ group, data=study, vertical=TRUE, method=&quot;jitter&quot;,
   jitter=0.1, add=TRUE, pch=16)</code></pre>
 <pre class="r"><code>study &lt;- read.csv(&quot;data/study.csv&quot;)
-first &lt;- study$BDNF[study$group == &quot;Saline&quot;]
-second &lt;- study$BDNF[study$group == &quot;Memantine&quot;]
-barplot(c(mean(first),mean(second)),names.arg=c(&quot;Saline&quot;,&quot;Memantine&quot;),
+saline_bdnf &lt;- study$BDNF[study$group == &quot;Saline&quot;]
+memantine_bdnf &lt;- study$BDNF[study$group == &quot;Memantine&quot;]
+barplot(c(mean(saline_bdnf),mean(memantine_bdnf)),names.arg=c(&quot;Saline&quot;,&quot;Memantine&quot;),
   ylab=&quot;Mean: BDNF assay signal (relative units)&quot;,main=&quot;Only the means&quot;)</code></pre>
 <p><strong>Pause and explain:</strong> boxplot. Write your answer in the
 live tutorial.</p>
@@ -793,11 +798,11 @@ group.</p>
 <p>In <code>study[condition, ]</code>, the part before the comma selects
 rows and the blank after it keeps all columns. Run the supplied Saline
 plot. Append the same three commands for Memantine, naming the selected
-table <code>second_data</code>. Keep the same measurement axes and label
-the group.</p>
+table <code>memantine_mice</code>. Keep the same measurement axes and
+label the group.</p>
 <pre class="r"><code>study &lt;- read.csv(&quot;data/study.csv&quot;)
-first_data &lt;- study[study$group == &quot;Saline&quot;, ]
-plot(first_data$BDNF, first_data$pCREB,
+saline_mice &lt;- study[study$group == &quot;Saline&quot;, ]
+plot(saline_mice$BDNF, saline_mice$pCREB,
   xlab=&quot;BDNF assay signal (relative units)&quot;, ylab=&quot;pCREB assay signal (relative units)&quot;, main=&quot;Saline&quot;, pch=19)</code></pre>
 <p><strong>Pause and explain:</strong> scatter. Write your answer in the
 live tutorial.</p>
@@ -834,11 +839,11 @@ before the next student.</p>
 <h2>Extra: the middle half</h2>
 <p>Quartiles split ordered data into four parts. The interquartile
 range, IQR, is the upper quartile minus the lower quartile. Try
-<code>quantile(first)</code>, <code>IQR(first)</code> and
-<code>range(first)</code> in your downloaded notebook after creating
-<code>first</code>. Explain why the range is especially sensitive to a
-single extreme value. With small samples, software conventions for
-quartiles can differ.</p>
+<code>quantile(saline_bdnf)</code>, <code>IQR(saline_bdnf)</code> and
+<code>range(saline_bdnf)</code> in your downloaded notebook after
+creating <code>saline_bdnf</code>. Explain why the range is especially
+sensitive to a single extreme value. With small samples, software
+conventions for quartiles can differ.</p>
 </div>
 
 

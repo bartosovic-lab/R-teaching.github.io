@@ -41,10 +41,10 @@ closing bracket or quote in the Source editor. Save often.
 study <- read.csv("data/study.csv")
 head(study)
 study$group <- factor(study$group, levels=c("Saline","Memantine"))
-first <- study$BDNF[study$group == "Saline"]
-second <- study$BDNF[study$group == "Memantine"]
-length(first)
-length(second)
+saline_bdnf <- study$BDNF[study$group == "Saline"]
+memantine_bdnf <- study$BDNF[study$group == "Memantine"]
+length(saline_bdnf)
+length(memantine_bdnf)
 ```
 
 **Before testing:** predict the direction of the difference, and write what evidence could
@@ -63,12 +63,12 @@ boxplot(BDNF ~ group, data=study, outline=FALSE, ylab="BDNF assay signal (relati
         col=c("lightblue","peachpuff"))
 set.seed(7)
 stripchart(BDNF ~ group, data=study, vertical=TRUE, method="jitter", add=TRUE,pch=19)
-mean(first)
-mean(second)
-sd(first)
-sd(second)
-median(first)
-median(second)
+mean(saline_bdnf)
+mean(memantine_bdnf)
+sd(saline_bdnf)
+sd(memantine_bdnf)
+median(saline_bdnf)
+median(memantine_bdnf)
 ```
 
 Write both sample sizes, a difference in means and which group has greater spread.
@@ -85,11 +85,11 @@ group means can produce a misleading shape.
 
 ```{r normality}
 par(mfrow=c(1,2))
-qqnorm(first, main="Saline"); qqline(first)
-qqnorm(second, main="Memantine"); qqline(second)
+qqnorm(saline_bdnf, main="Saline"); qqline(saline_bdnf)
+qqnorm(memantine_bdnf, main="Memantine"); qqline(memantine_bdnf)
 par(mfrow=c(1,1))
-shapiro.test(first)
-shapiro.test(second)
+shapiro.test(saline_bdnf)
+shapiro.test(memantine_bdnf)
 ```
 
 Shapiro–Wilk tests compatibility with a normal model. Its **p-value** measures how unusual
@@ -109,9 +109,9 @@ variances. It needs independent animals; with small samples, strong skew and ext
 can make its results fragile. The analysis below compares **Memantine minus Saline**.
 
 ```{r welch}
-mean_difference <- mean(second) - mean(first)
+mean_difference <- mean(memantine_bdnf) - mean(saline_bdnf)
 mean_difference
-welch <- t.test(second, first)
+welch <- t.test(memantine_bdnf, saline_bdnf)
 welch
 welch$conf.int
 welch$p.value
@@ -138,7 +138,7 @@ it is not simply a test of medians. Under a common-shape location-shift model it
 as a location comparison. `exact = FALSE` requests the approximate calculation and accommodates ties.
 
 ```{r ranks}
-rank_result <- wilcox.test(second, first, exact=FALSE)
+rank_result <- wilcox.test(memantine_bdnf, saline_bdnf, exact=FALSE)
 rank_result
 ```
 

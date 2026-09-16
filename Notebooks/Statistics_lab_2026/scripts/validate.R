@@ -17,10 +17,10 @@ for(label in names(exercises)) {
  states[[label]]<-list(type='exercise',answer=ex$solution,correct=TRUE)
  cat('PASS exercise',label,'\n')
 }
-wrong_codes<-list(divide='12 / 3',rescue='mean(Readings)',select='second <- c(1,2,3); mean(second)',
- spread='sd_first <- 0; sd_second <- 0',histogram='second_hist <- hist(c(1,2,3),breaks=5)',
+wrong_codes<-list(divide='12 / 3',rescue='mean(Readings)',select='memantine_bdnf <- c(1,2,3); mean(memantine_bdnf)',
+ spread='sd_saline_bdnf <- 0; sd_memantine_bdnf <- 0',histogram='hist_memantine_bdnf <- hist(c(1,2,3),breaks=5)',
  boxplot='study <- read.csv("data/study.csv"); comparison <- boxplot(BDNF~group,data=study)',
- scatter='study <- read.csv("data/study.csv"); second_data <- study; plot(study$BDNF,study$pCREB)')
+ scatter='study <- read.csv("data/study.csv"); memantine_mice <- study; plot(study$BDNF,study$pCREB)')
 for(label in names(wrong_codes)) {
  ex<-exercises[[label]]; ex$code<-wrong_codes[[label]]; ex$tutorial<-list(language='en')
  result<-learnr:::evaluate_exercise(ex,new.env(parent=globalenv()),data_dir=file.path(tutorial,'data'))
