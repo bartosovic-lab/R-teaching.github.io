@@ -63,7 +63,7 @@ mmse
 
 **Q11:** What is the mean age of the demented male group?
 
-**Q12:** What is the mean and standard deviation of socioeconomic status (SES) across the groups (demented vs. non-demented)? *(mind the missing values or NAs)*
+**Q12:** What is the mean and standard deviation of normalized whole brain volume (nWBV) across the groups (demented vs. non-demented)? *(mind the missing values or NAs)*
 
 **Q13:** What is the minimum and maximum value of the MMSE score?
 
@@ -100,7 +100,7 @@ mmse
 *Bonus tasks: *
 
  
-**Q24:** Perform a spearman correlation analysis between age and MMSE score. Plot scatterplot of Age and MMSE first. Then use function `cor` (with parameter method='spearman', and use='complete.obs') to perform correlation analysis.What does the correlation coefficient suggest about the relationship between these two variables? 
+**Q24:** Perform a correlation analysis between age and MMSE score. Decide which correlation method to use (spearman vs pearson). Plot scatterplot of Age and MMSE first. Then use function `cor` (with parameter method='spearman', and use='complete.obs') to perform correlation analysis.What does the correlation coefficient suggest about the relationship between these two variables? 
 
 **Q25:** Conduct a chi-square test to see if there is an association between gender and the dementia classification (demented vs. non-demented). Use combination of `table` and `chisq.test` functions. 
 
