@@ -1,0 +1,38 @@
+---
+title: "A molecule, a mouse, and a memory"
+output:
+  html_document:
+    toc: true
+    self_contained: true
+    mathjax: null
+---
+
+## Start here
+
+Two afternoons of four hours, including breaks. No R or statistics experience is assumed.
+You will start with small interactive exercises, then build your own reproducible notebook.
+
+BDNF is a protein involved in neuronal plasticity. Researchers measured proteins in the nuclear fraction of mouse cortex after a learning protocol. Our first comparison uses control-genotype mice given saline or memantine. A change in one assay signal does not establish improved memory.
+
+**First question:** Does memantine change the BDNF assay signal in control mice exposed to the same learning protocol?
+
+1. Download [the student project](statistics_lab_student.zip), unzip it, and open `Statistics_lab.Rproj` in RStudio.
+2. Follow [setup](notebooks/00_setup.html). In the Console, run `source("scripts/run_pilot.R")`.
+3. Complete the interactive learnr tutorial in the browser. Submit your code and download your notebook regularly.
+4. Continue in RStudio with [statistical analysis](notebooks/03_statistical_analysis.html), opening its matching `.Rmd` file to work.
+5. On day 2, open [your investigation](notebooks/04_investigation.html) and its `.Rmd` template. Submit your completed integrated HTML notebook.
+
+The HTML pages above are reading previews. **The interactive learnr tutorial requires a running
+R session**; opening an HTML file or a GitHub page does not start its exercise engine.
+
+## Preview and data
+
+- [Tutorial reading preview](tutorial_preview.html): explanations, worked starters and sample plots; launch R for controls and editable exercises.
+- [Data dictionary](data/dictionary.html): what a row means, units and preparation rules.
+- [Study CSV](data/study.csv): first-day animal table.
+- [Investigation CSV](data/investigation.csv): second-day table.
+- [Original dataset](https://archive.ics.uci.edu/dataset/342/mice+protein+expression).
+
+Keep your work in `notebooks/`. The Source editor holds your saved recipe; the Console executes
+commands; Knit makes the HTML you submit. Ask for help early. Explaining a result is more
+important than remembering a command.

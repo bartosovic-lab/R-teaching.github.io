@@ -1,0 +1,457 @@
+---
+title: "A molecule, a mouse, and a memory — tutorial reading preview"
+output:
+  html_document:
+    toc: true
+    self_contained: true
+    mathjax: null
+---
+
+**Static preview:** this page shows the teaching text and starter code. To edit exercises,
+receive feedback, use sliders or save answers, open the R project and run
+`source("scripts/run_pilot.R")`. This preview has no live controls.
+
+```{r preview-setup,include=FALSE}
+old <- getwd()
+setwd("tutorials/01_basics")
+source("helpers.R",local=knitr::knit_global())
+setwd(old)
+knitr::opts_chunk$set(echo=FALSE,fig.width=8,fig.height=4.5)
+```
+
+
+
+
+
+## Welcome: you are the analysis team
+
+BDNF is a protein involved in neuronal plasticity. Researchers measured proteins in the nuclear fraction of mouse cortex after a learning protocol. Our first comparison uses control-genotype mice given saline or memantine. A change in one assay signal does not establish improved memory.
+
+**Your question:** Does memantine change the BDNF assay signal in control mice exposed to the same learning protocol?
+
+No previous R or statistics is needed. First we will learn to run a command, then follow the
+measurements into a figure. You are allowed to be surprised by the data. A result that does
+not support your prediction is still a result worth explaining.
+
+Work in pairs. One person types and the other predicts or explains; swap after each section.
+Keep your own written answers. Allow 70 minutes for basics, a break, 35 for plots and 5 for the handoff.
+
+- **Code editor:** type R commands in the box containing code. Click **Run Code** to see results below it.
+- **Answer box:** type your scientific explanation in ordinary words.
+- **Submit Answer:** save your current code attempt and request feedback. Run Code alone does not save an attempt for download.
+
+Keep the supplied commands and **append your solution underneath**, unless a task explicitly
+asks you to repair an error. Each editor runs independently: keep its supplied import lines.
+`#` starts a comment, which R ignores. You can experiment without changing the source data files.
+
+
+
+Download regularly. Written answers are session-only; download before closing or reloading.
+Your notebook contains your submitted code, your explanations and your current slider views.
+It will become an ordinary editable R notebook in RStudio.
+
+## 1. First successful runs — 20 minutes
+
+Click inside the editor and press Enter for a new line. Running an editor runs every line,
+top to bottom. Output appears in the same order. The printed `[1]` marks the position of the
+first output item; it is not part of the calculated number.
+
+### Make R do the arithmetic
+
+Run the supplied addition. Then append `12 / 4` on a new line, run again and submit. `/` means divide.
+
+```{r divide,eval=FALSE,echo=TRUE}
+2 + 3
+
+# Add your command below.
+```
+
+
+
+
+
+
+
+### Plan the plate
+
+Three plates, four wells each: how many wells? Predict first. Append `3 * 4`; `*` means multiply.
+
+```{r multiply,eval=FALSE,echo=TRUE}
+3 + 4
+
+# Add your command below.
+```
+
+
+
+
+
+
+
+### Give a result a name
+
+An **object** is information kept under a name. Read `wells <- 12` as “store 12 in wells”. The arrow is `<` followed by `-`. A name on its own displays its value. Keep the example, then append `wells <- 16` and `wells` on separate lines.
+
+```{r store,eval=FALSE,echo=TRUE}
+wells <- 12
+wells
+```
+
+
+
+
+
+
+
+### Keep several measurements together: c()
+
+`c()` combines values into a **vector**, an ordered collection. A **function** is a named operation; its inputs go inside parentheses. In `c(2, 4, 6)`, commas separate three values. Nothing is being added yet! Run the example. Then append `counts <- c(2, 4, 6, 8)` and `counts` to keep and display four values.
+
+```{r combine,eval=FALSE,echo=TRUE}
+counts <- c(2, 4, 6)
+counts
+```
+
+
+
+
+
+
+
+### An average in two ways: mean()
+
+The **mean** is the sum divided by the number of observations. The example calculates it by hand. Append `mean(counts)`: give the stored vector to the function by putting its name inside parentheses. Does it agree? `length(counts)` reports how many values there are, not their average.
+
+```{r average,eval=FALSE,echo=TRUE}
+counts <- c(2, 4, 6)
+(2 + 4 + 6) / 3
+length(counts)
+```
+
+
+
+
+
+
+
+### Predict before you press Run
+
+These are made-up assay readings. Before running, predict whether adding 9 will raise or lower the mean. Keep the example and append a new vector containing 4, 5, 6, 9, then calculate its mean. Explain the change to your partner.
+
+```{r add_value,eval=FALSE,echo=TRUE}
+readings <- c(4, 5, 6)
+mean(readings)
+```
+
+
+
+
+
+
+
+### Recover from a small error
+
+Run this editor once. R names are case-sensitive: `Readings` and `readings` are different. Repair the capital letter and rerun. In RStudio, a Console prompt of `+` means an unfinished command; press Esc, then repair and rerun the complete command in your notebook.
+
+```{r rescue,eval=FALSE,echo=TRUE}
+readings <- c(4, 5, 6)
+mean(Readings)
+```
+
+
+
+
+
+
+
+## 2. Meet the data — 10 minutes
+
+One row is one mouse, using assay record 1 from that mouse. The original study measured each sample repeatedly; those repeated readings are not extra mice.
+
+Our prepared table has **19 animals**: 9 Saline and 10 Memantine.
+The original measurements are real, openly available research data. The preparation and exact source
+are in `data/dictionary.html`. [Dataset](https://archive.ics.uci.edu/dataset/342/mice+protein+expression) · [Original study](https://doi.org/10.1371/journal.pone.0129126).
+
+| Column | Meaning |
+|---|---|
+| `sample_id` | Animal identifier; a label, not a measured quantity |
+| `group` | Saline or Memantine |
+| `value` | BDNF assay signal (relative units) |
+| `companion` | pCREB assay signal (relative units), from the same animal |
+
+A table in R is called a **data frame**. A row holds information about one animal;
+a column holds one variable. A **nominal** category names groups with no ranking;
+an **ordinal** category has an order but need not have equal gaps. A **continuous** measurement
+can take intermediate values even if the instrument rounds them. Biological meaning matters,
+not just whether R stores digits. A day number and a named learning phase are different descriptions.
+
+### Open the table
+
+`read.csv()` reads a comma-separated table. Quotes mark literal text, including a file path. `<-` stores the table as study. `head()` previews rows, `names()` lists columns, and `dim()` reports rows then columns. Run the supplied import, then append `head(study)`, `names(study)` and `dim(study)` in that order.
+
+```{r import,eval=FALSE,echo=TRUE}
+study <- read.csv("data/study.csv")
+```
+
+
+
+
+
+
+
+**Pause and explain:** row. Write your answer in the live tutorial.
+
+## 3. Follow one group — 10 minutes
+
+`study$value` retrieves the measurement column. `study$group == "Saline"` asks a yes/no
+question for each row. **Two equals signs compare; `<-` assigns.** Square brackets keep
+the values whose group comparison is TRUE. The selection code is supplied: you need to
+explain and adapt it, not memorise it.
+
+### Follow the Memantine animals
+
+Run the Saline example. Append a selection for `"Memantine"`, store it as `second`, then append `length(second)` and `mean(second)`. Say which animals contributed before reading the mean.
+
+```{r select,eval=FALSE,echo=TRUE}
+study <- read.csv("data/study.csv")
+first <- study$value[study$group == "Saline"]
+length(first)
+mean(first)
+```
+
+
+
+
+
+
+
+**Pause and explain:** selection. Write your answer in the live tutorial.
+
+## 4. Typical values, variation and an awkward reading — 20 minutes
+
+The mean gives each observation equal weight. The **median** is the middle of the ordered
+observations (the mean of the two middle ones when there is an even number).
+The **sample standard deviation (SD)** describes variation among observations, in the same
+units as the measurement. A larger SD means more variation; it does not by itself tell us
+how uncertain the mean is. Sample size also matters for that.
+
+### Which group varies more?
+
+Run the supplied mean and median calculations. Append `sd_first <- sd(first)` and `sd_second <- sd(second)`, then display each named result on its own line. Compare the SDs in your answer.
+
+```{r spread,eval=FALSE,echo=TRUE}
+study <- read.csv("data/study.csv")
+first <- study$value[study$group == "Saline"]
+second <- study$value[study$group == "Memantine"]
+mean(first)
+median(first)
+mean(second)
+median(second)
+```
+
+
+
+
+
+
+
+**Pause and explain:** spread. Write your answer in the live tutorial.
+
+### Challenge: double the headline
+
+A colleague reports that “the average response doubled”. Four of five made-up culture
+readings are fixed at 4, 5, 5 and 6. Only the fifth reading can change. Can you double
+the original mean without changing the median? Work out a candidate before moving the slider.
+These are separate invented readings, not edits to our animal measurements.
+
+
+
+### Test the headline in code
+
+Keep the original readings. Append a new assay vector with your chosen fifth value, then `new_mean <- mean(assay)` and `new_median <- median(assay)`. Display both results. Bonus: with the other four readings fixed, which median values are even possible?
+
+```{r outlier,eval=FALSE,echo=TRUE}
+assay <- c(4, 5, 5, 6, 7)
+mean(assay)
+median(assay)
+```
+
+
+
+
+
+
+
+**Pause and explain:** outlier. Write your answer in the live tutorial.
+
+## 5. The assay that failed — 10 minutes
+
+`NA` means missing. It does not mean zero. Imagine one assay failed: would writing zero
+describe what happened? First predict what R should do when a required input is unknown.
+Then compare two decisions using these invented values; keep the source table untouched.
+
+### Missing is a different claim from zero
+
+Run the starter: `mean(example)` returns NA. Count the recorded numbers by looking at the vector. Append `observed_n <- 3` and `observed_mean <- mean(example, na.rm = TRUE)`. The comma introduces another argument; `na.rm = TRUE` excludes missing entries for this calculation only. In a separate vector called `zero_example`, use 0 instead of NA; calculate `zero_mean <- mean(zero_example)`. Display the count and both means.
+
+```{r missing,eval=FALSE,echo=TRUE}
+example <- c(4, 6, NA, 8)
+mean(example)
+observed_n <- length(example) # Change: count observed values, excluding NAs
+```
+
+
+
+
+
+
+
+**Pause and explain:** missing. Write your answer in the live tutorial.
+
+Excluding a missing value does not recover it. If high values fail more often, the observed
+values may systematically miss the high end of the distribution.
+
+
+
+**Take a 15-minute break.** On return, swap typing and explanation roles.
+
+## 6. How many bars tell the story? — 15 minutes
+
+A **histogram** groups measurements into intervals called bins. Bar height counts observations
+inside each interval. A few broad bins can hide structure; many narrow bins can make a small
+sample look full of gaps. Neither setting adds information. The marks below the bars show
+where the actual observations lie. Both groups below use the same bins and axes.
+
+Try to make the data look as smooth as possible, then as irregular as possible. Ask your
+partner which biological conclusions survive both views. This is a challenge to the display,
+not an invitation to select whichever plot supports your preferred story.
+
+
+
+```{r static-histograms}
+hist_view(read.csv("data/study.csv"))
+```
+
+### Make a histogram you can rerun
+
+`hist()` draws a histogram. `breaks = 5` requests roughly five bins; base R chooses convenient boundaries, so the actual count can differ. The slider above uses exact boundaries. `main` sets the title and `xlab` labels the horizontal axis. Keep the Saline example and append `second_hist <- hist(second, breaks = 5, main = "Memantine", xlab = "BDNF assay signal (relative units)")`.
+
+```{r histogram,eval=FALSE,echo=TRUE}
+study <- read.csv("data/study.csv")
+first <- study$value[study$group == "Saline"]
+second <- study$value[study$group == "Memantine"]
+hist(first, breaks=5, main="Saline", xlab="BDNF assay signal (relative units)")
+```
+
+
+
+
+
+
+
+**Pause and explain:** histogram. Write your answer in the live tutorial.
+
+## 7. Show the animals behind the average — 10 minutes
+
+`factor()` below fixes the display order so colours and group positions stay consistent across figures. It does not change any measurements.
+
+A **boxplot** puts the middle half of the observations inside a box. The line is the median.
+Whiskers extend to observations within 1.5 box lengths of the box; more distant observations
+are conventionally drawn separately. These points deserve investigation, not automatic deletion.
+With small samples, always look at the actual observations as well.
+
+In R's plot formula `value ~ group`, read `~` as “shown by group”. `data = study` tells R where
+those column names live. `stripchart()` adds individual observations. Jitter moves points
+sideways slightly to reveal overlap; it never changes their measured height. `set.seed(7)`
+makes that sideways movement repeatable.
+
+### Can the mean-only chart tell the whole story?
+
+Run the supplied bar chart, which shows only two means. Append the following worked template to add a boxplot with all animals. Run, inspect and submit. You do not need to invent the plotting syntax.
+
+```r
+study$group <- factor(study$group, levels=c("Saline","Memantine"))
+comparison <- boxplot(value ~ group, data=study, outline=FALSE,
+  ylab="BDNF assay signal (relative units)", xlab="Group", col=c("lightblue","peachpuff"))
+set.seed(7)
+stripchart(value ~ group, data=study, vertical=TRUE, method="jitter",
+  jitter=0.1, add=TRUE, pch=16)
+```
+
+```{r boxplot,eval=FALSE,echo=TRUE}
+study <- read.csv("data/study.csv")
+first <- study$value[study$group == "Saline"]
+second <- study$value[study$group == "Memantine"]
+barplot(c(mean(first),mean(second)),names.arg=c("Saline","Memantine"),
+  ylab="Mean: BDNF assay signal (relative units)",main="Only the means")
+```
+
+
+
+
+
+
+
+**Pause and explain:** boxplot. Write your answer in the live tutorial.
+
+### A smooth violin from a small sample?
+
+A violin's width estimates where measurements are more concentrated. The dots are observed;
+the smooth outline is calculated. Each violin here has equal maximum width and stops at its
+observed range; width does not encode sample size or a confidence interval. The short line is
+the median. Change the smoothing: can you make a bump vanish without changing a single animal?
+
+```{r static-violin}
+violin_view(read.csv("data/study.csv"))
+```
+
+Change smoothing in the live tutorial and explain what is estimated.
+
+## 8. Two measurements from the same animal — 10 minutes
+
+A **scatterplot** gives each animal one point. Its horizontal and vertical positions show
+two different measurements from that animal. A rising pattern suggests positive association;
+a falling pattern suggests negative association. First inspect a single group, so a difference
+between groups is not mistaken for a relationship within a group.
+
+### Does the pattern travel to the other group?
+
+In `study[condition, ]`, the part before the comma selects rows and the blank after it keeps all columns. Run the supplied Saline plot. Append the same three commands for Memantine, naming the selected table `second_data`. Keep the same measurement axes and label the group.
+
+```{r scatter,eval=FALSE,echo=TRUE}
+study <- read.csv("data/study.csv")
+first_data <- study[study$group == "Saline", ]
+plot(first_data$value, first_data$companion,
+  xlab="BDNF assay signal (relative units)", ylab="pCREB assay signal (relative units)", main="Saline", pch=19)
+```
+
+
+
+
+
+
+
+**Pause and explain:** scatter. Write your answer in the live tutorial.
+
+
+
+## 9. Your own notebook — 5 minutes
+
+
+
+1. Submit after your final edits, then download. Save the file in the project's `notebooks/` folder.
+2. Open that Rmd in RStudio. **Source editor:** saved code and written explanations. **Console:** temporary execution and messages. **Environment:** temporary objects created by running code.
+3. In Session → Restart R, clear those temporary objects. Run the setup chunk with its green triangle, then run the remaining chunks in order. Ctrl+Enter (Windows/Linux) or Cmd+Enter (Mac) runs the current line; the chunk's green triangle runs the whole chunk.
+4. Type your prose outside code chunks. Keep the opening and closing chunk fences. Click **Knit** to make an HTML notebook. Knit starts a fresh R session; it cannot use objects created only in your Console.
+5. Check the rendered HTML for errors, missing explanations and unfinished tasks. A successful Knit is not proof of a complete analysis.
+
+Continue with `notebooks/03_statistical_analysis.Rmd` in RStudio. Day 2 uses
+`notebooks/04_investigation.Rmd`. Keep your Rmd source and submit the final HTML to the learning system.
+On a shared computer, save your download and use **Start Over** before the next student.
+
+## Extra: the middle half
+
+Quartiles split ordered data into four parts. The interquartile range, IQR, is the upper
+quartile minus the lower quartile. Try `quantile(first)`, `IQR(first)` and `range(first)` in
+your downloaded notebook after creating `first`. Explain why the range is especially sensitive
+to a single extreme value. With small samples, software conventions for quartiles can differ.

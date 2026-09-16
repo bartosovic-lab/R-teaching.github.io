@@ -1,0 +1,16 @@
+{
+  "variant": "mouse",
+  "folder": "mouse-brain-proteins",
+  "title": "A molecule, a mouse, and a memory",
+  "question": "Does memantine change the BDNF assay signal in control mice exposed to the same learning protocol?",
+  "group_a": "Saline",
+  "group_b": "Memantine",
+  "measurement": "BDNF assay signal (relative units)",
+  "companion": "pCREB assay signal (relative units)",
+  "n_a": 9,
+  "n_b": 10,
+  "story": "BDNF is a protein involved in neuronal plasticity. Researchers measured proteins in the nuclear fraction of mouse cortex after a learning protocol. Our first comparison uses control-genotype mice given saline or memantine. A change in one assay signal does not establish improved memory.",
+  "row": "One row is one mouse, using assay record 1 from that mouse. The original study measured each sample repeatedly; those repeated readings are not extra mice.",
+  "source": "https://archive.ics.uci.edu/dataset/342/mice+protein+expression",
+  "publication": "https://doi.org/10.1371/journal.pone.0129126"
+}

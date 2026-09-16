@@ -1,0 +1,100 @@
+{
+  "divide": {
+    "title": "Make R do the arithmetic",
+    "task": "Run the supplied addition. Then append `12 / 4` on a new line, run again and submit. `/` means divide.",
+    "success": "You ran two calculations. The second answer is 3.",
+    "hint": "Keep the example and append 12 / 4."
+  },
+  "multiply": {
+    "title": "Plan the plate",
+    "task": "Three plates, four wells each: how many wells? Predict first. Append `3 * 4`; `*` means multiply.",
+    "success": "Twelve wells. Addition and multiplication ask different questions.",
+    "hint": "Append 3 * 4 below the example."
+  },
+  "store": {
+    "title": "Give a result a name",
+    "task": "An **object** is information kept under a name. Read `wells <- 12` as \u201cstore 12 in wells\u201d. The arrow is `<` followed by `-`. A name on its own displays its value. Keep the example, then append `wells <- 16` and `wells` on separate lines.",
+    "success": "The same name now stores a new value. Assignment itself usually prints nothing.",
+    "hint": "Append wells <- 16, then wells."
+  },
+  "combine": {
+    "title": "Keep several measurements together: c()",
+    "task": "`c()` combines values into a **vector**, an ordered collection. A **function** is a named operation; its inputs go inside parentheses. In `c(2, 4, 6)`, commas separate three values. Nothing is being added yet! Run the example. Then append `counts <- c(2, 4, 6, 8)` and `counts` to keep and display four values.",
+    "success": "Four values are stored together. c() combines them without calculating their average.",
+    "hint": "Append counts <- c(2, 4, 6, 8), then counts."
+  },
+  "average": {
+    "title": "An average in two ways: mean()",
+    "task": "The **mean** is the sum divided by the number of observations. The example calculates it by hand. Append `mean(counts)`: give the stored vector to the function by putting its name inside parentheses. Does it agree? `length(counts)` reports how many values there are, not their average.",
+    "success": "Both methods give 4. The sample size is 3.",
+    "hint": "Append mean(counts) at the bottom."
+  },
+  "add_value": {
+    "title": "Predict before you press Run",
+    "task": "These are made-up assay readings. Before running, predict whether adding 9 will raise or lower the mean. Keep the example and append a new vector containing 4, 5, 6, 9, then calculate its mean. Explain the change to your partner.",
+    "success": "The mean rises from 5 to 6 because the added value exceeds the original mean.",
+    "hint": "Append readings <- c(4, 5, 6, 9), then mean(readings)."
+  },
+  "rescue": {
+    "title": "Recover from a small error",
+    "task": "Run this editor once. R names are case-sensitive: `Readings` and `readings` are different. Repair the capital letter and rerun. In RStudio, a Console prompt of `+` means an unfinished command; press Esc, then repair and rerun the complete command in your notebook.",
+    "success": "Recovered. An error is information about what R could not do.",
+    "hint": "Use readings with a lower-case r in both lines."
+  },
+  "import": {
+    "title": "Open the table",
+    "task": "`read.csv()` reads a comma-separated table. Quotes mark literal text, including a file path. `<-` stores the table as study. `head()` previews rows, `names()` lists columns, and `dim()` reports rows then columns. Run the supplied import, then append `head(study)`, `names(study)` and `dim(study)` in that order.",
+    "success": "You imported the complete teaching table. Four columns do not mean four times as many animals.",
+    "hint": "Append head(study), names(study), then dim(study).",
+    "note": "row"
+  },
+  "select": {
+    "title": "Follow the Memantine animals",
+    "task": "Run the Saline example. Append a selection for `\"Memantine\"`, store it as `second`, then append `length(second)` and `mean(second)`. Say which animals contributed before reading the mean.",
+    "success": "The selection and mean are correct. Check the printed sample size before interpreting the average.",
+    "hint": "Append second <- study$value[study$group == \"Memantine\"], then length(second) and mean(second).",
+    "note": "selection"
+  },
+  "spread": {
+    "title": "Which group varies more?",
+    "task": "Run the supplied mean and median calculations. Append `sd_first <- sd(first)` and `sd_second <- sd(second)`, then display each named result on its own line. Compare the SDs in your answer.",
+    "success": "Both SD calculations are correct. State which is larger and what that means biologically.",
+    "hint": "Append sd_first <- sd(first) and sd_second <- sd(second); display both.",
+    "note": "spread"
+  },
+  "outlier": {
+    "title": "Test the headline in code",
+    "task": "Keep the original readings. Append a new assay vector with your chosen fifth value, then `new_mean <- mean(assay)` and `new_median <- median(assay)`. Display both results. Bonus: with the other four readings fixed, which median values are even possible?",
+    "success": "The mean doubles to 10.8 while the median remains 5. Four observations have not changed.",
+    "hint": "The original sum is 27. Double it to 54; subtract the four fixed values. Store both new summaries.",
+    "note": "outlier"
+  },
+  "missing": {
+    "title": "Missing is a different claim from zero",
+    "task": "Run the starter: `mean(example)` returns NA. Count the recorded numbers by looking at the vector. Append `observed_n <- 3` and `observed_mean <- mean(example, na.rm = TRUE)`. The comma introduces another argument; `na.rm = TRUE` excludes missing entries for this calculation only. In a separate vector called `zero_example`, use 0 instead of NA; calculate `zero_mean <- mean(zero_example)`. Display the count and both means.",
+    "success": "Three observed values average 6. Inserting zero creates a fourth measurement and lowers the mean to 4.5.",
+    "hint": "Count the three recorded numbers. Use mean(example, na.rm = TRUE); calculate the zero substitution separately.",
+    "note": "missing"
+  },
+  "histogram": {
+    "title": "Make a histogram you can rerun",
+    "task": "`hist()` draws a histogram. `breaks = 5` requests roughly five bins; base R chooses convenient boundaries, so the actual count can differ. The slider above uses exact boundaries. `main` sets the title and `xlab` labels the horizontal axis. Keep the Saline example and append `second_hist <- hist(second, breaks = 5, main = \"Memantine\", xlab = \"BDNF assay signal (relative units)\")`.",
+    "success": "The histogram contains the selected second group. The check verifies data and bins; inspect the labels yourself.",
+    "hint": "Keep the first plot and append second_hist <- hist(second, breaks=5, main=\"Second group\", xlab=\"Measurement units\").",
+    "note": "histogram"
+  },
+  "boxplot": {
+    "title": "Can the mean-only chart tell the whole story?",
+    "task": "Run the supplied bar chart, which shows only two means. Append the following worked template to add a boxplot with all animals. Run, inspect and submit. You do not need to invent the plotting syntax.\n\n```r\nstudy$group <- factor(study$group, levels=c(\"Saline\",\"Memantine\"))\ncomparison <- boxplot(value ~ group, data=study, outline=FALSE,\n  ylab=\"BDNF assay signal (relative units)\", xlab=\"Group\", col=c(\"lightblue\",\"peachpuff\"))\nset.seed(7)\nstripchart(value ~ group, data=study, vertical=TRUE, method=\"jitter\",\n  jitter=0.1, add=TRUE, pch=16)\n```",
+    "success": "The box summaries match the table and the point-layer command is present. Check visually that both groups have points.",
+    "hint": "Append the supplied boxplot and stripchart template below the mean-only example.",
+    "note": "boxplot"
+  },
+  "scatter": {
+    "title": "Does the pattern travel to the other group?",
+    "task": "In `study[condition, ]`, the part before the comma selects rows and the blank after it keeps all columns. Run the supplied Saline plot. Append the same three commands for Memantine, naming the selected table `second_data`. Keep the same measurement axes and label the group.",
+    "success": "The second-group table is correct and you included a plot command. Check the plotted axes and explain the pattern; a code check cannot judge your caption.",
+    "hint": "Append second_data <- study[study$group == \"Memantine\", ], then plot(second_data$value, second_data$companion, xlab=\"Measurement\", ylab=\"Companion measurement\").",
+    "note": "scatter"
+  }
+}

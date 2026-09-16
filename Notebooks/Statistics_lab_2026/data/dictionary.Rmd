@@ -1,0 +1,76 @@
+---
+title: "Data dictionary: A molecule, a mouse, and a memory"
+output:
+  html_document:
+    toc: true
+    self_contained: true
+    mathjax: null
+---
+
+## The first table
+
+BDNF is a protein involved in neuronal plasticity. Researchers measured proteins in the nuclear fraction of mouse cortex after a learning protocol. Our first comparison uses control-genotype mice given saline or memantine. A change in one assay signal does not establish improved memory.
+
+One row is one mouse, using assay record 1 from that mouse. The original study measured each sample repeatedly; those repeated readings are not extra mice.
+
+| Column in study.csv | Meaning |
+|---|---|
+| sample_id | Animal identifier |
+| group | Saline or Memantine |
+| value | BDNF assay signal (relative units) |
+| companion | pCREB assay signal (relative units) |
+
+The filenames and short column names let beginners reuse a small amount of R syntax;
+always give the full measurement and units in a plot caption or report. CSVs are UTF-8,
+comma-separated, with a header. `NA` denotes missing. Raw files are not changed by the
+interactive controls or by the made-up outlier/missingness exercises.
+
+## Mouse data: preparation and limits
+
+Higuera, Gardiner and Cios (2015), UCI Mice Protein Expression, DOI 10.24432/C50S3Z.
+Dataset licence: **CC BY 4.0**, https://creativecommons.org/licenses/by/4.0/.
+The preparation described here is our teaching adaptation; the raw values are preserved.
+
+The workbook has 1,080 assay rows for 72 mice, with 77 protein/modification signals.
+The study describes three replicates of a five-point dilution series per mouse.
+**We consistently retain the record whose MouseID ends in `_1`.** This rule is independent
+of the measured result. We do not average across dilution levels or pretend to reconstruct
+the original mixed-effects analysis. This is a deliberately reduced assay-level teaching
+comparison, with one selected signal per animal; it sacrifices information and precision.
+The source does not establish record 1 as an optimal abundance estimate. Do not label these
+values as absolute concentrations or as fold changes in cognitive ability.
+
+`investigation.csv` contains all 72 mice at that selected record:
+
+| Column | Meaning / unit |
+|---|---|
+| sample_id | Original mouse identifier without the assay suffix; nominal ID |
+| genotype | Control or Ts65Dn (trisomic mouse model); nominal |
+| treatment | Saline or Memantine; nominal |
+| learning | C/S = context then shock; S/C = shock then context; nominal protocol |
+| BDNF | Source BDNF_N signal, relative assay units |
+| pCREB | Source pCREB_N signal, relative assay units |
+| NR1 | Source NR1_N signal, relative assay units |
+| source_record | Complete original MouseID, e.g. 309_1 |
+
+The `_N` source suffix indicates nuclear fraction. Values are the provided continuous assay
+signals, without rescaling or rounding. Blank source cells become `NA`; no imputation,
+outlier removal or selection by significance is performed. Missingness must be handled
+for each analysis. Correlations between assay signals can also reflect shared measurement
+procedures; they do not establish direct molecular regulation.
+
+`study.csv` restricts to Control genotype and C/S protocol: 9 Saline and 10 Memantine mice.
+Its `value` is BDNF and `companion` is pCREB. Both measurements are available for all 19.
+The comparison therefore holds genotype and protocol fixed. Animal IDs are unique; the
+table does not document all potential litter/cage dependence. Treat animal independence
+as a design assumption to discuss, not a property guaranteed merely by unique IDs.
+
+
+## Reproducibility
+
+The raw workbook, its SHA-256 checksum and exact download URL are preserved in `data/source/`
+in the branch checkout (excluded from the small student ZIP). `scripts/prepare_data.py`
+rebuilds the teaching tables; `scripts/validate_data.py` independently reconciles records,
+group counts and selected transformations. No outcomes were changed to manufacture a result.
+
+[Dataset](https://archive.ics.uci.edu/dataset/342/mice+protein+expression) · [Study](https://doi.org/10.1371/journal.pone.0129126)
