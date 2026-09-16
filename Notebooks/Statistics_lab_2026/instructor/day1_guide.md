@@ -56,8 +56,7 @@ Correlation example (seeded simulation): Pearson r = 0.75 (CI 0.53 to 0.87), Spe
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| Tutorial did not start when the project opened | `rstudioapi` missing and no internet, or an old RStudio | Open `day1.Rmd` → Run Document |
-| Mac: "Apple could not verify Launch_day1.command" | Gatekeeper quarantine on a downloaded script | Use the `.Rproj` route; or System Settings → Privacy & Security → Open Anyway |
+| Tutorial did not start when the project opened | `rstudioapi` missing and no internet, or an old RStudio | Run `source("setup.R")` in the Console, or open `day1.Rmd` → Run Document |
 | "Where do I type?" | Tutorial vs Console | Show the map table in Welcome |
 | `object not found` | Object created in another code window, or typo | Each window is self-contained; check spelling and capitals |
 | Console shows `+` | Unfinished command | Esc |
@@ -77,7 +76,7 @@ Correlation example (seeded simulation): Pearson r = 0.75 (CI 0.53 to 0.87), Spe
 ## Checking the materials before class
 
 ```r
-source("setup.R")                       # packages and files
+source("setup.R")                       # packages, files, and starts the tutorial
 Rscript scripts/check_tutorial.R        # every chunk runs (from a terminal)
 Rscript scripts/render_preview.R        # static HTML for the website
 ```

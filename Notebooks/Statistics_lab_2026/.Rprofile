@@ -15,8 +15,6 @@ local({
     }
     if (!requireNamespace("rstudioapi", quietly = TRUE)) return(invisible())
     message("Starting the Day 1 tutorial. To stop it later, click the red Stop button above the Console.")
-    rstudioapi::sendToConsole(
-      'source("setup.R"); rmarkdown::run("day1.Rmd")',
-      execute = TRUE, echo = TRUE, focus = FALSE)
+    rstudioapi::sendToConsole('source("setup.R")', execute = TRUE, echo = TRUE, focus = FALSE)
   }, action = "append")
 })
