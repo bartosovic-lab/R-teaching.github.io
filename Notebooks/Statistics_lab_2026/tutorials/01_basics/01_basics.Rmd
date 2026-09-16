@@ -631,24 +631,31 @@ downloadButton("notebook_checkpoint","Download before the break")
 A **histogram** groups measurements into intervals called bins. Bar height counts observations
 inside each interval. A few broad bins can hide structure; many narrow bins can make a small
 sample look full of gaps. Neither setting adds information. The marks below the bars show
-where the actual observations lie. Both groups below use the same bins and axes.
+where the actual observations lie. All six panels use the same bins and axes. Bin boundaries also stay fixed when you switch between animal means and cells.
+
+The explorer uses **all 26 rats or all 47 cells**, separated by protocol and learning phase. Choose **Individual cells** to see the original cell measurements; choose **Animal means** to give each rat one observation. Panel titles report both counts. Cells within one rat share its experimental history, so switching views does not add independent animals. Some panels remain small even with the complete dataset.
+
+Compare the two views within one panel first. Which rats contribute more dots in the cell view? Why might cell and animal summaries differ? The source's plateau cell-count discrepancy described earlier also applies here.
 
 Try to make the data look as smooth as possible, then as irregular as possible. Ask your
 partner which biological conclusions survive both views. This is a challenge to the display,
 not an invitation to select whichever plot supports your preferred story.
 
 ```{r histogram-controls}
+radioButtons("hist_level","What does one observation represent?",c("Animal means (26 rats)"="animals","Individual cells (47 cells from 26 rats)"="cells"),selected="animals",inline=TRUE)
 radioButtons("hist_mode","Control the bins using",c("Number of bins"="count","Bin width"="width"),inline=TRUE)
 sliderInput("hist_bins","Number of bins",3,20,6,step=1)
 ```
 
 ```{r histogram-width}
-sliderInput("hist_width","Bin width (measurement units)",0.989647,29.6894,4.94824,step=0.296894)
-plotOutput("hist_explorer")
+sliderInput("hist_width","Bin width (mV)",1,30,5,step=1)
+plotOutput("hist_explorer",height="650px")
 textOutput("bin_summary")
 ```
 
-### Make a histogram you can rerun
+### Code practice: the selected baseline/acquisition comparison
+
+The explorer above uses all six groups. This short editor deliberately returns to `study.csv`: seven Baseline rat means and six Acquisition rat means from the Paired protocol. Its plots are separate from the explorer, and moving the explorer controls does not change this code.
 
 `hist()` draws a histogram. `breaks = 5` requests roughly five bins; base R chooses convenient boundaries, so the actual count can differ. The slider above uses exact boundaries. `main` sets the title and `xlab` labels the horizontal axis. Keep the Baseline example and append `hist_acquisition_reversal_mV <- hist(acquisition_reversal_mV, breaks = 5, main = "Acquisition", xlab = "Mean GABA reversal potential (mV)")`.
 
@@ -871,8 +878,12 @@ output$assay_plot <- renderPlot({
  legend("topright",c("Mean","Median"),col=c("#a54821","#16776d"),lty=c(1,2),lwd=2,bty="n")
 })
 output$assay_stats <- renderPrint({x<-c(4,5,5,6,input$extreme); c(mean=mean(x),median=median(x))})
-output$hist_explorer <- renderPlot(hist_view(read.csv("data/study.csv"),input$hist_mode,input$hist_bins,input$hist_width))
-output$bin_summary <- renderText({e<-hist_edges(read.csv("data/study.csv"),input$hist_mode,input$hist_bins,input$hist_width); paste(length(e)-1,"shared bins; width",signif(e[2]-e[1],3),"measurement units. Both axes are shared.")})
+output$hist_explorer <- renderPlot(hist_view(hist_data(input$hist_level),input$hist_mode,input$hist_bins,input$hist_width,input$hist_level))
+output$bin_summary <- renderText({
+ d <- hist_data(input$hist_level)
+ e <- hist_edges(hist_data('cells'),input$hist_mode,input$hist_bins,input$hist_width)
+ paste(nrow(d),if(input$hist_level=='cells')'cell measurements' else 'animal means','from',length(unique(d$sample_id)),'rats across six groups;',length(e)-1,'shared bins; width',signif(e[2]-e[1],3),'mV. Bin edges stay fixed across observation levels; axes are shared within each view.')
+})
 output$violin <- renderPlot(violin_view(read.csv("data/study.csv"),input$smooth))
 output$replicate_plot <- renderPlot(replication_plot(read.csv("data/replicates.csv"),input$replicate_owners))
 output$copy_counts <- renderTable(copy_summary(read.csv("data/study.csv"),input$copy_factor),digits=4)
@@ -881,7 +892,7 @@ output$completion <- renderText({s<-learnr::get_tutorial_state(); passed<-sum(va
 handler <- function() downloadHandler(filename=function()"01_my_basics_and_plots.Rmd",content=function(file){
  s<-isolate(learnr::get_tutorial_state())
  notes<-setNames(lapply(names(note_labels),function(n)input[[paste0("note_",n)]]),names(note_labels))
- settings<-list(mode=input$hist_mode,bins=input$hist_bins,width=input$hist_width,smooth=input$smooth,owners=input$replicate_owners,copies=input$copy_factor)
+ settings<-list(level=input$hist_level,mode=input$hist_mode,bins=input$hist_bins,width=input$hist_width,smooth=input$smooth,owners=input$replicate_owners,copies=input$copy_factor)
  writeLines(export_notebook(s,notes,input$student,input$partner,settings),file,useBytes=TRUE)
 },contentType="text/plain; charset=utf-8")
 output$notebook <- handler()

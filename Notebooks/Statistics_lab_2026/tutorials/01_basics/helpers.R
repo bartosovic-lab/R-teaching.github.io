@@ -37,7 +37,7 @@ note_labels <- c(replication_count="The full table has ___ measurement rows from
  spread='Write both SDs with units. Which group varies more? Does that tell you how precisely its mean is known?',
  outlier='Which fifth reading doubles the mean? Why can the median stay fixed? Critique: “The average doubled, so every culture responded twice as much.” What would you check before deleting the unusual reading?',
  missing='How many observations contributed to observed_mean? Explain why inserting zero changes the scientific meaning. What if the assay fails more often for very high values?',
- histogram='Describe one pattern that survives changing bins and one apparent feature that disappears. What can this small sample tell us about population shape?',
+ histogram='Compare animal means and individual cells within the same protocol and phase. How do observation counts change while animal counts stay fixed? Describe a pattern that survives changing bins and a limitation of these small groups.',
  boxplot='What do the individual points reveal that a mean-only chart hides? Write a caption with units, group sizes, one pattern and one limitation.',
  scatter='Describe the association within the selected group: upward, downward or unclear? Could this plot establish that one measurement causes the other?',
  violin='Change the smoothing slider. Did any observations change? What part of the violin was estimated rather than measured?',
@@ -52,12 +52,34 @@ hist_edges <- function(d,mode='count',bins=6,width=1) {
  r<-range(d$reversal_mV); padding<-diff(r)*.02; lo<-r[1]-padding; hi<-r[2]+padding
  if(mode=='count') seq(lo,hi,length.out=bins+1) else seq(lo,by=width,length.out=ceiling((hi-lo)/width)+1)
 }
-hist_view <- function(d,mode='count',bins=6,width=1) {
- edges<-hist_edges(d,mode,bins,width)
- values<-list(d$reversal_mV[d$group==course$group_a],d$reversal_mV[d$group==course$group_b])
- hs<-lapply(values,hist,breaks=edges,plot=FALSE); ymax<-max(vapply(hs,function(h)max(h$counts),numeric(1)))
- old<-par(mfrow=c(1,2),mar=c(5,4,3,1)); on.exit(par(old))
- for(i in 1:2) {plot(hs[[i]],col=c('#90c9cf','#edb18b')[i],main=c(course$group_a,course$group_b)[i],xlab=course$measurement,xlim=range(edges),ylim=c(0,ymax+1)); rug(values[[i]])}
+hist_data <- function(level='animals') {
+ read.csv(if(identical(level,'cells')) 'data/replicates.csv' else 'data/investigation.csv')
+}
+hist_panels <- function(d) {
+ panels <- expand.grid(phase=c('Baseline','Acquisition','Plateau'),conditioning=c('Paired','Unpaired'),stringsAsFactors=FALSE)
+ panels$observations <- panels$animals <- 0L
+ for(i in seq_len(nrow(panels))) {
+  selected <- d[d$conditioning==panels$conditioning[i] & d$phase==panels$phase[i] & !is.na(d$reversal_mV),]
+  panels$observations[i] <- nrow(selected)
+  panels$animals[i] <- length(unique(selected$sample_id))
+ }
+ panels
+}
+hist_view <- function(d=hist_data(),mode='count',bins=6,width=1,level='animals') {
+ # Use the cell range for fixed bin boundaries across both levels: means lie inside it.
+ edges <- hist_edges(hist_data('cells'),mode,bins,width)
+ panels <- hist_panels(d)
+ hs <- lapply(seq_len(nrow(panels)),function(i) hist(d$reversal_mV[d$conditioning==panels$conditioning[i] & d$phase==panels$phase[i]],breaks=edges,plot=FALSE))
+ ymax <- max(vapply(hs,function(h)max(h$counts),numeric(1)))
+ old <- par(mfrow=c(2,3),mar=c(4,4,4,1),oma=c(0,0,2,0),cex=1); on.exit(par(old))
+ for(i in seq_len(nrow(panels))) {
+  title <- sprintf('%s / %s\n%d %s from %d rats',panels$conditioning[i],panels$phase[i],panels$observations[i],if(level=='cells')'cells' else 'means',panels$animals[i])
+  plot(hs[[i]],col=if(panels$conditioning[i]=='Paired')'#90c9cf' else '#edb18b',main=title,cex.main=.95,
+       xlab=if(level=='cells')'Cell GABA reversal potential (mV)' else 'Rat mean GABA reversal potential (mV)',
+       ylab=if(level=='cells')'Cells' else 'Rats',xlim=range(edges),ylim=c(0,ymax+1))
+  rug(d$reversal_mV[d$conditioning==panels$conditioning[i] & d$phase==panels$phase[i]])
+ }
+ mtext(if(level=='cells')'All 47 cells from 26 rats: cells within a rat are not independent animals' else 'All 26 rats: one mean per animal',outer=TRUE,cex=.95)
 }
 violin_view <- function(d,adjust=1) {
  values<-list(d$reversal_mV[d$group==course$group_a],d$reversal_mV[d$group==course$group_b])
@@ -91,7 +113,7 @@ export_notebook <- function(states,notes,student='',partner='',settings=list()) 
  }
  lines<-c(lines,'## My interactive views','',
  'These supplied reference plots record my slider settings at download time. My submitted plotting code is above. The replication copy experiment deliberately duplicates existing rows: it collects no new animals, and its naive standard error is not valid evidence of increased biological precision. Source data are unchanged.','',
- '```{r interactive-views}',
+ '```{r interactive-views, fig.width=12, fig.height=7}',
  'local({',
  '  helper_env <- new.env()',
  '  old_dir <- getwd()',
@@ -99,7 +121,7 @@ export_notebook <- function(states,notes,student='',partner='',settings=list()) 
  '  setwd("tutorials/01_basics")',
  '  sys.source(paste0("helpers", ".R"), envir=helper_env)',
  '  d <- read.csv("data/study.csv")',
- sprintf('  helper_env$hist_view(d, "%s", %d, %.10g)',settings$mode %||% 'count',settings$bins %||% 6,settings$width %||% 1),
+ sprintf('  helper_env$hist_view(helper_env$hist_data("%s"), "%s", %d, %.10g, level="%s")',settings$level %||% 'animals',settings$mode %||% 'count',settings$bins %||% 6,settings$width %||% 1,settings$level %||% 'animals'),
  sprintf('  helper_env$violin_view(d, %.10g)',settings$smooth %||% 1),
  sprintf('  helper_env$replication_plot(read.csv("data/replicates.csv"), owners=%s)',if(isTRUE(settings$owners))'TRUE' else 'FALSE'),
  sprintf('  print(helper_env$copy_summary(d, %d))',settings$copies %||% 1),

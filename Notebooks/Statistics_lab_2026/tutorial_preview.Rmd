@@ -452,7 +452,11 @@ values may systematically miss the high end of the distribution.
 A **histogram** groups measurements into intervals called bins. Bar height counts observations
 inside each interval. A few broad bins can hide structure; many narrow bins can make a small
 sample look full of gaps. Neither setting adds information. The marks below the bars show
-where the actual observations lie. Both groups below use the same bins and axes.
+where the actual observations lie. All six panels use the same bins and axes. Bin boundaries also stay fixed when you switch between animal means and cells.
+
+The explorer uses **all 26 rats or all 47 cells**, separated by protocol and learning phase. Choose **Individual cells** to see the original cell measurements; choose **Animal means** to give each rat one observation. Panel titles report both counts. Cells within one rat share its experimental history, so switching views does not add independent animals. Some panels remain small even with the complete dataset.
+
+Compare the two views within one panel first. Which rats contribute more dots in the cell view? Why might cell and animal summaries differ? The source's plateau cell-count discrepancy described earlier also applies here.
 
 Try to make the data look as smooth as possible, then as irregular as possible. Ask your
 partner which biological conclusions survive both views. This is a challenge to the display,
@@ -460,11 +464,14 @@ not an invitation to select whichever plot supports your preferred story.
 
 
 
-```{r static-histograms}
-hist_view(read.csv("data/study.csv"))
+```{r static-histograms,fig.width=12,fig.height=7}
+hist_view(hist_data("animals"),level="animals")
+hist_view(hist_data("cells"),level="cells")
 ```
 
-### Make a histogram you can rerun
+### Code practice: the selected baseline/acquisition comparison
+
+The explorer above uses all six groups. This short editor deliberately returns to `study.csv`: seven Baseline rat means and six Acquisition rat means from the Paired protocol. Its plots are separate from the explorer, and moving the explorer controls does not change this code.
 
 `hist()` draws a histogram. `breaks = 5` requests roughly five bins; base R chooses convenient boundaries, so the actual count can differ. The slider above uses exact boundaries. `main` sets the title and `xlab` labels the horizontal axis. Keep the Baseline example and append `hist_acquisition_reversal_mV <- hist(acquisition_reversal_mV, breaks = 5, main = "Acquisition", xlab = "Mean GABA reversal potential (mV)")`.
 

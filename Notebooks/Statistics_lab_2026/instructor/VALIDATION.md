@@ -27,3 +27,7 @@ The chloride source discrepancy and mouse fixed-record limitation are documented
 Replication checks reconcile every measurement row with its source, exercise the owner reveal and copy slider, and verify that duplicating rows changes neither animal count nor mean while reducing the naive SE.
 
 Chloride revision: all 26 readable animal IDs are reconciled through the source key, both voltages are checked against their source cell rows, and the complete animal table is included in the tutorial and exported notebook workflow. The 18 graded tasks now run in their revised teaching order.
+
+## Full-data histogram explorer
+
+The explorer switches between all 26 animal means and all 47 cells in six protocol/phase panels. Shared bin boundaries persist across the switch; each panel reports observations and distinct rats. Downloads preserve the selected level. The small code exercise is explicitly labelled as the separate 13-rat comparison. Server checks verify all six panel counts and the exported cell-view setting.

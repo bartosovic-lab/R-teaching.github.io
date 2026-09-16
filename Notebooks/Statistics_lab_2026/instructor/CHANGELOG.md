@@ -49,3 +49,7 @@ This log describes authored changes. Actual validation results are recorded sepa
 - Retained the scatterplot after checking that both voltages belong to the same cells and animal summaries; explained matching versus different animals across phases.
 - Shortened the starter to 5 minutes, summaries to 10, missing values to 5. Restored ranks and correlation to day 1; day 2 is wholly the independent project.
 - Updated exports, checks, data documentation, previews and student package.
+
+## Full-data histogram explorer
+
+The explorer switches between all 26 animal means and all 47 cells in six protocol/phase panels. Shared bin boundaries persist across the switch; each panel reports observations and distinct rats. Downloads preserve the selected level. The small code exercise is explicitly labelled as the separate 13-rat comparison. Server checks verify all six panel counts and the exported cell-view setting.
