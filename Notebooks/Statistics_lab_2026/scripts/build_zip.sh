@@ -8,6 +8,7 @@ cd "$(dirname "$0")/../.."          # Notebooks/
 rm -f Statistics_lab_2026.zip
 zip -r -X Statistics_lab_2026.zip \
   Statistics_lab_2026/Statistics_lab.Rproj \
+  Statistics_lab_2026/.Rprofile \
   Statistics_lab_2026/day1.Rmd \
   Statistics_lab_2026/helpers.R \
   Statistics_lab_2026/setup.R \

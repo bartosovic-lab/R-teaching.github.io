@@ -56,6 +56,8 @@ Correlation example (seeded simulation): Pearson r = 0.75 (CI 0.53 to 0.87), Spe
 
 | Symptom | Cause | Fix |
 |---|---|---|
+| Tutorial did not start when the project opened | `rstudioapi` missing and no internet, or an old RStudio | Open `day1.Rmd` → Run Document |
+| Mac: "Apple could not verify Launch_day1.command" | Gatekeeper quarantine on a downloaded script | Use the `.Rproj` route; or System Settings → Privacy & Security → Open Anyway |
 | "Where do I type?" | Tutorial vs Console | Show the map table in Welcome |
 | `object not found` | Object created in another code window, or typo | Each window is self-contained; check spelling and capitals |
 | Console shows `+` | Unfinished command | Esc |

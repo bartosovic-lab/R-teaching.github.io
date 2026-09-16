@@ -12,7 +12,8 @@ students write and knit their own notebook.
 | File | Role |
 |---|---|
 | `Statistics_lab.Rproj` | Open this first so that paths such as `data/mmse_small.csv` work |
-| `setup.R` | Installs the five required packages and checks the project (`source("setup.R")`) |
+| `setup.R` | Installs the required packages and checks the project (`source("setup.R")`) |
+| `.Rprofile` | Runs when the project opens in RStudio: sources `setup.R` and launches the tutorial |
 | `day1.Rmd` | The interactive tutorial. In RStudio click **Run Document** |
 | `helpers.R` | Data loading, quiz helpers, the exercise checker and the work-export function used by `day1.Rmd` |
 | `data/` | `mmse_small.csv` (20 MMSE scores), `neurites.csv` (synthetic outgrowth), `README.md` with provenance |
@@ -27,17 +28,19 @@ students write and knit their own notebook.
 ## Student instructions (for the setup session)
 
 1. Install R, then RStudio.
-2. Download this folder, unzip it, and double-click `Statistics_lab.Rproj`.
-3. In the Console type `source("setup.R")` and press Enter.
-4. Open `day1.Rmd` and click **Run Document**. Choose *Run in background* if offered, so the Console stays free.
+2. Download `Statistics_lab_2026.zip` from the course page, unzip it, keep the folder together.
+3. Double-click `Statistics_lab.Rproj`. RStudio opens, `.Rprofile` runs `setup.R`
+   (installs the packages the first time) and starts the tutorial with
+   `rmarkdown::run("day1.Rmd")`. Use **Show in new window** for full size.
+4. If nothing starts: open `day1.Rmd` and click **Run Document**.
 
-## One-click launch
+## Launch options
 
 | Where | How | Notes |
 |---|---|---|
-| **Locally, Mac** | Double-click `Launch_day1.command` | The first time macOS may block it: right-click → Open. Needs R installed; RStudio supplies pandoc |
-| **Locally, Windows** | Double-click `Launch_day1.bat` | Needs R and RStudio installed in the default locations |
-| **Locally, RStudio** | Open `day1.Rmd` → **Run Document** | Works everywhere R and RStudio are installed |
+| **Locally, any OS (default)** | Double-click `Statistics_lab.Rproj` | `.Rprofile` auto-launches the tutorial. Create an empty `.no_autolaunch` file in the folder to open the project without launching |
+| **Locally, RStudio by hand** | Open `day1.Rmd` → **Run Document** | Always works |
+| **Locally, without opening RStudio** | Double-click `Launch_day1.command` (Mac) or `Launch_day1.bat` (Windows) | On a Mac, a downloaded script is blocked by Gatekeeper ("Apple could not verify…"): after the first attempt, System Settings → Privacy & Security → **Open Anyway**; or in Terminal `xattr -d com.apple.quarantine Launch_day1.command`. RStudio must still be installed (it supplies pandoc) |
 | **Online** | Button on the course page → hosted copy on shinyapps.io | No installation for students. Deploy with `scripts/deploy_shinyapps.R` (needs a Posit account); the free tier is enough for a small class only |
 
 A GitHub Pages site is static and cannot run the tutorial itself; the online
