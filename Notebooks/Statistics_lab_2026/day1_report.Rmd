@@ -1,0 +1,110 @@
+---
+title: "Day 1 report · MMSE teaching comparison"
+author: "Marek Bartosovic"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: show
+---
+
+<!-- This is YOUR report. Write sentences outside the grey chunks. Code goes inside them.
+     Run a chunk with the green triangle. Knit (button above) to produce day1_report.html.
+     Replace every line that starts with "WRITE HERE". -->
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+## 1. Question and data
+
+WRITE HERE: one sentence stating the question we ask today.
+
+```{r import}
+mmse <- read.csv("data/mmse_small.csv")
+head(mmse)
+dim(mmse)
+table(mmse$group)
+control <- mmse$MMSE[mmse$group == "Control"]
+ad <- mmse$MMSE[mmse$group == "AD"]
+```
+
+WRITE HERE: what does one row represent, and what kind of variable is each column?
+
+## 2. Summaries
+
+```{r summaries}
+tapply(mmse$MMSE, mmse$group, mean)
+tapply(mmse$MMSE, mmse$group, median)
+tapply(mmse$MMSE, mmse$group, sd)
+tapply(mmse$MMSE, mmse$group, IQR)
+sum(is.na(mmse$MMSE))
+```
+
+WRITE HERE: which centre and spread would you report for each group, and why? Are any values missing?
+
+## 3. Figure
+
+```{r figure, fig.width=6, fig.height=4.5}
+boxplot(MMSE ~ group, data = mmse, ylim = c(0, 30),
+        xlab = "Teaching group", ylab = "MMSE (points)", col = c("#9bd5db", "#f4bb8b"))
+set.seed(1)
+stripchart(MMSE ~ group, data = mmse, vertical = TRUE,
+           method = "jitter", add = TRUE, pch = 16)
+```
+
+WRITE HERE: a two-sentence caption, with one observed pattern and one limitation.
+
+## 4. Method and assumptions
+
+```{r assumptions, fig.width=7, fig.height=3.5}
+par(mfrow = c(1, 2))
+qqnorm(control, main = "Control MMSE"); qqline(control)
+qqnorm(ad, main = "AD MMSE"); qqline(ad)
+shapiro.test(control)
+shapiro.test(ad)
+```
+
+WRITE HERE, using the worksheet: I inspected ___; I observed ___; I chose ___ because ___; an important limitation is ___.
+
+## 5. Result
+
+```{r tests}
+t.test(ad, control)
+wilcox.test(ad, control, exact = FALSE)
+```
+
+| | Welch's t-test | Wilcoxon rank-sum |
+|---|---|---|
+| Question it answers | WRITE HERE | WRITE HERE |
+| Main assumptions | WRITE HERE | WRITE HERE |
+| Result (estimate / statistic, p) | WRITE HERE | WRITE HERE |
+| One limitation | WRITE HERE | WRITE HERE |
+
+WRITE HERE: the result sentence. "In this teaching sample (n = … per group), the estimated AD minus Control difference in mean MMSE was … points (95% CI … to …, Welch's t-test, p …). This supports … under the assumption that …; it does not show …."
+
+## 6. Association (worked example)
+
+```{r association, fig.width=5, fig.height=4}
+set.seed(7001)
+signal_a <- seq(1, 10, length.out = 30)
+signal_b <- 2 + 0.7 * signal_a + rnorm(30, sd = 1.8)
+plot(signal_a, signal_b, pch = 16,
+     xlab = "Assay A (arbitrary units)", ylab = "Assay B (arbitrary units)")
+cor.test(signal_a, signal_b, method = "pearson")
+```
+
+WRITE HERE: direction and form of the association, the coefficient with n, and one limitation.
+
+## 7. Help I used and how I checked it
+
+WRITE HERE: "I asked (partner / instructor / LLM) for help with ___; I checked the suggestion by ___; I now understand ___." One example is enough.
+
+## 8. Reproducibility check
+
+Restart R (Session → Restart R), then Knit. If the HTML appears without errors, the analysis is reproducible.
+
+```{r session}
+sessionInfo()$R.version$version.string
+```

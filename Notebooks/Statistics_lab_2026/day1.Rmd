@@ -1,0 +1,1957 @@
+---
+title: "Day 1 · From a table to a biological story"
+author: "KN7001 Neurochemistry · statistics workshop"
+output:
+  learnr::tutorial:
+    progressive: true
+    allow_skip: true
+runtime: shiny_prerendered
+tutorial:
+  id: "kn7001-statistics-day1"
+  version: 2.0
+description: >
+  Interactive Day 1 of the statistics lab: first R commands, importing a table,
+  describing and plotting data, checking assumptions, comparing two groups and
+  reading a correlation, and correcting for multiple tests. Includes a toolbox, plot gallery and extra tests.
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+source("helpers.R", local = TRUE)
+list2env(load_workshop_data(), envir = environment())
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = TRUE,
+                      fig.width = 7, fig.height = 4.5)
+tutorial_options(exercise.timelimit = 20,
+                 exercise.checker = workshop_checker)
+```
+
+```{r server-helpers, context="server-start", include=FALSE}
+source("helpers.R", local = TRUE)
+```
+
+## Welcome · You are the data detectives
+
+Two groups of people took a short memory test. Somebody claims one group scored
+lower. **Your mission today:** decide whether the data support that claim, make a
+figure that shows it, and explain the result in your own words. Along the way you
+will meet R, the free tool that professional biologists use for exactly this job.
+
+You do **not** need to write code from memory. Every code window comes filled in.
+You run it, change one thing, and explain what happened.
+
+**Work in pairs.** One person drives the keyboard, the other predicts and explains.
+Swap roles at every new section. Quizzes are practice, not marks.
+
+**Using an LLM (ChatGPT, Claude, Copilot, …) is allowed** for explanations, hints
+and debugging. Ask small questions: "explain why this command failed", "what does
+this output mean". Then check the answer yourself: do the column names it uses
+exist? Does it use the right group? Does its explanation agree with the R output?
+A confident answer can still treat repeated visits as independent people. The rule
+is simple: you must be able to explain everything you keep.
+
+Every investigation today follows the same six questions:
+
+1. What do we want to know?
+2. What does one observation (one row) represent?
+3. What do the data look like?
+4. Which analysis answers our question?
+5. What does the output mean?
+6. What limits our conclusion?
+
+### How this tutorial works
+
+| Button | What it does |
+|---|---|
+| **Run Code** | Runs the code in the window and shows the output below it |
+| **Submit Answer** | Some exercises check your final result against a reference |
+| **Hints** / **Solution** | Use hints when stuck; open the solution *after* an attempt |
+| **Start Over** | Resets the code window to the supplied version |
+| **Continue** | Reveals the next step of the section |
+| **Download my work** (in the Finish section) | Saves all your code and answers into one HTML file you can keep or hand in |
+
+Each code window is its own tiny workspace: objects you make in one window are
+**not** carried into the next. We supply the data every window needs. Ordinary
+R scripts behave differently: later lines depend on earlier ones.
+
+### Today's route
+
+| Time | Mission | Minimum outcome |
+|---|---|---|
+| 0:00–0:15 | Welcome and finding your way | Know where to type and where output appears |
+| 0:15–0:55 | Missions 1–2: first commands, first table | Run, change, repair, import |
+| 0:55–1:15 | Mission 3: typical values and spread | Explain mean vs median, SD, IQR, NA |
+| 1:15–1:30 | Break | |
+| 1:30–1:50 | Mission 4: make the observations visible | Read a histogram, boxplot, violin |
+| 1:50–2:20 | Mission 5: is it normal? | Write an assumption assessment |
+| 2:20–2:30 | Break | |
+| 2:30–3:20 | Mission 6: compare the groups | A result sentence with uncertainty |
+| 3:20–3:35 | Mission 7: many questions, many chances | Explain a Bonferroni-adjusted table |
+| 3:35–3:50 | Mission 8: association detective | Read a scatterplot and a correlation |
+| 3:50–4:00 | Finish: what you can do now, prepare Day 2 | Exit ticket |
+
+Sections after the Finish (**Toolbox**, **Gallery**, **Extras**) are optional
+reference material for curious pairs and for Day 2.
+
+### Where do I type?
+
+The most common question of the day. Here is the map.
+
+| Place | What you do there | What is saved? |
+|---|---|---|
+| A code window in this tutorial | Edit supplied R, click **Run Code** | Your last attempt, in this browser |
+| A text box in this tutorial | Write an explanation, click **Record** | Your last answer, in this browser |
+| RStudio **Console** (the `>` prompt) | Try a quick command | Nothing. It is gone when R restarts |
+| An R script or R Markdown file in the RStudio **editor** | Write commands you want to keep | The file, when you save it. Tomorrow's tool |
+
+Your attempts are remembered by this browser on this computer, and at the end you
+can **download everything you typed** as one HTML file (Finish section).
+
+```{r q-recipe, results="asis"}
+mcq("You typed a command in the Console and it made a beautiful plot. Next week you need the same plot. Where should the command live?",
+    c("Nowhere; R remembers the Console history forever",
+      "In a saved script or notebook file, so the recipe can be run again",
+      "In the Plots pane"),
+    2, "A saved file is a recipe; the Console is a scratchpad. Reproducible analysis means the recipe, not the picture, is what you keep.")
+```
+
+## Mission 1 · Make R do something
+
+**About 20 minutes.** Goal: run, change, break, repair.
+
+R is a calculator that also remembers things and draws pictures. RStudio is the
+desk you sit at. In this tutorial, click **Run Code** under each window.
+
+### R is a calculator
+
+**Predict → run → change.** What will this print? Run it, then change `4` to `10`.
+
+```{r first-command, exercise=TRUE}
+2 + 4
+```
+
+```{r first-command-hint}
+# Change only the number on the right, then click Run Code again.
+```
+
+```{r first-command-solution}
+2 + 10
+```
+
+Try a few more. R has hundreds of built-in functions; a function is a verb with
+round brackets. Run these, then add a line that computes the square root of 144.
+
+```{r calculator, exercise=TRUE}
+10 / 3
+2^10
+sqrt(81)
+```
+
+```{r calculator-hint}
+# sqrt() is the square-root function. Put the number inside the brackets.
+```
+
+```{r calculator-solution}
+10 / 3
+2^10
+sqrt(81)
+sqrt(144)
+```
+
+### Remember things with a name
+
+`<-` means "store the value on the right under the name on the left". `c()`
+**combines** values into a **vector** (a list of values of the same kind). A
+function such as `mean()` takes an input and returns a result.
+
+Run these lines. Then change `mean` to `median`. Finally, ask R what `scores`
+contains by writing `scores` alone on a new line.
+
+```{r first-vector, exercise=TRUE}
+scores <- c(27, 28, 30, 27, 29)
+mean(scores)
+```
+
+```{r first-vector-hint-1}
+# Keep the first line. In the second line replace only the function name.
+```
+
+```{r first-vector-hint-2}
+# A name alone on a line prints the object:
+# scores
+```
+
+```{r first-vector-solution}
+scores <- c(27, 28, 30, 27, 29)
+median(scores)
+scores
+```
+
+Three rules that prevent most beginner errors:
+
+- Text needs quotation marks: `"AD"`. Names of objects do not: `scores`.
+- R distinguishes capitals: `Scores` and `scores` are different objects.
+- Arguments inside a function are given with `=`: `round(3.14159, digits = 2)`.
+
+Now make your own vector called `my_scores` with five numbers of your choice and
+compute its mean. Click **Submit Answer** when your last line is the mean.
+
+```{r own-vector, exercise=TRUE}
+my_scores <- c(10, 20, 30, 40, 50)   # replace these with five numbers of your own
+mean(my_scores)
+```
+
+```{r own-vector-hint}
+# Put five numbers separated by commas inside c( ). Example: c(21, 25, 30, 18, 27)
+```
+
+```{r own-vector-solution}
+my_scores <- c(21, 25, 30, 18, 27)
+mean(my_scores)
+```
+
+```{r own-vector-check}
+function(value, env) {
+  if (!exists("my_scores", envir = env) || length(env$my_scores) != 5)
+    return("my_scores should hold exactly five numbers.")
+  if (identical(env$my_scores, c(10, 20, 30, 40, 50)))
+    return("Those are our numbers. Replace them with five of your own.")
+  if (isTRUE(all.equal(value, mean(env$my_scores)))) TRUE
+  else "The last line should be mean(my_scores)."
+}
+```
+
+```{r q-assign, results="asis"}
+mcq("After running scores <- c(27, 28, 30), what does R print?",
+    c("The three numbers",
+      "Nothing: assignment stores the values silently",
+      "An error, because scores did not exist before"),
+    2, "Assignment is silent. Type the name alone to see what is stored.")
+```
+
+### Break it on purpose
+
+Errors are information, not punishment. This window contains a deliberate
+misspelling. Run it, read the **last line** of the red message, then repair the name.
+
+```{r repair-name, exercise=TRUE}
+scores <- c(27, 28, 30)
+# The next line has a typo. Read the error, then fix it.
+mean(score)
+```
+
+```{r repair-name-hint}
+# The object is called scores (with an s). R never guesses; it needs the exact name.
+```
+
+```{r repair-name-solution}
+scores <- c(27, 28, 30)
+mean(scores)
+```
+
+```{r q-error, results="asis"}
+mcq("R says: Error: object 'score' not found. What is the most likely cause?",
+    c("R is broken and must be reinstalled",
+      "The name is misspelled, or the line that creates the object was never run",
+      "The data file is corrupt"),
+    2, "Object not found is the most common error of the day. Check spelling, then re-run the line that creates the object.")
+```
+
+### Rescue a stuck Console
+
+With your instructor, go to the **RStudio Console** and type `mean(c(1, 2` and
+press Enter. The prompt changes from `>` to `+`: R is waiting for the missing
+bracket. Press **Esc** to cancel. When `>` is back, type `mean(c(1, 2))`.
+
+Never type the prompt characters themselves. The `+` continuation prompt is not
+the `+` you use for addition.
+
+```{r q-console, results="asis"}
+mcq("The Console shows a + prompt and nothing you type seems to work. What now?",
+    c("Keep pasting the next exercise; it will sort itself out",
+      "Press Esc to cancel the unfinished command, then type the complete command",
+      "Restart the computer"),
+    2, "A + prompt means an expression is unfinished. Esc cancels it; then the > prompt is ready again.")
+```
+
+## Mission 2 · Open the evidence
+
+**About 20 minutes.** Goal: import a table, look inside it, and say what one row means.
+
+### The case file: a small MMSE table
+
+The **MMSE** (Mini-Mental State Examination) is a 30-point questionnaire used in
+clinics to screen for cognitive impairment. Scores are whole numbers from 0 to 30;
+higher is better. Our teaching file holds 20 scores: 10 labelled *Control* and 10
+labelled *AD* (Alzheimer's disease). This is a teaching example; for today, **assume each row is a different
+person**.
+
+`read.csv()` reads a comma-separated file into a **data frame**: a table where each
+column is a variable and each row is an observation. The path `data/mmse_small.csv`
+starts inside this project folder.
+
+Run the import and the four inspection commands. Match each output to the table
+you can imagine: how many rows, how many columns, which types?
+
+```{r import-table, exercise=TRUE}
+mmse <- read.csv("data/mmse_small.csv")
+head(mmse)
+dim(mmse)
+names(mmse)
+str(mmse)
+```
+
+```{r import-table-hint}
+# head() shows the first 6 rows; dim() gives rows and columns; names() the column
+# names; str() the structure (type of each column). Try summary(mmse) too.
+```
+
+```{r import-table-solution}
+mmse <- read.csv("data/mmse_small.csv")
+head(mmse)
+dim(mmse)
+names(mmse)
+str(mmse)
+summary(mmse)
+```
+
+```{r q-dim, results="asis"}
+mcq("dim(mmse) printed 20 3. What does it mean?",
+    c("20 columns and 3 rows",
+      "20 rows (observations) and 3 columns (variables)",
+      "20 people were tested 3 times"),
+    2, "R always reports rows first, then columns.")
+```
+
+### One column at a time
+
+`$` picks one column out of a data frame and gives you a vector. Run this, then
+change `range` to `summary`, and then to `table` on the `group` column.
+
+```{r select-column, exercise=TRUE}
+range(mmse$MMSE)
+```
+
+```{r select-column-hint-1}
+# The column is called MMSE, in capitals. summary() gives min, quartiles, mean, max.
+```
+
+```{r select-column-hint-2}
+# table(mmse$group) counts how many rows belong to each group.
+```
+
+```{r select-column-solution}
+summary(mmse$MMSE)
+table(mmse$group)
+```
+
+To keep one group only, ask R for the rows where `group` equals `"AD"`. Note the
+double `==` (a question: "is it equal?") versus the single `=` (an argument).
+
+```{r select-group, exercise=TRUE}
+ad <- mmse$MMSE[mmse$group == "AD"]
+ad
+length(ad)
+```
+
+```{r select-group-hint}
+# Copy the pattern for the other group: control <- mmse$MMSE[mmse$group == "Control"]
+```
+
+```{r select-group-solution}
+ad <- mmse$MMSE[mmse$group == "AD"]
+control <- mmse$MMSE[mmse$group == "Control"]
+ad
+control
+length(ad)
+length(control)
+```
+
+From here on, the vectors `ad` and `control` (and the data frame `mmse`) are
+already prepared in every code window, so you do not need to repeat the import.
+
+### What is a row, and what kind of variable is that?
+
+```{r q-unit, results="asis"}
+mcq("What does one row of mmse represent in our teaching scenario?",
+    c("A group average",
+      "One person, with a group label and a score",
+      "One question of the MMSE questionnaire"),
+    2, "The observation unit decides everything that follows: how many independent observations we have and which tests are fair.")
+```
+
+```{r q-scale, results="asis"}
+mcq_multi("Which statements about variable types are correct? (choose all that apply)",
+    c("group (Control/AD) is a nominal variable: categories with no order",
+      "A dementia severity rating coded 0, 0.5, 1, 2 is ordinal: ordered categories",
+      "Age in years is a continuous (numeric) variable",
+      "An MMSE score of 20 means twice the cognitive ability of a score of 10"),
+    c(1, 2, 3), "Storage as a number does not define the measurement scale. MMSE is a bounded score: differences in points are meaningful, ratios are not.")
+```
+
+<details><summary>🔍 Deeper: continuous, ordinal, nominal</summary>
+
+- **Continuous / numeric:** measurements with meaningful distances (height, blood
+  volume, brain volume). Summarise with mean and SD, or median and IQR.
+- **Ordinal:** ordered categories (mild < moderate < severe; socioeconomic status
+  1–5). Order matters, spacing does not. Prefer medians, counts and rank methods.
+- **Nominal:** unordered labels (cell type, sex, treatment group). Count them.
+
+R stores ordinal codes as numbers if the file does. `str()` shows the storage
+type; only you know the scientific meaning.
+
+</details>
+
+## Mission 3 · What is typical, and how variable?
+
+**About 20 minutes.** Goal: explain mean versus median, SD versus uncertainty, and the IQR.
+
+### Centre and spread in one breath
+
+- **Mean:** add everything up, divide by the count. Sensitive to extreme values.
+- **Median:** sort the values, take the middle one. Ignores how extreme the extremes are.
+- **SD (standard deviation):** typical distance of an observation from the mean,
+  in the same units as the data. For a bell-shaped distribution about 68% of
+  values lie within one SD of the mean and 95% within two.
+- **Quartiles:** the values that cut the sorted data into quarters. **IQR = Q3 − Q1**
+  is the width of the middle half.
+
+Every summary throws information away. The art is choosing which to keep.
+
+### The outlier detective
+
+**Predict first:** if the last value of this invented assay vector becomes 100,
+which changes more, the mean or the median? Run, then change `12` to `100`.
+
+```{r outlier-detective, exercise=TRUE}
+signal <- c(8, 9, 10, 11, 12)
+mean(signal)
+median(signal)
+sd(signal)
+```
+
+```{r outlier-detective-hint}
+# Change only the last number to 100. Compare all three outputs with the first run.
+```
+
+```{r outlier-detective-solution}
+signal <- c(8, 9, 10, 11, 100)
+mean(signal)
+median(signal)
+sd(signal)
+```
+
+```{r q-outlier, results="asis"}
+mcq("One extreme value dragged the mean from 10 to 27.6 while the median stayed at 10. A real dataset has such a value. What do you do?",
+    c("Delete it until the result looks nice",
+      "Check the measurement and its context; document any exclusion and the reason",
+      "Replace it with the median so nobody notices"),
+    2, "An unusual value can be real biology or a pipetting error. Appearance alone is never a reason to delete data.")
+```
+
+### Quartiles and the IQR
+
+Run the supplied summaries of the control group. Then answer the number question below.
+
+```{r quartiles, exercise=TRUE}
+mean(control)
+median(control)
+sd(control)
+quantile(control, probs = c(0.25, 0.5, 0.75))
+IQR(control)
+```
+
+```{r quartiles-hint}
+# The 25% value is Q1 and the 75% value is Q3. IQR() subtracts them for you.
+```
+
+```{r quartiles-solution}
+quartiles <- quantile(control, probs = c(0.25, 0.75))
+quartiles[2] - quartiles[1]
+IQR(control)
+```
+
+```{r q-iqr, results="asis"}
+numq("What is the IQR of the control MMSE scores (in points)?", 1.75, tolerance = 0.01,
+     "Q3 = 28.75 and Q1 = 27, so the middle half of controls spans 1.75 points. The controls are tightly packed near the top of the scale.")
+```
+
+Now the same summaries for both groups at once. `tapply()` applies a function to
+each group separately: read it as "apply `mean` to `MMSE` split by `group`".
+Change `mean` to `sd`, then to `median`.
+
+```{r by-group, exercise=TRUE}
+tapply(mmse$MMSE, mmse$group, mean)
+```
+
+```{r by-group-hint}
+# tapply(mmse$MMSE, mmse$group, sd)
+```
+
+```{r by-group-solution}
+tapply(mmse$MMSE, mmse$group, mean)
+tapply(mmse$MMSE, mmse$group, sd)
+tapply(mmse$MMSE, mmse$group, median)
+```
+
+### Missing values are unknown, not zero
+
+R writes a missing value as `NA`. This separate demonstration vector has one.
+Run it: the mean is `NA` because R refuses to guess. Then add `na.rm = TRUE`
+inside `mean()`. How many measurements contributed?
+
+```{r missing-value, exercise=TRUE}
+signal_missing <- c(8, 9, NA, 11, 12)
+mean(signal_missing)
+sum(is.na(signal_missing))
+sum(!is.na(signal_missing))
+```
+
+```{r missing-value-hint}
+# mean(signal_missing, na.rm = TRUE)   -- na.rm means "remove NA before computing"
+# is.na() asks "is this missing?"; ! means "not".
+```
+
+```{r missing-value-solution}
+signal_missing <- c(8, 9, NA, 11, 12)
+mean(signal_missing, na.rm = TRUE)
+sum(is.na(signal_missing))
+sum(!is.na(signal_missing))
+```
+
+```{r q-missing, results="asis"}
+mcq("What does na.rm = TRUE do?",
+    c("It recovers the missing measurement",
+      "It leaves the missing value out of this calculation; we still report how many were missing",
+      "It replaces NA with zero"),
+    2, "Four values contributed. Why a value is missing may itself matter (a broken well, a patient who left).")
+```
+
+### Standardise: the z-score
+
+A **z-score** says how many standard deviations a value sits from the mean:
+z = (x − mean) / SD. Because R is vectorised, one line standardises the whole
+vector. Complete the formula and **Submit Answer**.
+
+```{r zscore, exercise=TRUE}
+z <- (control - mean(control)) / ___
+z
+```
+
+```{r zscore-hint}
+# Divide by the standard deviation: sd(control)
+```
+
+```{r zscore-solution}
+z <- (control - mean(control)) / sd(control)
+z
+```
+
+```{r zscore-check}
+"The last line should print the vector z."
+```
+
+```{r r-summary, results="asis"}
+reflect("For the outlier example, which centre and spread would you report, and why? What would a mean alone hide?",
+        "For a skewed sample, median and IQR describe the typical observation; still show all points and mention the extreme value. SD describes the spread of observations; a confidence interval (later) describes uncertainty about an estimate. They are different things.")
+```
+
+**Break · 15 minutes.** Your brain is part of the analysis pipeline.
+
+## Mission 4 · Let the observations speak
+
+**About 20 minutes.** Goal: read a histogram, a boxplot with points and a violin; know what a bar chart hides.
+
+Our question: **How do the MMSE distributions differ between the two groups?**
+
+### Histogram: the shape of a distribution
+
+A histogram cuts the axis into bins and counts observations in each. The picture
+depends on the bins. Run the two histograms (same bins, same axes), then change
+both `by = 3` to `by = 5`. Did the observations change? Did the picture?
+
+```{r histogram, exercise=TRUE}
+par(mfrow = c(1, 2))   # two plots side by side
+hist(control, breaks = seq(0, 30, by = 3), xlim = c(0, 30), ylim = c(0, 10),
+     main = "Control", xlab = "MMSE (points)", col = "#9bd5db")
+hist(ad, breaks = seq(0, 30, by = 3), xlim = c(0, 30), ylim = c(0, 10),
+     main = "AD", xlab = "MMSE (points)", col = "#f4bb8b")
+```
+
+```{r histogram-hint}
+# Keep identical breaks and axis limits for both groups so they are comparable.
+```
+
+```{r histogram-solution}
+par(mfrow = c(1, 2))
+hist(control, breaks = seq(0, 30, by = 5), xlim = c(0, 30), ylim = c(0, 10),
+     main = "Control", xlab = "MMSE (points)", col = "#9bd5db")
+hist(ad, breaks = seq(0, 30, by = 5), xlim = c(0, 30), ylim = c(0, 10),
+     main = "AD", xlab = "MMSE (points)", col = "#f4bb8b")
+```
+
+```{r q-hist, results="asis"}
+mcq("Changing the bin width changed the histogram's shape. What does that teach us?",
+    c("One of the two histograms is wrong",
+      "A histogram is a summary that depends on a choice; try more than one bin width before describing shape",
+      "Histograms are useless for small samples"),
+    2, "With ten values per group, every histogram is rough. Describe centre, spread, skew and the ceiling near 30; do not read a bell shape as proof of normality.")
+```
+
+### Boxplot with every point on top
+
+`MMSE ~ group` reads as "MMSE by group". The **jitter** spreads points sideways so
+tied scores do not hide each other; it does not change any value. Run the plot and
+describe the group difference *and* the variation inside each group.
+
+```{r show-points, exercise=TRUE}
+boxplot(MMSE ~ group, data = mmse, ylim = c(0, 30),
+        xlab = "Teaching group", ylab = "MMSE (points)", col = c("#9bd5db", "#f4bb8b"))
+set.seed(1)
+stripchart(MMSE ~ group, data = mmse, vertical = TRUE,
+           method = "jitter", add = TRUE, pch = 16)
+```
+
+```{r show-points-hint}
+# Try removing the stripchart lines: what do you lose? Then put them back.
+```
+
+```{r show-points-solution}
+boxplot(MMSE ~ group, data = mmse, ylim = c(0, 30),
+        xlab = "Teaching group", ylab = "MMSE (points)", col = c("#9bd5db", "#f4bb8b"))
+set.seed(1)
+stripchart(MMSE ~ group, data = mmse, vertical = TRUE,
+           method = "jitter", add = TRUE, pch = 16)
+```
+
+Anatomy of a boxplot: the thick line is the **median**; the box spans the
+**quartiles** (the middle half, height ≈ IQR); whiskers reach the most extreme
+observations within 1.5 × IQR of the box; anything beyond is drawn as a separate
+point. Such points are "unusual", not automatically "wrong".
+
+```{r q-box, results="asis"}
+mcq("The box in a boxplot shows…",
+    c("A 95% confidence interval for the mean",
+      "The middle half of the observations, from the first to the third quartile",
+      "The minimum and maximum of the data"),
+    2, "The box is a picture of Q1, median and Q3 from Mission 3. It describes the data, not the uncertainty of an estimate.")
+```
+
+### What disappeared? Bars versus points
+
+Many papers show a bar for each group mean. Compare this bar chart with the
+boxplot above. What do you no longer know?
+
+```{r bar-demo}
+barplot(c(Control = mean(control), AD = mean(ad)),
+        ylim = c(0, 30), ylab = "Mean MMSE (points)", main = "What disappeared?",
+        col = c("#9bd5db", "#f4bb8b"))
+```
+
+```{r q-bar, results="asis"}
+mcq("What does a mean-only bar chart hide that the point plot reveals?",
+    c("The individual values, the sample size, ties and the spread within each group",
+      "The names of the groups",
+      "Nothing important"),
+    1, "Two bars can look identical for n = 3 and n = 300, or for tight and wildly scattered data. Show the points whenever you can.")
+```
+
+### Instructor demonstration · the violin
+
+A **violin plot** draws an estimated density: wider where more observations are
+believed to be. It is a smooth guess, not the data. With ten integer scores per
+group the smooth outline suggests more detail than exists, which is why the dots
+stay on top. You do not need to learn the `ggplot2` code today; the Gallery
+section explains it if you are curious.
+
+```{r violin-demo}
+library(ggplot2)
+ggplot(mmse, aes(group, MMSE, fill = group)) +
+  geom_violin(trim = TRUE, alpha = 0.35) +
+  geom_boxplot(width = 0.15, outlier.shape = NA) +
+  geom_point(position = position_jitter(width = 0.07, height = 0, seed = 1)) +
+  coord_cartesian(ylim = c(0, 30)) +
+  labs(x = "Teaching group", y = "MMSE (points)") +
+  theme_minimal() + guides(fill = "none")
+```
+
+```{r q-violin, results="asis"}
+mcq("What does the width of a violin represent?",
+    c("The number of people, exactly",
+      "An estimated density: where values are more common, smoothed by a formula",
+      "The 95% confidence interval"),
+    2, "Violins are useful with many observations. With n = 10 the smoothing invents shape; keep the points visible.")
+```
+
+```{r q-which-plot, results="asis"}
+mcq("Which plot answers: 'Do individual AD scores overlap with individual control scores?'",
+    c("A bar chart of the two means",
+      "A boxplot or strip chart showing every observation",
+      "A pie chart"),
+    2, "Questions about individuals need a plot that shows individuals.")
+```
+
+```{r r-plot, results="asis"}
+reflect("Write a two-sentence figure caption for the boxplot: one observed pattern and one limitation.",
+        "Example: 'AD teaching scores (median 9.5) were lower than controls (median 28) with no overlap between groups; scores varied more within the AD group. Ten people per group of undocumented origin limit any generalisation.'")
+```
+
+## Mission 5 · Is it normal? Assumptions are evidence, not a traffic light
+
+**About 30 minutes.** Goal: inspect each group, interpret Shapiro–Wilk with care, and write an assumption assessment *before* seeing any group-test p-value.
+
+### First the question, then the shape
+
+Before asking "is it normal?", ask three things:
+
+1. **What is the question?** Comparing average scores? Comparing ranks? An association?
+2. **What is independent?** Twenty separate people, or two visits of ten people?
+3. **What scale?** MMSE is bounded (0–30), whole numbers, many ties, and controls sit near the ceiling.
+
+Only then ask about distribution shape. "Parametric" tests (t-test, ANOVA) model
+the data with parameters such as means and work best when the values are roughly
+bell-shaped within each group. "Non-parametric" tests use ranks. They still have
+assumptions, and they often answer a slightly different question.
+
+<details><summary>🔍 Deeper: the normal distribution</summary>
+
+The normal (Gaussian) distribution is the symmetric bell curve described by two
+numbers, mean and SD. About 68% of values lie within 1 SD, 95% within 2 SD and
+99.7% within 3 SD of the mean. Many biological measurements are approximately
+normal because they sum many small influences. Skewed distributions (long tail
+on one side) pull the mean away from the median; bounded scores such as MMSE
+pile up at the ceiling. An exactly normal variable is continuous and unbounded,
+so for MMSE normality is at best an approximation.
+
+</details>
+
+### The Q–Q plot
+
+A **Q–Q plot** sorts your values and plots them against the values a perfect
+normal distribution would produce. Points near the line support the approximation;
+curves, steps and stray ends deserve attention. Inspect each group separately.
+
+```{r qq-investigation, exercise=TRUE}
+par(mfrow = c(1, 2))
+qqnorm(control, main = "Control MMSE"); qqline(control)
+qqnorm(ad, main = "AD MMSE"); qqline(ad)
+```
+
+```{r qq-investigation-hint}
+# Look for horizontal steps (repeated integer scores) and the flat top of the
+# control group near 30. The plot cannot tell you whether people are independent.
+```
+
+```{r qq-investigation-solution}
+par(mfrow = c(1, 2))
+qqnorm(control, main = "Control MMSE"); qqline(control)
+qqnorm(ad, main = "AD MMSE"); qqline(ad)
+```
+
+### The Shapiro–Wilk test
+
+Shapiro–Wilk asks: "If the population were normal, how surprising would this
+sample shape be?" Its null hypothesis is normality. A small p-value is evidence
+*against* normality. A large p-value is **not** proof of normality; with ten
+values the test has little power.
+
+Run both. Complete the sentence: "For the ___ group the test detected / did not
+detect evidence against normality (p = ___); this does not prove ___."
+
+```{r shapiro, exercise=TRUE}
+shapiro.test(control)
+shapiro.test(ad)
+```
+
+```{r shapiro-hint}
+# The controls pile up at 27-30 (ceiling effect) and contain many ties.
+# That is why their p-value is smaller, even though nothing is "wrong" with them.
+```
+
+```{r shapiro-solution}
+shapiro.test(control)
+shapiro.test(ad)
+```
+
+```{r q-normality, results="asis"}
+mcq("Shapiro–Wilk gives p = 0.58 for the AD group. Which claim is justified?",
+    c("The AD scores are proven to be normally distributed",
+      "No evidence against normality was found; with n = 10 this is weak information either way",
+      "There is a 58% chance the population is normal"),
+    2, "Failure to reject is not proof. With large samples the same test flags tiny, harmless deviations.")
+```
+
+```{r q-shapiro-control, results="asis"}
+mcq("The control group gives p ≈ 0.03. What is the most useful reading?",
+    c("The control data are wrong and must be deleted",
+      "The scores are squeezed against the 30-point ceiling with many ties, so a normal model fits them poorly; consider this when choosing and interpreting a test",
+      "The t-test is now forbidden by law"),
+    2, "The test is doing its job: flagging a bounded, tied sample. What to do about it is a scientific decision, not an automatic rule.")
+```
+
+```{r q-independent, results="asis"}
+mcq("You measure ten cells from each of three culture dishes. How many independent observations do you have for a between-dish treatment effect?",
+    c("30", "3", "Whatever the Shapiro test says"),
+    2, "Cells within a dish share conditions. More rows are not more independent replicates. No normality test can detect this.")
+```
+
+### Why not pool everything first?
+
+Mixing two groups with different centres produces a shape unlike either group.
+The pooled histogram below is *bimodal*: two humps. Pooling is fine for some
+descriptive questions, but the assumption check for a two-group comparison is
+**within each group**.
+
+```{r pooled-demo}
+par(mfrow = c(1, 2))
+hist(mmse$MMSE, breaks = seq(0, 30, by = 3), col = "grey80",
+     main = "Both groups pooled", xlab = "MMSE (points)")
+qqnorm(mmse$MMSE, main = "Pooled Q-Q"); qqline(mmse$MMSE)
+```
+
+Run Shapiro–Wilk on the pooled scores and compare with the within-group results.
+
+```{r pooled-shapiro, exercise=TRUE}
+shapiro.test(mmse$MMSE)
+```
+
+```{r pooled-shapiro-solution}
+shapiro.test(mmse$MMSE)
+```
+
+### The decision worksheet
+
+Use this on both days. Answer it in the reflection box below before running a test.
+
+1. **Question:** means, ranks, or association?
+2. **Independent observations:** what is one unit? Any repeated measures?
+3. **Scale and sample size:** bounded? ties? ceiling? how many per group?
+4. **Histogram and Q–Q plot per group:** symmetry, skew, tails, extremes.
+5. **Shapiro–Wilk as extra evidence:** state its null hypothesis; interpret cautiously.
+6. **Connect evidence to method:** why does this test answer this question?
+7. **Interpret estimate and uncertainty**, not only the p-value.
+
+| Situation | Method | What students should be able to say |
+|---|---|---|
+| Two independent groups; question about **means** | Welch's t-test | Estimates the mean difference in original units with a confidence interval; robust to unequal variances; cautious with small skewed samples |
+| Two independent groups; question about **ranks** | Wilcoxon rank-sum (Mann–Whitney) | Asks whether one group tends to have higher values; uses ranks, so extreme values matter less; not automatically "a test of medians" |
+| Two numeric variables; **linear** relationship | Pearson correlation | Inspect the scatterplot first; sensitive to outliers |
+| Two numeric or ordered variables; **monotonic** relationship | Spearman correlation | Rank-based; does not need normality; still needs independent pairs |
+
+```{r r-assumptions, results="asis"}
+reflect("Fill in: I inspected ___; I observed ___; I would lead with ___ because ___; an important limitation is ___.",
+        "Example: I inspected within-group histograms, Q-Q plots and Shapiro-Wilk. Controls are compressed at the ceiling (p = 0.03), AD scores look roughly symmetric. With n = 10 per group I would report Welch's t-test for the mean difference and Wilcoxon as a rank-based check; independence is an assumption of the teaching scenario, not something the data can verify.")
+```
+
+**Break · 10 minutes.** Do not run the comparison before the break; let the assessment settle.
+
+## Mission 6 · A difference, an uncertainty, a conclusion
+
+**About 60 minutes**, including 15 minutes comparing two methods and 8 minutes on the overlap challenge.
+
+### Welch's t-test
+
+Our question: **What is the difference in average MMSE score, AD minus Control?**
+Under the null hypothesis the population mean difference is zero. `t.test()` with
+two vectors runs **Welch's t-test** by default: it does not assume the two groups
+have equal spread, so no preliminary variance test is needed.
+
+Predict the sign of AD minus Control. Then run and locate the two group means,
+the p-value and the confidence interval.
+
+```{r welch, exercise=TRUE}
+comparison <- t.test(ad, control)
+comparison
+mean(ad) - mean(control)
+comparison$conf.int
+```
+
+```{r welch-hint}
+# The first vector is AD, so everything is "AD minus Control".
+# A negative difference means lower AD scores.
+```
+
+```{r welch-solution}
+comparison <- t.test(ad, control)
+comparison
+mean(ad) - mean(control)
+comparison$conf.int
+```
+
+### Read the output with your partner
+
+| Line in the output | What to say |
+|---|---|
+| `Welch Two Sample t-test` | The method |
+| `mean of x`, `mean of y` | AD mean first, Control mean second |
+| `t`, `df` | The test statistic (how many standard errors apart) and its degrees of freedom |
+| `p-value` | If the true difference were zero, how often would we see a result at least this extreme? |
+| `95 percent confidence interval` | The range of mean differences compatible with the data (AD minus Control) |
+
+The **standard error** is the SD of the estimate, not of the observations. A 95%
+confidence interval is built so that in the long run 95% of such intervals
+contain the true parameter. It is **not** the range of 95% of individual scores.
+
+```{r q-pvalue, results="asis"}
+mcq("A very small p-value tells us…",
+    c("The probability that the null hypothesis is true is very small",
+      "A result this extreme would be rare if the groups had equal population means and the model holds",
+      "The disease caused the difference and the effect is biologically important"),
+    2, "A p-value is about the data under the null model. Effect size, uncertainty, design and measurement all need separate thought.")
+```
+
+```{r q-ci, results="asis"}
+mcq("The 95% CI for AD minus Control is about −21 to −17 points. Under the model this supports…",
+    c("Lower mean AD scores by roughly 17 to 21 points; the interval describes uncertainty about the mean difference",
+      "95% of AD patients score between 17 and 21 points below their control",
+      "Every future AD sample will score lower than every control"),
+    1, "A group estimate does not predict an individual and does not establish cause.")
+```
+
+### Same data, a different question · required discussion
+
+The **Wilcoxon rank-sum test** (also called Mann–Whitney U) replaces the scores by
+their ranks and asks whether values in one group tend to be higher than in the
+other. It is not a test of means, and only under extra assumptions a test of
+medians. MMSE has ties, so we ask for the normal approximation with
+`exact = FALSE`.
+
+Run both tests on exactly the same data. Compare their **questions** before their p-values.
+
+```{r wilcoxon, exercise=TRUE}
+t.test(ad, control)
+wilcox.test(ad, control, exact = FALSE)
+```
+
+```{r wilcoxon-hint}
+# W = 0 means every AD score ranks below every control score.
+# Agreement of the two p-values does not prove that either test's assumptions hold.
+```
+
+```{r wilcoxon-solution}
+t.test(ad, control)
+wilcox.test(ad, control, exact = FALSE)
+```
+
+| Prompt | What to explain |
+|---|---|
+| What question does Welch address? | Do the population means differ? Estimate the difference in points with a CI. |
+| What question does Wilcoxon address? | Does one group tend to have higher-ranked values? |
+| What do plots and Shapiro contribute? | Evidence about shape, bounds and ties. They inform, they do not decide. |
+| Both p-values are tiny. What follows? | Each supports its own question. Agreement is not proof of normality or independence. |
+| If they disagreed? | Revisit the question, shapes and influential values; report both. Never pick the smaller p-value. |
+| Which would you lead with? | State the target, justify the method, say what it does not show. |
+
+```{r q-wilcoxon, results="asis"}
+mcq("The Wilcoxon output says W = 0. What does it mean here?",
+    c("The test failed",
+      "No AD score ranked above any control score: complete separation",
+      "The medians are equal"),
+    2, "W counts how often an AD value exceeds a control value across all pairs. Zero is the most extreme possible result for ten versus ten.")
+```
+
+```{r q-choose, results="asis"}
+mcq("Your Welch p-value is 0.04 and Wilcoxon is 0.08. A colleague says: report the t-test, it is significant. What do you say?",
+    c("Agreed, the smaller one wins",
+      "Choose the method by the question and assumptions decided beforehand, report both, and discuss why they differ",
+      "Run five more tests until they agree"),
+    2, "Choosing after seeing the p-values is called p-hacking. Your decision worksheet from Mission 5 was written to prevent this.")
+```
+
+```{r r-methods, results="asis"}
+reflect("Compare Welch and Wilcoxon for our question: target, assumptions, result and one limitation. Which would you lead with, and why?",
+        "Welch estimates AD minus Control in score points (about -19, CI -21 to -17); Wilcoxon shows complete rank separation (W = 0). Both assume independent people. A defensible lead is Welch because the question is about average scores, with Wilcoxon as a rank-based check given the ceiling effect and ties. Neither test can verify the design or the provenance of these 20 scores.")
+```
+
+```{r r-result, results="asis"}
+reflect("Write the result sentence. Include n per group, direction, size of the difference in points, the CI, the method and one limitation. Template: 'In this teaching sample (n = ... per group), the estimated AD minus Control difference in mean MMSE was ... points (95% CI ... to ..., Welch's t-test, p ...). This supports ... under the assumption that ...; it does not show ....'",
+        "In this teaching sample (n = 10 per group), the estimated AD minus Control difference in mean MMSE was -19.1 points (95% CI -21.0 to -17.2, Welch's t-test, p < 0.001). This supports lower average scores in the AD group under the assumption of 20 independent people; it does not show what caused the difference, nor how these people were selected. Use point differences for MMSE: a fold change would claim a ratio scale the score does not have.")
+```
+
+### The overlap challenge · 8 minutes
+
+MMSE was a dramatic case: no overlap at all. Real data usually overlap. Here are
+two groups from the synthetic **neurite outgrowth** data
+(`control` and `condition_1`, 20 cultures each; units unspecified; assume
+independent cultures).
+
+**Predict:** can overlapping individual observations coexist with strong evidence
+of a mean difference? Look at the dots, then read the test.
+
+```{r overlap, exercise=TRUE}
+boxplot(neurites[c("control", "condition_1")],
+        ylab = "Neurite measurement (synthetic, units unspecified)",
+        col = c("grey85", "#9bd5db"))
+set.seed(1)
+stripchart(neurites[c("control", "condition_1")], vertical = TRUE,
+           method = "jitter", add = TRUE, pch = 16)
+t.test(neurites$condition_1, neurites$control)
+```
+
+```{r overlap-hint}
+# The dots describe individual cultures. The confidence interval describes the
+# estimated difference between the two group means. Those are different things.
+```
+
+```{r overlap-solution}
+boxplot(neurites[c("control", "condition_1")],
+        ylab = "Neurite measurement (synthetic, units unspecified)",
+        col = c("grey85", "#9bd5db"))
+set.seed(1)
+stripchart(neurites[c("control", "condition_1")], vertical = TRUE,
+           method = "jitter", add = TRUE, pch = 16)
+t.test(neurites$condition_1, neurites$control)
+```
+
+```{r q-overlap, results="asis"}
+mcq("The two groups overlap a lot, yet the CI for the mean difference (about 0.27 to 0.59) excludes zero. Contradiction?",
+    c("Yes: overlapping observations rule out a real difference",
+      "No: variation among individuals is not the same as uncertainty about a group mean",
+      "Yes: some observations must be deleted first"),
+    2, "Twenty cultures per group estimate each mean quite precisely, even though single cultures overlap.")
+```
+
+```{r r-overlap, results="asis"}
+reflect("Contrast this plot with the MMSE case. Why can a group mean not tell you which group one new culture came from?",
+        "The neurite ranges overlap (about 0.06-1.0 versus 0.41-1.41), so a single value near 0.7 is compatible with both groups. The estimated mean difference (0.43) is about the groups, not about individuals. Do not compare 0.43 with the 19-point MMSE difference: different scales, different units.")
+```
+
+## Mission 7 · Many questions, many chances
+
+**About 15 minutes.** Goal: explain what a Bonferroni-adjusted p-value means and why the number of questions you asked matters.
+
+### The jelly bean problem
+
+If nothing at all is going on and you test twenty hypotheses at the 0.05 level,
+you still expect about one "significant" result by pure chance. (The classic
+cartoon: scientists test twenty colours of jelly beans for acne; green comes out
+at p < 0.05 and makes the newspaper.) Every extra test is another lottery ticket.
+
+Tests that are asked together to support one claim form a **family**. Before
+looking at results, write down how many tests are in the family. The
+**Bonferroni** correction then multiplies each p-value by the family size *m*
+(and caps it at 1): adjusted p = min(m × p, 1). This keeps the chance of *any*
+false positive in the family at about 0.05. It is simple and a bit conservative.
+It changes the threshold for calling something significant. It changes neither
+the data nor the estimated effects.
+
+### A worked family of three
+
+Three invented p-values for three proteins tested in the same experiment. Run
+the code, then **add a fourth protein with raw p = 0.04** and Submit. What
+happens to all four adjusted values?
+
+```{r bonferroni, exercise=TRUE}
+raw_p <- c(protein_A = 0.01, protein_B = 0.03, protein_C = 0.20)
+data.frame(raw_p, adjusted_p = p.adjust(raw_p, method = "bonferroni"))
+```
+
+```{r bonferroni-hint-1}
+# Add a fourth element inside c( ): protein_D = 0.04
+```
+
+```{r bonferroni-hint-2}
+# Every adjusted value is min(m * p, 1). With four tests, m becomes 4 for all of them.
+```
+
+```{r bonferroni-solution}
+raw_p <- c(protein_A = 0.01, protein_B = 0.03, protein_C = 0.20, protein_D = 0.04)
+data.frame(raw_p, adjusted_p = p.adjust(raw_p, method = "bonferroni"))
+```
+
+```{r bonferroni-check}
+function(value, env) {
+  if (!is.data.frame(value) || nrow(value) != 4)
+    return("Add a fourth test so that the table has four rows.")
+  if (!isTRUE(all.equal(value[[2]], pmin(4 * value[[1]], 1))))
+    return("Each adjusted value should be min(4 x raw p, 1).")
+  TRUE
+}
+```
+
+These numbers are an arithmetic illustration, not results from the MMSE data.
+
+```{r q-family, results="asis"}
+mcq("Which tests belong to the family in this example?",
+    c("All three protein tests, because together they support the claim 'at least one protein differs'",
+      "Only the test with the smallest p-value",
+      "The three protein tests plus the Shapiro-Wilk normality checks"),
+    1, "A family is the set of tests that jointly support one claim. Assumption checks are not part of it; they are not scientific claims.")
+```
+
+```{r q-survive, results="asis"}
+mcq("For the original three tests, which results remain below 0.05 after Bonferroni adjustment?",
+    c("Protein A only (0.01 becomes 0.03)",
+      "Proteins A and B",
+      "None of them"),
+    1, "Protein B goes from 0.03 to 0.09. That does not establish 'no effect'; it means the evidence is weaker than it first looked once we admit we asked three questions.")
+```
+
+```{r q-smallest, results="asis"}
+mcq("A report mentions only protein A with p = 0.01 and says nothing about B and C. Why is that incomplete?",
+    c("Because p = 0.01 is not small enough",
+      "Because the reader cannot judge how many questions were asked; with many tests, small p-values appear by chance",
+      "Because protein A should have been tested twice"),
+    2, "Show every test in the family, including the non-significant ones. Hiding them is selective reporting, and no correction can repair it afterwards.")
+```
+
+```{r q-bonferroni, results="asis"}
+mcq("Raw p = 0.03 became 0.09 after adjustment. What changed?",
+    c("The measured effect became three times smaller",
+      "Only the p-value; the data and the estimated effect are exactly the same",
+      "There is now a 9% chance that the null hypothesis is true"),
+    2, "Adjustment changes the decision threshold, not the biology. Report the estimate and its CI regardless of the adjusted p.")
+```
+
+```{r q-bonf-arith, results="asis"}
+numq("By hand: a family of 5 tests, one raw p = 0.02. What is its Bonferroni-adjusted p?", 0.10, tolerance = 0.001,
+     "5 x 0.02 = 0.10. Below 1, so no capping. It is no longer below 0.05.")
+```
+
+```{r q-llm-tests, results="asis"}
+mcq("An LLM helpfully suggests testing every one of the nine variables in tomorrow's dataset against the dementia group. What is the catch?",
+    c("None; more tests mean more discoveries",
+      "That is a family of nine tests, so chance findings become likely; decide the questions first and adjust or disclose",
+      "LLMs are not allowed to suggest tests"),
+    2, "Searching many variables and reporting the winners is the jelly bean problem. Pre-specify, report everything, and adjust when several tests support one claim.")
+```
+
+```{r r-bonferroni, results="asis"}
+reflect("Tomorrow you will run one group comparison and one correlation. Do they form a family? What will you report, and what would change if you also tried five extra variables 'just to see'?",
+        "Two planned analyses answering two different questions can be reported as two separate results with both p-values shown; if you claim 'we found an effect in at least one of them', that is a family of two and Bonferroni doubles each p. Five extra exploratory tests must be disclosed as exploratory, adjusted for, or not claimed as findings.")
+```
+
+## Mission 8 · Association detective
+
+**About 15 minutes.** Goal: read one scatterplot, choose a correlation target, and avoid causal overstatement.
+
+### Two measurements per unit
+
+A **scatterplot** shows one point per unit with two measurements. Look for
+direction (up or down), form (line or curve), clusters and influential points.
+**Pearson's r** measures linear association; **Spearman's rho** measures monotonic
+association using ranks. Both run from −1 to 1; 0 means no linear (or monotonic)
+association, not "no relationship at all".
+
+The data here are a seeded simulation of 30 independent teaching units with two
+arbitrary assay signals. Predict the direction, run, then change `"pearson"` to
+`"spearman"`.
+
+```{r association, exercise=TRUE}
+plot(assay$signal_a, assay$signal_b, pch = 16,
+     xlab = "Assay A (arbitrary units)", ylab = "Assay B (arbitrary units)")
+cor.test(assay$signal_a, assay$signal_b, method = "pearson")
+```
+
+```{r association-hint}
+# Read the "cor" estimate, not only the p-value. Pearson: how linear is it?
+# Spearman: does B tend to increase whenever A increases? Add exact = FALSE for ties.
+```
+
+```{r association-solution}
+plot(assay$signal_a, assay$signal_b, pch = 16,
+     xlab = "Assay A (arbitrary units)", ylab = "Assay B (arbitrary units)")
+cor.test(assay$signal_a, assay$signal_b, method = "pearson")
+cor.test(assay$signal_a, assay$signal_b, method = "spearman", exact = FALSE)
+```
+
+```{r q-corr-read, results="asis"}
+mcq("Pearson r = 0.75 with p < 0.001. What does r = 0.75 tell you that p does not?",
+    c("How strong and in which direction the linear association is",
+      "That A causes B",
+      "That the sample is large"),
+    1, "p answers 'is there evidence of any association?'; r answers 'how strong?'. Always report the coefficient, the sample size and the plot.")
+```
+
+```{r q-correlation, results="asis"}
+mcq("Tomorrow you will see an overall age–MMSE association in observational data. The dementia group is also older. What next?",
+    c("Conclude that age causes the lower scores",
+      "Colour the scatterplot by group and think about confounding and study design",
+      "Use whichever correlation method gives the smaller p-value"),
+    2, "Pooling groups can create or hide associations (Simpson's paradox). Correlation never establishes causation on its own.")
+```
+
+```{r r-correlation, results="asis"}
+reflect("Describe the direction and form of the scatterplot, report the coefficient, and give one limitation. What would you check before correlating patient measurements tomorrow?",
+        "Positive, roughly linear, r about 0.75 (n = 30). Check that each point is one independent participant, that both values belong to the same participant, how missing pairs are handled, and whether groups form separate clusters.")
+```
+
+## Finish · What you can do now
+
+**About 10 minutes.**
+
+Close the tutorial for a moment and rebuild today's workflow with your partner,
+from memory: **question → what one row is → plot → assumptions → method →
+estimate with uncertainty → limitation**. Then check it against the decision
+worksheet in Mission 5 and the command card in the last section.
+
+Your scientific story is your own, even when you shared code with a partner.
+Tomorrow each of you writes your own explanation of an analysis.
+
+```{r r-exit, results="asis"}
+reflect("Exit ticket: What can you now do in R? Which decision still needs help? Give one example of code that runs perfectly but answers the wrong statistical question.",
+        "Examples: treating repeated visits as independent people; correlating unmatched rows; choosing a test by its p-value; running a t-test on an ordinal rating. Successful execution is the first check, never the last.")
+```
+
+### Download my work
+
+Everything you ran and answered today can be saved as one HTML file: every code
+window with your last version of the code, every quiz with your answer, every
+reflection you recorded. Type your name, click the button, and keep the file.
+
+```{r export-ui, echo=FALSE, eval=!isTRUE(getOption("workshop.preview"))}
+shiny::div(
+  shiny::textInput("student_name", "Your name", placeholder = "First Last", width = "300px"),
+  shiny::downloadButton("export_work", "Download my work (HTML)", class = "btn-primary")
+)
+```
+
+```{r export-server, context="server"}
+output$export_work <- shiny::downloadHandler(
+  filename = function() {
+    nm <- gsub("[^A-Za-z0-9]+", "_", trimws(input$student_name))
+    paste0("day1_my_work_", if (nzchar(nm)) paste0(nm, "_") else "", format(Sys.time(), "%Y%m%d_%H%M"), ".html")
+  },
+  content = function(file) {
+    export_work_html(state = learnr::get_tutorial_state(),
+                     items = learnr::get_tutorial_info()$items,
+                     file = file, student = input$student_name)
+  }
+)
+```
+
+### Tomorrow
+
+Day 2 is an investigation with real dementia data (OASIS): **one group comparison
+and one association**, with your question and method recorded *before* you look
+at p-values. You will check whether rows are people or visits, handle missing
+values, and write the story in an R Markdown notebook that you knit to HTML.
+Keep the decision worksheet, the Bonferroni example and the command card beside you.
+
+## Toolbox A · Vectors and vectorised maths
+
+*Optional reference. Use it during Day 2 or when your pair is ahead.*
+
+### Kinds of vectors
+
+A vector is an ordered set of values of the same type. Run this and read what
+`class()` reports for each.
+
+```{r vector-types, exercise=TRUE}
+lengths_um <- c(12.3, 15.8, 9.4, 18.1)     # numeric
+conditions <- c("control", "condition_1", "condition_2")   # character (text)
+keepers <- c(TRUE, FALSE, TRUE, TRUE)      # logical
+length(lengths_um)
+class(lengths_um)
+class(conditions)
+class(keepers)
+```
+
+```{r vector-types-solution}
+lengths_um <- c(12.3, 15.8, 9.4, 18.1)
+conditions <- c("control", "condition_1", "condition_2")
+keepers <- c(TRUE, FALSE, TRUE, TRUE)
+length(lengths_um)
+class(lengths_um)
+class(conditions)
+class(keepers)
+```
+
+### One operation, every element
+
+R applies arithmetic to every element at once (**vectorisation**), so you rarely
+need loops. Run these.
+
+```{r vectorised, exercise=TRUE}
+lengths_um <- c(12.3, 15.8, 9.4, 18.1)
+lengths_um + 3
+lengths_um * 5
+lengths_um^2
+noise <- c(0.5, -0.2, 0.0, 1.1)
+lengths_um + noise        # element by element
+log10(lengths_um)
+round(lengths_um, digits = 0)
+cumsum(lengths_um)        # running sum
+lengths_um > 12           # a logical vector
+which(lengths_um > 12)    # positions where it is TRUE
+```
+
+```{r vectorised-solution}
+lengths_um <- c(12.3, 15.8, 9.4, 18.1)
+lengths_um + 3
+which(lengths_um > 12)
+```
+
+<details><summary>🔍 Deeper: the recycling rule</summary>
+
+If two vectors have different lengths, R **recycles** the shorter one.
+`c(1, 2, 3, 4) + c(-1, 1)` gives `0 3 2 5`. If the lengths are not multiples of
+each other R still recycles but warns. Treat that warning as a bug in your code.
+
+</details>
+
+### Exercises
+
+1. Increase every value of `lengths_um` by 10% (expected growth). Submit when the last line prints the new vector.
+
+```{r ex-growth, exercise=TRUE}
+lengths_um <- c(12.3, 15.8, 9.4, 18.1)
+```
+
+```{r ex-growth-hint}
+# Ten percent more means multiplying by 1.1
+```
+
+```{r ex-growth-solution}
+lengths_um <- c(12.3, 15.8, 9.4, 18.1)
+lengths_um * 1.1
+```
+
+```{r ex-growth-check}
+"Multiply the vector by 1.1 and make that the last line."
+```
+
+2. Apply a microscope calibration: multiply each value by 0.98 and subtract a blank offset of 0.15 µm. Store the result as `calibrated` and print it.
+
+```{r ex-calibrate, exercise=TRUE}
+lengths_um <- c(12.3, 15.8, 9.4, 18.1)
+```
+
+```{r ex-calibrate-hint}
+# calibrated <- lengths_um * 0.98 - 0.15
+```
+
+```{r ex-calibrate-solution}
+lengths_um <- c(12.3, 15.8, 9.4, 18.1)
+calibrated <- lengths_um * 0.98 - 0.15
+calibrated
+```
+
+```{r ex-calibrate-check}
+"Order of operations: multiply first, then subtract. Print calibrated on the last line."
+```
+
+3. Which positions of `calibrated` are above 15 µm, and what are those values?
+
+```{r ex-which, exercise=TRUE}
+lengths_um <- c(12.3, 15.8, 9.4, 18.1)
+calibrated <- lengths_um * 0.98 - 0.15
+```
+
+```{r ex-which-hint}
+# which(calibrated > 15) gives positions; calibrated[calibrated > 15] gives values.
+```
+
+```{r ex-which-solution}
+lengths_um <- c(12.3, 15.8, 9.4, 18.1)
+calibrated <- lengths_um * 0.98 - 0.15
+which(calibrated > 15)
+calibrated[calibrated > 15]
+```
+
+```{r ex-which-check}
+"The last line should print the values above 15."
+```
+
+4. Compute the z-scores of `lengths_um` (done in Mission 3 for MMSE; repeat it here from memory).
+
+```{r ex-z, exercise=TRUE}
+lengths_um <- c(12.3, 15.8, 9.4, 18.1)
+```
+
+```{r ex-z-solution}
+lengths_um <- c(12.3, 15.8, 9.4, 18.1)
+(lengths_um - mean(lengths_um)) / sd(lengths_um)
+```
+
+```{r ex-z-check}
+"z = (x - mean) / sd, applied to the whole vector in one line."
+```
+
+## Toolbox B · Data frames and slicing
+
+*Optional reference, using the neurite outgrowth data.*
+
+### The neurite story
+
+Neurites are the projections that grow out of a neuron's cell body. In the old
+course scenario, neurite outgrowth was measured in cell cultures after two
+differentiation treatments and in untreated controls, and exported to a CSV with
+three columns: `control`, `condition_1`, `condition_2` (20 values each). The data
+are synthetic; units are not documented. Rows are **not** matched: row 1 of
+`control` and row 1 of `condition_1` are different cultures.
+
+### Build a tiny data frame by hand
+
+```{r df-demo, exercise=TRUE}
+df_demo <- data.frame(
+  control     = c(0.45, 0.62, 0.51),
+  condition_1 = c(0.60, 0.70, 0.66),
+  condition_2 = c(0.80, 0.77, 0.83)
+)
+df_demo
+class(df_demo)
+nrow(df_demo); ncol(df_demo); dim(df_demo)
+str(df_demo)
+```
+
+```{r df-demo-solution}
+df_demo <- data.frame(
+  control     = c(0.45, 0.62, 0.51),
+  condition_1 = c(0.60, 0.70, 0.66),
+  condition_2 = c(0.80, 0.77, 0.83)
+)
+str(df_demo)
+```
+
+### Import and inspect the neurite file
+
+```{r neurites-import, exercise=TRUE}
+neurites <- read.csv("data/neurites.csv")
+head(neurites)
+dim(neurites)
+colnames(neurites)
+str(neurites)
+summary(neurites)
+```
+
+```{r neurites-import-solution}
+neurites <- read.csv("data/neurites.csv")
+summary(neurites)
+```
+
+The `neurites` data frame is preloaded in every window below.
+
+### Three ways to pick columns, one way to pick rows
+
+`$` by name; `[ , "name"]` by name inside square brackets; `[ , 1]` by position.
+The comma separates **rows** (before) from **columns** (after); leaving one side
+empty means "all".
+
+```{r slicing, exercise=TRUE}
+neurites$control
+neurites[ , "condition_1"]
+neurites[ , 1:2]
+neurites[ , c("control", "condition_2")]
+neurites[1:5, ]                  # first five rows, all columns
+neurites[1:2, c("control", "condition_2")]
+```
+
+```{r slicing-solution}
+neurites[1:2, c("control", "condition_2")]
+```
+
+### Logical filters
+
+A comparison gives a logical vector; using it as the row index keeps the rows
+where it is `TRUE`. `&` means AND, `|` means OR.
+
+```{r filters, exercise=TRUE}
+neurites$control > 0.5
+neurites[neurites$control > 0.5, ]
+neurites[neurites$condition_1 > neurites$control & neurites$condition_2 > neurites$control, ]
+```
+
+```{r filters-solution}
+neurites[neurites$control > 0.5, ]
+```
+
+**Exercise:** print the rows where `control` is greater than 0.2 **and**
+`condition_1` is greater than 1.
+
+```{r ex-filter, exercise=TRUE}
+
+```
+
+```{r ex-filter-hint}
+# neurites[ CONDITION_A & CONDITION_B , ]
+```
+
+```{r ex-filter-solution}
+neurites[neurites$control > 0.2 & neurites$condition_1 > 1, ]
+```
+
+```{r ex-filter-check}
+"Combine the two comparisons with & inside the row position of [ , ]."
+```
+
+### Add a new column
+
+```{r new-column, exercise=TRUE}
+neurites$delta_1 <- neurites$condition_1 - neurites$control
+head(neurites)
+```
+
+```{r new-column-solution}
+neurites$delta_1 <- neurites$condition_1 - neurites$control
+head(neurites)
+```
+
+### Independent exercises
+
+Use `neurites`. Each window checks the last line.
+
+a. For each column, compute mean and SD in one go. (`sapply(neurites, mean)` applies a function to every column.)
+
+```{r ex-sapply, exercise=TRUE}
+sapply(neurites, mean)
+```
+
+```{r ex-sapply-hint}
+# Change mean to sd for the second line.
+```
+
+```{r ex-sapply-solution}
+sapply(neurites, mean)
+sapply(neurites, sd)
+```
+
+```{r ex-sapply-check}
+"The last line should be sapply(neurites, sd)."
+```
+
+b. Compute mean, SD, median and quartiles of `condition_2` (the "same statistics for the other columns" exercise).
+
+```{r ex-describe, exercise=TRUE}
+mean(neurites$condition_2)
+```
+
+```{r ex-describe-solution}
+mean(neurites$condition_2)
+sd(neurites$condition_2)
+median(neurites$condition_2)
+quantile(neurites$condition_2, probs = c(0.25, 0.5, 0.75))
+```
+
+```{r ex-describe-check}
+"End with the quantile() line."
+```
+
+c. **Challenge:** create a logical column `is_best2` that is `TRUE` when `condition_2` is greater than both `control` and `condition_1`. Then count with `table()`.
+
+```{r ex-best2, exercise=TRUE}
+neurites$is_best2 <- ___
+table(neurites$is_best2)
+```
+
+```{r ex-best2-hint}
+# neurites$condition_2 > neurites$control & neurites$condition_2 > neurites$condition_1
+```
+
+```{r ex-best2-solution}
+neurites$is_best2 <- neurites$condition_2 > neurites$control &
+  neurites$condition_2 > neurites$condition_1
+table(neurites$is_best2)
+```
+
+```{r ex-best2-check}
+"Two comparisons joined by &. table() on the last line."
+```
+
+```{r q-comma, results="asis"}
+mcq("What does neurites[neurites$control > 0.5, ] return?",
+    c("The control column only",
+      "All columns, but only the rows where control exceeds 0.5",
+      "An error, because nothing follows the comma"),
+    2, "Rows before the comma, columns after. Empty after the comma means every column.")
+```
+
+<details><summary>🔍 Deeper: wide versus long tables</summary>
+
+`neurites` is **wide**: one column per group. Many R functions (and `ggplot2`)
+prefer **long** format: one row per observation with a `values` column and a
+group column. Base R converts with `stack(neurites)`; the `reshape2` and `tidyr`
+packages offer `melt()` and `pivot_longer()` for the same job. Notice that our MMSE table was already long. Long format is
+the natural shape when every row is one observation.
+
+```r
+long_neurites <- stack(neurites)     # columns: values, ind
+head(long_neurites)
+```
+
+</details>
+
+## Gallery · More plots, base R and ggplot2
+
+*Optional reference. Interpretation first, decoration second.*
+
+### Barplot of group means, step by step
+
+```{r gallery-bar, exercise=TRUE}
+mean_control <- mean(neurites$control)
+mean_cond1 <- mean(neurites$condition_1)
+mean_cond2 <- mean(neurites$condition_2)
+barplot(c(mean_control, mean_cond1, mean_cond2))          # bare bones
+barplot(c(mean_control, mean_cond1, mean_cond2),          # labelled, coloured
+        names.arg = c("Control", "Condition 1", "Condition 2"),
+        col = c("lightblue", "lightgreen", "lightcoral"),
+        main = "Mean neurite outgrowth by condition",
+        ylab = "Mean measurement (synthetic units)")
+```
+
+```{r gallery-bar-solution}
+barplot(sapply(neurites, mean),
+        names.arg = c("Control", "Condition 1", "Condition 2"),
+        col = c("lightblue", "lightgreen", "lightcoral"),
+        ylab = "Mean measurement (synthetic units)")
+```
+
+Remember Mission 4: a bar hides the points. The boxplot of a whole data frame
+draws one box per column.
+
+```{r gallery-box, exercise=TRUE}
+boxplot(neurites,
+        main = "Neurite outgrowth by condition",
+        ylab = "Measurement (synthetic units)",
+        col = c("lightblue", "lightgreen", "lightcoral"),
+        names = c("Control", "Condition 1", "Condition 2"))
+set.seed(1)
+stripchart(neurites, vertical = TRUE, method = "jitter", add = TRUE, pch = 16)
+```
+
+```{r gallery-box-solution}
+boxplot(neurites[c("control", "condition_1")], col = c("lightblue", "lightgreen"))
+```
+
+### Histograms with a density curve
+
+```{r gallery-hist, exercise=TRUE}
+hist(neurites$control, breaks = 10, xlab = "Control measurement", main = "Distribution of control")
+lines(density(neurites$control))
+```
+
+```{r gallery-hist-hint}
+# Repeat for condition_1 and condition_2. Try breaks = 5 and breaks = 20.
+```
+
+```{r gallery-hist-solution}
+par(mfrow = c(1, 3))
+hist(neurites$control, breaks = 10, main = "control", xlab = "")
+hist(neurites$condition_1, breaks = 10, main = "condition_1", xlab = "")
+hist(neurites$condition_2, breaks = 10, main = "condition_2", xlab = "")
+```
+
+### Saving a figure as a PDF
+
+In an R Markdown document the figures are embedded automatically. For a standalone figure,
+open a PDF "device", draw, and close it. A forgotten `dev.off()` leaves the
+device open and later plots vanish into the file.
+
+```{r gallery-pdf, exercise=TRUE}
+pdf(file = "neurites_plot.pdf", width = 6, height = 4)
+boxplot(neurites, col = c("lightblue", "lightgreen", "lightcoral"))
+dev.off()
+list.files(pattern = "pdf")     # the file now exists in the working directory
+```
+
+```{r gallery-pdf-solution}
+pdf(file = "neurites_plot.pdf", width = 6, height = 4)
+boxplot(neurites, col = c("lightblue", "lightgreen", "lightcoral"))
+dev.off()
+```
+
+### The same plots in ggplot2
+
+`ggplot2` builds a plot from layers and wants **long** data. `aes()` maps columns
+to axes and colours; `geom_*()` layers add bars, points, boxes; `+` stacks layers.
+
+```{r gg-setup}
+long_neurites <- stack(neurites)
+names(long_neurites) <- c("value", "condition")
+```
+
+```{r gg-bar, exercise=TRUE, exercise.setup="gg-setup"}
+library(ggplot2)
+head(long_neurites)
+ggplot(long_neurites, aes(x = condition, y = value)) +
+  stat_summary(fun = mean, geom = "bar", fill = "lightblue", colour = "black")
+```
+
+```{r gg-bar-solution}
+library(ggplot2)
+ggplot(long_neurites, aes(x = condition, y = value, fill = condition)) +
+  stat_summary(fun = mean, geom = "bar", colour = "black") +
+  theme_classic()
+```
+
+```{r gg-hist, exercise=TRUE, exercise.setup="gg-setup"}
+library(ggplot2)
+ggplot(long_neurites, aes(x = value)) + geom_histogram(bins = 15)            # pooled
+ggplot(long_neurites, aes(x = value, fill = condition)) +
+  geom_histogram(bins = 15, colour = "black") +
+  facet_wrap(~ condition) + theme_classic()                                  # one panel per group
+```
+
+```{r gg-hist-solution}
+library(ggplot2)
+ggplot(long_neurites, aes(x = value, fill = condition)) +
+  geom_histogram(bins = 15, colour = "black") + facet_wrap(~ condition) + theme_classic()
+```
+
+```{r gg-box, exercise=TRUE, exercise.setup="gg-setup"}
+library(ggplot2)
+ggplot(long_neurites, aes(x = condition, y = value, fill = condition)) +
+  geom_boxplot() +
+  geom_jitter(width = 0.2, height = 0) +
+  labs(x = "Condition", y = "Neurite measurement (synthetic units)") +
+  theme_bw()
+```
+
+```{r gg-box-hint}
+# Replace geom_boxplot() with geom_violin() and keep the jittered points.
+# Delete the boxplot layer to get a pure jitter (strip) plot.
+```
+
+```{r gg-box-solution}
+library(ggplot2)
+ggplot(long_neurites, aes(x = condition, y = value, fill = condition)) +
+  geom_violin() +
+  geom_jitter(width = 0.15, height = 0) +
+  labs(x = "Condition", y = "Neurite measurement (synthetic units)") +
+  theme_bw()
+```
+
+<details><summary>🔍 Deeper: ridge plots and ggsave</summary>
+
+Another option is the **density ridge plot** from the `ggridges` package
+(one smoothed density per group, stacked like a mountain range):
+
+```r
+install.packages("ggridges")
+library(ggridges)
+ggplot(long_neurites, aes(x = value, y = condition, fill = condition)) +
+  geom_density_ridges() + theme_bw()
+```
+
+`ggsave("my_plot.pdf")` saves the most recent ggplot to a file.
+
+</details>
+
+```{r q-gallery, results="asis"}
+mcq("A reviewer asks you to show the variability in each group and the sample size. Which figure is the weakest choice?",
+    c("Boxplot with jittered points",
+      "Bar chart of means without error bars or points",
+      "Violin plot with points"),
+    2, "Bars hide everything except one number per group.")
+```
+
+## Extras · More tests, for later
+
+*Optional material. Not required today.*
+
+### Student versus Welch, and the F-test
+
+The classic Student t-test assumes equal variances in both groups
+(`var.equal = TRUE`). An older recipe first runs an **F-test** (`var.test()`) to
+compare the two variances and then chooses. Modern practice skips that gate: Welch
+is safe either way, and the F-test itself is fragile with skewed data. Run all
+three and compare the p-values and degrees of freedom.
+
+```{r ftest, exercise=TRUE}
+var.test(neurites$control, neurites$condition_1)
+t.test(neurites$control, neurites$condition_1, var.equal = TRUE)    # Student
+t.test(neurites$control, neurites$condition_1)                      # Welch (default)
+```
+
+```{r ftest-solution}
+var.test(neurites$control, neurites$condition_1)
+t.test(neurites$control, neurites$condition_1, var.equal = TRUE)
+t.test(neurites$control, neurites$condition_1)
+```
+
+**Exercise:** run the t-test for `condition_2` versus `control` and store it as `test_2vsC`. Print its p-value alone with `$p.value`.
+
+```{r ex-ttest2, exercise=TRUE}
+
+```
+
+```{r ex-ttest2-hint}
+# test_2vsC <- t.test(neurites$condition_2, neurites$control)
+# test_2vsC$p.value
+```
+
+```{r ex-ttest2-solution}
+test_2vsC <- t.test(neurites$condition_2, neurites$control)
+test_2vsC$p.value
+```
+
+```{r ex-ttest2-check}
+"Put condition_2 first, control second, and finish with $p.value."
+```
+
+### Fold change and log2 fold change
+
+Biologists often report a **ratio** of group means (fold change), especially
+for expression data. A ratio only makes sense when zero means "nothing"
+(a ratio scale). Neurite outgrowth qualifies; an MMSE score does not.
+
+```{r fold-change, exercise=TRUE}
+mean(neurites$condition_1) - mean(neurites$control)   # difference
+mean(neurites$condition_1) / mean(neurites$control)   # fold change
+log2(mean(neurites$condition_1) / mean(neurites$control))
+```
+
+```{r fold-change-hint}
+# Repeat for condition_2. Which treatment has the larger effect? Which has more variability?
+```
+
+```{r fold-change-solution}
+fc1 <- mean(neurites$condition_1) / mean(neurites$control)
+fc2 <- mean(neurites$condition_2) / mean(neurites$control)
+c(fold_change_1 = fc1, fold_change_2 = fc2)
+log2(c(fc1, fc2))
+sapply(neurites, sd)
+```
+
+```{r q-fold, results="asis"}
+mcq("Condition 2 has a larger fold change than condition 1 but also a much larger SD. What does that tell you?",
+    c("Condition 2 is simply better",
+      "The average effect is larger, but individual cultures respond very differently; both the estimate and its uncertainty matter",
+      "The data for condition 2 must be wrong"),
+    2, "Look at the CI of each comparison: a large variable effect can be less certain than a smaller consistent one.")
+```
+
+### More than two groups
+
+A one-way **ANOVA** asks whether all group means are equal; it does not say
+which groups differ. **Kruskal–Wallis** is its rank-based cousin. Follow-up
+pairwise comparisons form a family and need multiplicity control.
+
+```{r three-groups, exercise=TRUE}
+long_neurites <- stack(neurites)
+oneway.test(values ~ ind, data = long_neurites, var.equal = FALSE)   # Welch ANOVA
+kruskal.test(values ~ ind, data = long_neurites)
+```
+
+```{r three-groups-solution}
+long_neurites <- stack(neurites)
+oneway.test(values ~ ind, data = long_neurites, var.equal = FALSE)
+kruskal.test(values ~ ind, data = long_neurites)
+```
+
+```{r three-comparisons, exercise=TRUE}
+raw_p <- c(
+  c1_vs_control = t.test(neurites$condition_1, neurites$control)$p.value,
+  c2_vs_control = t.test(neurites$condition_2, neurites$control)$p.value,
+  c2_vs_c1      = t.test(neurites$condition_2, neurites$condition_1)$p.value
+)
+data.frame(raw_p, bonferroni = p.adjust(raw_p, method = "bonferroni"))
+```
+
+```{r three-comparisons-solution}
+raw_p <- c(
+  c1_vs_control = t.test(neurites$condition_1, neurites$control)$p.value,
+  c2_vs_control = t.test(neurites$condition_2, neurites$control)$p.value,
+  c2_vs_c1      = t.test(neurites$condition_2, neurites$condition_1)$p.value
+)
+data.frame(raw_p, bonferroni = p.adjust(raw_p, method = "bonferroni"))
+```
+
+### Categorical data: the chi-square test
+
+When both variables are categories, we compare **counts**. This invented 2×2
+table records whether an assay detected a marker in two independent groups.
+Inspect the expected counts: if any is below 5, use Fisher's exact test.
+
+```{r chisq, exercise=TRUE}
+counts <- matrix(c(18, 12, 9, 21), nrow = 2, byrow = TRUE,
+                 dimnames = list(group = c("Control", "Treatment"),
+                                 marker = c("Detected", "Not detected")))
+counts
+chisq.test(counts)
+chisq.test(counts)$expected
+```
+
+```{r chisq-hint}
+# fisher.test(counts) gives an exact p-value for small tables.
+# With real data you build the table with table(data$var1, data$var2).
+```
+
+```{r chisq-solution}
+counts <- matrix(c(18, 12, 9, 21), nrow = 2, byrow = TRUE,
+                 dimnames = list(group = c("Control", "Treatment"),
+                                 marker = c("Detected", "Not detected")))
+chisq.test(counts)
+fisher.test(counts)
+```
+
+```{r q-chisq, results="asis"}
+mcq("Which question calls for a chi-square test?",
+    c("Is the mean MMSE different between groups?",
+      "Is dementia status associated with sex in this sample?",
+      "Is age correlated with brain volume?"),
+    2, "Chi-square compares observed counts in categories with the counts expected if the two variables were independent.")
+```
+
+### Paired observations
+
+The same eight units measured before and after treatment. Pairing comes from the
+design, never from two vectors happening to have the same length. A paired
+t-test analyses the within-unit **changes**.
+
+```{r paired, exercise=TRUE}
+before <- c(10, 12, 8, 14, 11, 9, 13, 10)
+after  <- c(11, 14, 8, 17, 12, 11, 14, 12)
+change <- after - before
+change
+t.test(after, before, paired = TRUE)
+```
+
+```{r paired-solution}
+before <- c(10, 12, 8, 14, 11, 9, 13, 10)
+after  <- c(11, 14, 8, 17, 12, 11, 14, 12)
+change <- after - before
+qqnorm(change); qqline(change)
+t.test(after, before, paired = TRUE)
+```
+
+```{r q-paired, results="asis"}
+mcq("Eight participants are measured before and after treatment. Which statement is right?",
+    c("Treat the 16 measurements as 16 separate people",
+      "Use the pairing: analyse the eight within-person changes",
+      "Pairing can be assumed whenever two columns have equal length"),
+    2, "Pairing removes between-person variability and answers 'did individuals change?'. The design and the IDs establish it.")
+```
+
+## Command card and references
+
+### Command card
+
+| Need | Pattern |
+|---|---|
+| Store values | `scores <- c(27, 28, 30)` |
+| Import | `mmse <- read.csv("data/mmse_small.csv")` |
+| Inspect | `head(mmse)`; `dim(mmse)`; `names(mmse)`; `str(mmse)`; `summary(mmse)` |
+| One column / one group | `mmse$MMSE`; `mmse$MMSE[mmse$group == "AD"]` |
+| Rows and columns | `mmse[rows, columns]`; `mmse[mmse$MMSE < 20, ]` |
+| Counts | `table(mmse$group)` |
+| Missingness | `sum(is.na(x))`; `mean(x, na.rm = TRUE)` |
+| Summaries | `mean(x)`; `median(x)`; `sd(x)`; `quantile(x)`; `IQR(x)`; `tapply(y, group, mean)` |
+| Distribution plots | `hist(x)`; `boxplot(y ~ group, data = d)`; `stripchart(..., add = TRUE)` |
+| Normality evidence | `qqnorm(x); qqline(x)`; `shapiro.test(x)` |
+| Two groups | `t.test(x, y)`; `wilcox.test(x, y, exact = FALSE)` |
+| Paired | `t.test(after, before, paired = TRUE)` |
+| More groups | `oneway.test(values ~ ind, data = d)`; `kruskal.test(values ~ ind, data = d)` |
+| Association | `plot(x, y)`; `cor.test(x, y, method = "pearson")` |
+| Counts in categories | `table(a, b)`; `chisq.test(counts)`; `fisher.test(counts)` |
+| Multiple testing | `p.adjust(p_values, method = "bonferroni")` |
+
+`x`, `y`, `d` and `group` are placeholders for your own objects.
+
+### The result sentence
+
+"In this sample (n = … per group), the estimated … minus … difference in mean …
+was … units (95% CI … to …, Welch's t-test, p = …). The plots show …. This
+supports … under the assumption that …; it does not show …."
+
+### References
+
+- R documentation: [t.test](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/t.test.html),
+  [wilcox.test](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/wilcox.test.html),
+  [cor.test](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/cor.test.html),
+  [boxplot](https://stat.ethz.ch/R-manual/R-devel/library/graphics/html/boxplot.html),
+  [shapiro.test](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/shapiro.test.html),
+  [chisq.test](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/chisq.test.html).
+- The [ASA statement on p-values](https://magazine.amstat.org/blog/2016/03/07/pvalue-mar16/).
+- [Hands-On Programming with R: installing R and RStudio](https://rstudio-education.github.io/hopr/starting.html).
+- Q–Q plots and normality tests explained: [STHDA](http://www.sthda.com/english/wiki/normality-test-in-r).
+- Data provenance: `data/README.md` in this project.
