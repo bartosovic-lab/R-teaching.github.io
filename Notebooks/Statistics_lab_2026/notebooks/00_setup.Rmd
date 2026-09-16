@@ -1,0 +1,55 @@
+---
+title: "Start RStudio and run the tutorial"
+output:
+  html_document:
+    self_contained: true
+    mathjax: null
+---
+
+## Before the first afternoon — allow 30 minutes
+
+Install R and RStudio Desktop using the course's computer-room or personal-computer instructions.
+R runs calculations; RStudio is the interface. Unzip the complete student project into a folder
+you can write to. Double-click `Statistics_lab.Rproj`. Do not open files inside the ZIP.
+
+In RStudio's **Console**, install the tutorial packages once (internet needed):
+
+```r
+install.packages(c("learnr", "shiny", "rmarkdown", "knitr", "jsonlite"))
+```
+
+Then launch from the project root:
+
+```r
+source("scripts/run_pilot.R")
+```
+
+The tutorial opens in a browser while R stays busy serving it. Type exercise code in the
+tutorial's code editors; type prose in its labelled answer boxes. Click Run Code to experiment,
+and Submit Answer after final edits. Download before reloading or stopping the tutorial.
+Use RStudio's Stop button or Esc to stop it when finished.
+
+## Your notebook and the Console
+
+After the tutorial, save your download in `notebooks/` and open it in RStudio. The Source
+editor contains saved code and prose. The Console shows execution and error messages;
+objects in the Environment are temporary. A command typed only in the Console is not added
+to your notebook. Use the chunk's green triangle to run a whole chunk. Use Ctrl+Enter on
+Windows/Linux or Cmd+Enter on Mac to run the current line.
+
+Knit reruns the saved notebook in a fresh R session. Run from the first setup chunk;
+do not rely on objects left in the Environment. If the Console shows `+`, press Esc and
+repair the incomplete command in your notebook. Retain the chunk markers around code,
+and put explanations outside them. R names are case-sensitive.
+
+## Troubleshooting
+
+- “No package called ...”: install that named package, then retry.
+- “Cannot open file data/...”: open the project first; keep the folder layout intact.
+- Port already in use: stop the other tutorial, or run `options(course.port=8766)` before launching.
+- Blank or failed launch: read the first Console error and ask the instructor; the static preview remains available.
+- Rendering needs Pandoc: launch from RStudio, which supplies it.
+
+The code engine runs locally. The student ZIP includes all teaching data; internet is not
+needed after package installation. Downloaded notebooks retain submitted code and current prose,
+not unsubmitted edits. Shared computers: download your work, then use Start Over for the next user.

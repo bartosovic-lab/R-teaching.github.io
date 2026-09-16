@@ -1,0 +1,102 @@
+---
+title: "Data dictionary: When a neuron changes its response"
+output:
+  html_document:
+    toc: true
+    self_contained: true
+    mathjax: null
+---
+
+## The first table
+
+GABA is a signalling molecule whose electrical effect depends partly on chloride regulation. Researchers recorded neurons in the ventral tegmental area of rats during reward learning. The GABA reversal potential is the voltage at which the measured GABA current changes direction. A less negative value is a shift towards more positive voltage; you do not need prior electrophysiology to compare these measurements.
+
+One row is one rat, summarised by the mean of its recorded cells. Baseline and acquisition use different rats, not the same rat measured twice. All core animals received the cue followed by reward protocol. In the original paper this protocol is called paired conditioning; that name does not mean our statistical samples are paired.
+
+| Column in study.csv | Meaning |
+|---|---|
+| sample_id | Animal identifier |
+| group | Baseline or Acquisition |
+| value | Mean GABA reversal potential (mV) |
+| companion | Mean resting membrane potential (mV) |
+
+The filenames and short column names let beginners reuse a small amount of R syntax;
+always give the full measurement and units in a plot caption or report. CSVs are UTF-8,
+comma-separated, with a header. `NA` denotes missing. Raw files are not changed by the
+interactive controls or by the made-up outlier/missingness exercises.
+
+## Chloride data: preparation and limits
+
+Woo et al. (2025), Dynamic changes in chloride homeostasis coordinate midbrain inhibitory
+network activity during reward learning, Nature Communications, DOI 10.1038/s41467-025-66838-x.
+Dataset DOI: 10.5061/dryad.44j0zpcv7, **CC0** (verified in Dryad API metadata).
+
+Dryad's public download endpoint returned HTTP 403 when preparing this course. We therefore
+retrieved the publisher's Source Data workbook instead. Exact URL and checksum are in
+`data/source/PROVENANCE.md`. The publisher's workbook is preserved unchanged for provenance;
+the article is CC BY-NC-ND 4.0. Our course extracts factual numerical records and cites both
+sources. No article figures or text have been adapted. We have not claimed byte-identical
+equality between the publisher workbook and inaccessible Dryad CSV files.
+
+### Electrical measurements
+
+Source sheet **Figure 1G+1H**, rows 5–13, 21–32 and 38–47, columns A:C (Paired) and F:H
+(Unpaired). Only rows with numeric reversal potentials are retained. Case, whitespace and
+decimal commas are standardised in animal IDs; source labels and row numbers remain in
+`cells.csv`. The Unpaired cell labels are truncated in the source, so source-row identity
+is retained rather than inventing cell numbers. All recorded values are preserved.
+
+`investigation.csv` contains **26 rats**. We average reversal and resting potentials within
+animal and retain `n_cells`. Thus each rat contributes once, regardless of the number of
+recorded cells. This targets the mean of each animal's sampled cells, not the entire neuronal
+population. It differs from the paper's cell-level analyses and should not reproduce their
+p-values exactly. Sampling and averaging can affect both effect estimates and precision.
+
+| Column | Meaning / unit |
+|---|---|
+| sample_id | Standardised rat ID; nominal identifier |
+| conditioning | Paired cue/reward protocol or Unpaired protocol; nominal |
+| phase | Baseline, Acquisition or Plateau; ordered learning phases |
+| day_label | Source section label: 1, 7 or 13; acquisition spans days 5–7 in the paper |
+| reversal_mV | Within-rat mean GABA reversal potential, millivolts |
+| resting_mV | Within-rat mean resting membrane potential, millivolts |
+| n_cells | Number of recorded cells contributing to each rat's mean; count |
+
+Paired protocol: 7 baseline, 6 acquisition and 5 plateau rats. Unpaired protocol: 3 baseline,
+3 acquisition and 2 plateau rats. The animal IDs are distinct across these groups. The word
+Paired describes cue–reward timing; it does **not** make the animal groups paired samples.
+Unique IDs do not rule out all other clustering, such as shared litters or cages.
+
+`study.csv` keeps only Paired-protocol baseline and acquisition animals, **13 rats** in total.
+`group` is phase, `value` is reversal_mV, and `companion` is resting_mV. There are no missing
+values in this core table. Negative voltages are ordinary measurements; “larger” here means
+less negative, not a larger absolute magnitude. An electrical change alone does not identify
+which transporter caused it.
+
+### NKCC1 protein puzzle
+
+Source sheet **Figure S1N**, rows 26–33: day-1 IDs and values in C:D; day-7 in F:G.
+`nkcc1.csv` retains all 16 animals, the NKCC1/GAPDH band-intensity ratio, day and source row.
+Batch labels February/March follow the raw image headers at rows 3 and 12: summary rows
+26–29 map to February records, 30–33 to March. Each batch has four rats per day.
+Ratios are preserved at source precision and are dimensionless relative band intensities.
+They are not direct chloride concentration or transport-rate measurements.
+
+This is a **descriptive extension** about assay batches, not a definitive pooled test.
+The source's matching/blocking is insufficiently documented here for beginner inference.
+Row alignment must not be promoted into a biological pairing assumption. Do not join this
+separate experiment to electrophysiology by row order or assume all animals overlap.
+
+
+## Reproducibility
+
+The raw workbook, its SHA-256 checksum and exact download URL are preserved in `data/source/`
+in the branch checkout (excluded from the small student ZIP). `scripts/prepare_data.py`
+rebuilds the teaching tables; `scripts/validate_data.py` independently reconciles records,
+group counts and selected transformations. No outcomes were changed to manufacture a result.
+
+[Dataset](https://datadryad.org/dataset/doi:10.5061/dryad.44j0zpcv7) · [Study](https://doi.org/10.1038/s41467-025-66838-x)
+
+## Source discrepancy retained for review
+
+The publisher workbook contains 10 Paired-protocol plateau cells, whereas the paper Figure 1G caption reports 9. We retain all 10 recorded cells across 5 rats (47 cells overall across both protocols). No undocumented exclusion is inferred. This affects the optional plateau comparison, not the baseline/acquisition core. Treat that extension as an exploratory analysis of the supplied workbook, pending clarification of the published cell count.

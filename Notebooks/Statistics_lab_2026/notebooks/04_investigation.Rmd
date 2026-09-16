@@ -1,0 +1,290 @@
+---
+title: "When a neuron changes its response: my investigation"
+output:
+  html_document:
+    toc: true
+    self_contained: true
+    mathjax: null
+---
+
+```{r setup, include=FALSE}
+root <- normalizePath(if (file.exists("Statistics_lab.Rproj")) "." else "..")
+stopifnot(file.exists(file.path(root,"Statistics_lab.Rproj")))
+knitr::opts_knit$set(root.dir=root)
+knitr::opts_chunk$set(echo=TRUE,fig.width=8,fig.height=4.5)
+```
+
+**Name:** write here  
+**Partner:** write here
+
+## Your report starts here
+
+Today you choose the question and defend the analysis. Reuse code from yesterday; writing
+functions from memory is not the goal. Each student submits **one integrated HTML notebook**
+with code, output, captions and their own reasoning. Save this as `04_my_investigation.Rmd`.
+Add useful material from your earlier notebooks where it helps explain your decisions.
+
+Work in pairs and swap roles, but write your own interpretation. No prior statistical vocabulary
+is assumed: use yesterday's notebook and ask for explanations whenever a term is unclear.
+
+## 1. Choose a question before looking for a result — 20 minutes
+
+| Question | Keep fixed | Compare |
+|---|---|---|
+| Does the voltage shift persist after learning? | conditioning = Paired | Baseline vs Plateau |
+| Do conditioning protocols differ during acquisition? | phase = Acquisition | Unpaired vs Paired |
+| Does resting membrane potential change during acquisition? | conditioning = Paired | Baseline vs Acquisition |
+
+**Plateau option:** the source workbook contains 10 plateau cells, while the paper caption reports 9. We retain the recorded workbook values; treat that extension as exploratory pending clarification. The first-day baseline/acquisition comparison is unaffected.
+
+`Paired` means the cue precedes reward; `Unpaired` means those events are separated.
+These labels describe conditioning protocols, **not paired statistical observations**.
+The animals in each comparison are different rats. Each row contains mean reversal and
+resting potentials in millivolts (mV), plus `n_cells`, the number of cells averaged.
+An average based on three cells is still one animal. Day 7 labels the acquisition group;
+the paper describes this phase as days 5–7, so do not assume every recording was on day 7.
+
+
+*My question: ___.*  
+*I predict ___ because ___.*  
+*My outcome, comparison direction and biological sample unit: ___.*
+
+Choose one primary group comparison and one association. These are exploratory teaching
+analyses of a published dataset, not a new confirmatory study. Do not try every option and
+present only the smallest p-value.
+
+## 2. Inspect and select — 25 minutes
+
+```{r full-data}
+full <- read.csv("data/investigation.csv")
+head(full)
+dim(full)
+anyDuplicated(full$sample_id)
+```
+
+The selection scaffold below introduces `subset()` and `&` (both conditions must hold).
+It keeps the experimental design explicit. `if` chooses the block matching your question.
+You only need to change `question_choice`; explain which rows it retains before running it.
+
+```{r choose-question}
+question_choice <- 0 # Change to 1, 2 or 3 after writing your question.
+outcome_name <- "reversal_mV"
+if (question_choice == 1) {
+  selected <- subset(full, conditioning == "Paired" & phase != "Acquisition")
+  selected$group <- selected$phase
+  group_a <- "Baseline"; group_b <- "Plateau"
+} else if (question_choice == 2) {
+  selected <- subset(full, phase == "Acquisition")
+  selected$group <- selected$conditioning
+  group_a <- "Unpaired"; group_b <- "Paired"
+} else if (question_choice == 3) {
+  selected <- subset(full, conditioning == "Paired" & phase != "Plateau")
+  selected$group <- selected$phase
+  group_a <- "Baseline"; group_b <- "Acquisition"
+  outcome_name <- "resting_mV"
+} else {
+  selected <- NULL
+  cat("Choose one question above before continuing.")
+}
+unit <- if(outcome_name == "reversal_mV") "Mean GABA reversal potential (mV)" else "Mean resting membrane potential (mV)"
+```
+
+`selected[[outcome_name]]` retrieves the column whose name is stored as text. We use it here
+so the same worked code can support your chosen question. The earlier `$` notation is equally
+useful when you type a column name directly.
+
+```{r check-observations}
+if (!is.null(selected)) {
+  selected$value <- selected[[outcome_name]]
+  table(selected$group)
+  table(is.na(selected$value))
+  complete <- selected[!is.na(selected$value), ]
+  complete$group <- factor(complete$group, levels=c(group_a,group_b))
+  table(complete$group)
+  first <- complete$value[complete$group == group_a]
+  second <- complete$value[complete$group == group_b]
+}
+```
+
+Here `is.na()` marks missing values, `!` reverses those marks, and the bracket selection keeps
+the observed values. You met missingness yesterday; this supplied pattern now automates the
+counting and selection. It never replaces a missing value with zero.
+
+*Rows included, exclusions, observed sample sizes and what one row means: write here.*
+
+## 3. Give the reader a picture — 30 minutes
+
+```{r inspect}
+if (!is.null(selected)) {
+  boxplot(value ~ group, data=complete, outline=FALSE,ylab=unit)
+  set.seed(7)
+  stripchart(value ~ group,data=complete,vertical=TRUE,method="jitter",add=TRUE,pch=19)
+  par(mfrow=c(1,2))
+  qqnorm(first,main=group_a); qqline(first)
+  qqnorm(second,main=group_b); qqline(second)
+  par(mfrow=c(1,1))
+  mean(first); mean(second)
+  median(first); median(second)
+  sd(first); sd(second)
+  shapiro.test(first); shapiro.test(second)
+}
+```
+
+*Caption: measured quantity and units, groups, sample sizes, one visible pattern, one limitation.*
+
+*Assumptions: discuss independence, the shapes, unusual observations and what the small
+sample prevents you from knowing. Do not use Shapiro p > 0.05 as proof of normality.*
+
+**15-minute break.**
+
+## 4. Choose, run and interpret — 35 minutes
+
+Write your primary method and reason **before** changing `method_choice` below. Welch compares
+means; Wilcoxon uses ranks and is not generally a median test. Both need independent animals.
+With very small samples neither is a magic fix for limited information.
+
+*My primary method and its target: ___. My justification and main limitation: ___.*
+
+```{r group-test}
+method_choice <- "choose" # Change to "welch" or "wilcoxon".
+if (!is.null(selected)) {
+  mean_difference <- mean(second) - mean(first)
+  mean_difference # group_b minus group_a
+  if (method_choice == "welch") {
+    group_result <- t.test(second,first)
+    print(group_result)
+  } else if (method_choice == "wilcoxon") {
+    group_result <- wilcox.test(second,first,exact=FALSE)
+    print(group_result)
+  } else cat("Choose and justify your method above.
+")
+}
+```
+
+*Result: state direction, observed magnitude, units, both sample sizes, method, p-value and
+confidence interval if provided. A descriptive mean difference does not become the target of
+a rank test. Explain what the result does and does not support.*
+
+## 5. Investigate one association — 30 minutes
+
+For your association, use the same selected subset and choose **one** group.
+Investigate its animal-mean GABA reversal potential versus resting membrane potential.
+Some choices have very few rats. A wide uncertainty or an unstable correlation is a finding
+to explain; do not quietly increase the sample size by counting cells as independent rats.
+
+```{r correlation}
+association_group <- "choose" # Use exactly one of your selected group labels.
+correlation_method <- "choose" # "pearson" or "spearman", chosen after inspecting the plot.
+if (!is.null(selected) && association_group %in% selected$group) {
+  association <- selected[selected$group == association_group, ]
+  x <- association$reversal_mV
+  y <- association$resting_mV
+  keep <- complete.cases(x,y) # Keep animals with both measurements.
+  x <- x[keep]; y <- y[keep]
+  length(x)
+  plot(x,y,pch=19,xlab="Mean GABA reversal potential (mV)",ylab="Mean resting membrane potential (mV)")
+  if (correlation_method == "pearson") print(cor.test(x,y,method="pearson"))
+  if (correlation_method == "spearman") print(cor.test(x,y,method="spearman",exact=FALSE))
+} else cat("Choose one group before running the association.
+")
+```
+
+*Explain your scatterplot, coefficient, method, sample size and uncertainty. Pearson describes
+linear association; Spearman describes rank association. What other process could explain the
+relationship? Why does correlation alone not establish causation?*
+
+**10-minute break.**
+
+## 6. The tempting hunt for a small p-value — 20 minutes
+
+Imagine ten unrelated comparisons when all ten null hypotheses are true. Each test conducted
+at a 0.05 threshold has a 5% false-positive rate under its assumptions. Trying many tests raises
+the chance of at least one false alarm. For independent tests it is `1 - 0.95^10`; real protein
+measurements can be correlated, so that exact calculation need not apply to them.
+
+These are **invented p-values**, not results from our animals:
+
+```{r multiple-testing}
+demo_p <- c(0.01,0.03,0.20,0.80,0.04)
+adjusted_p <- p.adjust(demo_p,method="bonferroni")
+data.frame(raw_p=demo_p,bonferroni_p=adjusted_p)
+```
+
+Bonferroni multiplies each p-value by the number of tests in the chosen family, capped at 1.
+It controls the chance of any false rejection in that family under valid individual tests,
+even when tests are dependent, though it can be conservative. Define the family from the
+questions actually investigated, including unsuccessful attempts; not only the reported hits.
+At a declared threshold of adjusted p <= 0.05, which example remains? What is lost by treating
+0.049 and 0.051 as completely different scientific conclusions?
+
+*My explanation and the family of questions I explored: write here.*
+
+## 7. Peer review and a reproducible hand-in — 40 minutes
+
+Give your partner three minutes to read your best figure and result. They ask:
+
+1. Which animals contributed, and why are they independent?
+2. Does the method answer the stated question?
+3. Is the conclusion proportionate to the estimate, uncertainty and sample size?
+
+*One useful challenge from my partner and how I responded: ___.*
+
+Write a short final conclusion: answer your question, identify your strongest evidence,
+state the most important limitation, and propose one useful next experiment.
+
+If you used an LLM or another source: *I asked for ___; I checked ___; I now understand ___.*
+You may ask for debugging or explanations; verify named columns, selected rows and scientific
+claims. Keep only code and reasoning you can explain. Equivalent instructor help is available.
+
+```{r completion-check, echo=FALSE}
+ready <- !is.null(selected) && method_choice %in% c("welch","wilcoxon") &&
+  association_group %in% selected$group && correlation_method %in% c("pearson","spearman")
+cat(if(ready) "Analysis choices are filled. Review results and written explanations before submission."
+    else "DRAFT: complete the question, test and association choices before submission.")
+```
+
+- [ ] The HTML includes my own question, data description, figures and captions.
+- [ ] It reports a group comparison and a correlation with interpretation and limitations.
+- [ ] I explained exclusions and analysis-specific sample sizes.
+- [ ] I identified the questions explored and explained multiple testing.
+- [ ] I restarted R, ran from the first chunk, knitted and checked the resulting HTML.
+- [ ] All “write here” placeholders are replaced, and the draft notice is resolved.
+
+Submit this integrated **HTML** to the learning system; keep the `.Rmd` as your editable recipe.
+
+## Extra: the two-cluster protein puzzle
+
+NKCC1 helps transport chloride into cells. A Western blot measures an antibody-associated
+band intensity; division by GAPDH is a loading normalisation, not a measurement of absolute
+protein concentration. These data come from the same study, but a separate experiment.
+
+```{r protein-puzzle}
+protein <- read.csv("data/nkcc1.csv")
+boxplot(NKCC1_GAPDH ~ factor(day), data=protein, outline=FALSE,
+        xlab="Learning day", ylab="NKCC1 / GAPDH band-intensity ratio")
+set.seed(7)
+stripchart(NKCC1_GAPDH ~ factor(day), data=protein, vertical=TRUE,
+           method="jitter",add=TRUE,pch=19)
+```
+
+Describe the gap among values before running the next chunk. Propose a biological explanation
+and a technical explanation. Now reveal the assay batch:
+
+```{r reveal-batch}
+boxplot(NKCC1_GAPDH ~ blot_batch, data=protein,
+        xlab="Blot batch", ylab="NKCC1 / GAPDH band-intensity ratio")
+table(protein$day,protein$blot_batch)
+```
+
+There are four day-1 and four day-7 animals per batch, with 16 distinct animal IDs overall.
+The two assay batches have different signal scales. Group balance does not make the batch
+effect disappear. **Use this as a descriptive design challenge:** we have not established
+the source's matching scheme, so do not invent matched pairs from spreadsheet row alignment
+or report a simple pooled test as the definitive biological result. Propose a future experiment
+that balances learning day across blots, records matching and includes common reference samples.
+What extra information would you request before choosing a batch-aware analysis?
+
+
+## Data source
+
+[https://datadryad.org/dataset/doi:10.5061/dryad.44j0zpcv7](https://datadryad.org/dataset/doi:10.5061/dryad.44j0zpcv7). See `data/dictionary.html` for preparation rules and the original study.

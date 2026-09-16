@@ -1,0 +1,189 @@
+---
+title: "From a plot to a defensible claim"
+output:
+  html_document:
+    toc: true
+    self_contained: true
+    mathjax: null
+---
+
+```{r setup, include=FALSE}
+root <- normalizePath(if (file.exists("Statistics_lab.Rproj")) "." else "..")
+stopifnot(file.exists(file.path(root,"Statistics_lab.Rproj")))
+knitr::opts_knit$set(root.dir=root)
+knitr::opts_chunk$set(echo=TRUE,fig.width=8,fig.height=4.5)
+```
+
+**Name:** write here  
+**Partner:** write here
+
+## Your question
+
+Does the GABA reversal potential differ between baseline and the acquisition phase of reward learning?
+
+One row is one rat, summarised by the mean of its recorded cells. Baseline and acquisition use different rats, not the same rat measured twice. All core animals received the cue followed by reward protocol. In the original paper this protocol is called paired conditioning; that name does not mean our statistical samples are paired.
+
+## 1. A saved recipe, not a busy Console — 10 minutes
+
+Open this Rmd in RStudio's **Source editor**. Save a copy as `03_my_analysis.Rmd` in
+`notebooks/`. The grey code chunks contain R; type your explanations outside them.
+Run a chunk with its green triangle. Run a line with Ctrl+Enter / Cmd+Enter.
+Keep the supplied examples and append your own commands below them.
+
+The supplied `factor()` line sets group display order, so the same group keeps the same position across plots.
+
+The Console shows what R is doing now. Your notebook records what another person needs
+to reproduce it. Restart R and click Knit once now: the supplied examples run, even though
+your written answers still need work. If the Console shows `+`, press Esc and check the
+closing bracket or quote in the Source editor. Save often.
+
+```{r import}
+study <- read.csv("data/study.csv")
+head(study)
+study$group <- factor(study$group, levels=c("Baseline","Acquisition"))
+first <- study$value[study$group == "Baseline"]
+second <- study$value[study$group == "Acquisition"]
+length(first)
+length(second)
+```
+
+**Before testing:** predict the direction of the difference, and write what evidence could
+change your mind. Prediction is not part of the marking for correctness.
+
+*My prediction and reason: write here.*
+
+## 2. Look at observations and distributions — 20 minutes
+
+A **sample** is the animals measured. The **population** is the wider set of animals we
+would like to learn about, under comparable conditions. A plot describes our sample;
+inference asks what it supports beyond those particular observations.
+
+```{r distributions}
+boxplot(value ~ group, data=study, outline=FALSE, ylab="Mean GABA reversal potential (mV)",
+        col=c("lightblue","peachpuff"))
+set.seed(7)
+stripchart(value ~ group, data=study, vertical=TRUE, method="jitter", add=TRUE,pch=19)
+mean(first)
+mean(second)
+sd(first)
+sd(second)
+median(first)
+median(second)
+```
+
+Write both sample sizes, a difference in means and which group has greater spread.
+Look for skew (a longer tail on one side), isolated values and overlap. Do not delete an
+unusual value merely because a test becomes easier to interpret without it.
+
+*My description: write here.*
+
+A **normal distribution** is a symmetric bell-shaped model. In a **Q–Q plot**, ordered
+observations are compared with the positions expected under that model. Approximate alignment
+with the line is compatible with normality; systematic bends or isolated tail points raise
+questions. Small samples are hard to diagnose. Inspect groups separately: pooling two different
+group means can produce a misleading shape.
+
+```{r normality}
+par(mfrow=c(1,2))
+qqnorm(first, main="Baseline"); qqline(first)
+qqnorm(second, main="Acquisition"); qqline(second)
+par(mfrow=c(1,1))
+shapiro.test(first)
+shapiro.test(second)
+```
+
+Shapiro–Wilk tests compatibility with a normal model. Its **p-value** measures how unusual
+the test statistic would be under that model and its assumptions. A large p-value does
+not prove normality, particularly with few animals. A small p-value does not automatically
+choose the scientific question or the next test.
+
+*Explain one feature of each Q–Q plot. What remains uncertain? Write here.*
+
+**Take a 10-minute break.**
+
+## 3. What question does a test answer? — 30 minutes
+
+Our **null hypothesis** for the mean comparison is that the two population means are equal.
+**Welch's t-test** estimates a difference in means and allows the groups to have unequal
+variances. It needs independent animals; with small samples, strong skew and extreme values
+can make its results fragile. The analysis below compares **Acquisition minus Baseline**.
+
+```{r welch}
+mean_difference <- mean(second) - mean(first)
+mean_difference
+welch <- t.test(second, first)
+welch
+welch$conf.int
+welch$p.value
+```
+
+Read the output in this order: group means, estimated difference (above), 95% confidence
+interval, then p-value. Under its assumptions, a method producing 95% confidence intervals
+would cover the true difference in about 95% of repeated studies. This is not an interval
+containing 95% of individual animals. A p-value is not the probability that the null hypothesis
+is true and does not measure the size or importance of an effect.
+
+**Report template:** In this sample, Acquisition was ___ units higher/lower than Baseline on average
+(95% confidence interval ___ to ___; n = ___ and ___; Welch p = ___).
+The main design or distribution concern is ___. The data do not establish ___.
+
+*My result: write here.*
+
+## 4. A different question: compare ranks — 20 minutes
+
+Ranks replace measurements by their order: smallest, next smallest, and so on.
+The **Wilcoxon rank-sum test** compares the groups through ranks. It does not require normal
+measurements, but it still requires independent observations. With different shapes or spreads,
+it is not simply a test of medians. Under a common-shape location-shift model it can be interpreted
+as a location comparison. `exact = FALSE` requests the approximate calculation and accommodates ties.
+
+```{r ranks}
+rank_result <- wilcox.test(second, first, exact=FALSE)
+rank_result
+```
+
+Keep both results. Choose your primary method because it addresses your question and fits
+the design, not because it gives the smaller p-value. Methods can disagree without either
+software command being broken.
+
+*My primary method is ___ because ___. It addresses ___. The other method addresses ___.
+If the results differ, I would explain ___. Write here.*
+
+**Headline workshop:** propose an accurate one-sentence headline, then swap notebooks.
+Your partner identifies one claim that the sample cannot support.
+
+## 5. Do two measurements travel together? — 15 minutes
+
+Here we use only Baseline. An association across mixed groups can be driven by the groups themselves.
+Correlation requires **two measurements from the same animal**, not two unrelated columns
+lined up by spreadsheet position.
+
+```{r association}
+one_group <- study[study$group == "Baseline", ]
+plot(one_group$value, one_group$companion, pch=19,
+     xlab="Mean GABA reversal potential (mV)", ylab="Mean resting membrane potential (mV)")
+cor.test(one_group$value, one_group$companion, method="pearson")
+cor.test(one_group$value, one_group$companion, method="spearman", exact=FALSE)
+```
+
+Pearson's r describes a **linear** association and is sensitive to extreme values. Spearman's
+rho describes an association in ranks that is **monotonic** (generally rising or falling).
+Both range from -1 to 1; zero does not rule out every curved relationship. Their inference needs
+independent animal pairs; the conventional Pearson test adds distributional assumptions.
+Inspect the scatterplot before interpreting a coefficient. Neither establishes causation.
+
+*Describe direction, strength, sample size and one limitation. Choose which coefficient best
+addresses your question; avoid choosing by the p-value. Write here.*
+
+## 6. Keep a result you can reproduce — 5 minutes
+
+- [ ] I explained the sample unit and comparison direction.
+- [ ] My plots have units and captions, and I reported sample sizes.
+- [ ] I justified my test and interpreted its estimate, uncertainty and p-value.
+- [ ] I explained the rank comparison and correlation in my own words.
+- [ ] I restarted R, ran all chunks in order and checked the knitted HTML.
+
+Keep this notebook. On day 2, bring useful code into `04_investigation.Rmd` and build one
+integrated report containing the figures, analysis and reasoning you want to submit.
+
+Source: [https://datadryad.org/dataset/doi:10.5061/dryad.44j0zpcv7](https://datadryad.org/dataset/doi:10.5061/dryad.44j0zpcv7). This teaching analysis is not an exact reproduction of every analysis in the paper.

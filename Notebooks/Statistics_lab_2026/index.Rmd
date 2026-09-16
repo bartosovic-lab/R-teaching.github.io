@@ -1,0 +1,38 @@
+---
+title: "When a neuron changes its response"
+output:
+  html_document:
+    toc: true
+    self_contained: true
+    mathjax: null
+---
+
+## Start here
+
+Two afternoons of four hours, including breaks. No R or statistics experience is assumed.
+You will start with small interactive exercises, then build your own reproducible notebook.
+
+GABA is a signalling molecule whose electrical effect depends partly on chloride regulation. Researchers recorded neurons in the ventral tegmental area of rats during reward learning. The GABA reversal potential is the voltage at which the measured GABA current changes direction. A less negative value is a shift towards more positive voltage; you do not need prior electrophysiology to compare these measurements.
+
+**First question:** Does the GABA reversal potential differ between baseline and the acquisition phase of reward learning?
+
+1. Download [the student project](statistics_lab_student.zip), unzip it, and open `Statistics_lab.Rproj` in RStudio.
+2. Follow [setup](notebooks/00_setup.html). In the Console, run `source("scripts/run_pilot.R")`.
+3. Complete the interactive learnr tutorial in the browser. Submit your code and download your notebook regularly.
+4. Continue in RStudio with [statistical analysis](notebooks/03_statistical_analysis.html), opening its matching `.Rmd` file to work.
+5. On day 2, open [your investigation](notebooks/04_investigation.html) and its `.Rmd` template. Submit your completed integrated HTML notebook.
+
+The HTML pages above are reading previews. **The interactive learnr tutorial requires a running
+R session**; opening an HTML file or a GitHub page does not start its exercise engine.
+
+## Preview and data
+
+- [Tutorial reading preview](tutorial_preview.html): explanations, worked starters and sample plots; launch R for controls and editable exercises.
+- [Data dictionary](data/dictionary.html): what a row means, units and preparation rules.
+- [Study CSV](data/study.csv): first-day animal table.
+- [Investigation CSV](data/investigation.csv): second-day table.
+- [Original dataset](https://datadryad.org/dataset/doi:10.5061/dryad.44j0zpcv7).
+
+Keep your work in `notebooks/`. The Source editor holds your saved recipe; the Console executes
+commands; Knit makes the HTML you submit. Ask for help early. Explaining a result is more
+important than remembering a command.

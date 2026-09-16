@@ -1,0 +1,673 @@
+---
+title: "When a neuron changes its response: R basics and visualisation"
+output:
+  learnr::tutorial:
+    progressive: true
+    allow_skip: true
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(shiny)
+source("helpers.R", local=TRUE)
+knitr::opts_chunk$set(echo=FALSE,fig.width=8,fig.height=4.5)
+tutorial_options(exercise.checker=checker,exercise.error.check.code="# Friendly feedback",exercise.timelimit=15,exercise.lines=8)
+```
+
+## Welcome: you are the analysis team
+
+GABA is a signalling molecule whose electrical effect depends partly on chloride regulation. Researchers recorded neurons in the ventral tegmental area of rats during reward learning. The GABA reversal potential is the voltage at which the measured GABA current changes direction. A less negative value is a shift towards more positive voltage; you do not need prior electrophysiology to compare these measurements.
+
+**Your question:** Does the GABA reversal potential differ between baseline and the acquisition phase of reward learning?
+
+No previous R or statistics is needed. First we will learn to run a command, then follow the
+measurements into a figure. You are allowed to be surprised by the data. A result that does
+not support your prediction is still a result worth explaining.
+
+Work in pairs. One person types and the other predicts or explains; swap after each section.
+Keep your own written answers. Allow 70 minutes for basics, a break, 35 for plots and 5 for the handoff.
+
+- **Code editor:** type R commands in the box containing code. Click **Run Code** to see results below it.
+- **Answer box:** type your scientific explanation in ordinary words.
+- **Submit Answer:** save your current code attempt and request feedback. Run Code alone does not save an attempt for download.
+
+Keep the supplied commands and **append your solution underneath**, unless a task explicitly
+asks you to repair an error. Each editor runs independently: keep its supplied import lines.
+`#` starts a comment, which R ignores. You can experiment without changing the source data files.
+
+```{r identity}
+textInput("student","Your name")
+textInput("partner","Partner")
+downloadButton("notebook","Download my notebook (.Rmd)")
+```
+
+Download regularly. Written answers are session-only; download before closing or reloading.
+Your notebook contains your submitted code, your explanations and your current slider views.
+It will become an ordinary editable R notebook in RStudio.
+
+## 1. First successful runs — 20 minutes
+
+Click inside the editor and press Enter for a new line. Running an editor runs every line,
+top to bottom. Output appears in the same order. The printed `[1]` marks the position of the
+first output item; it is not part of the calculated number.
+
+### Make R do the arithmetic
+
+Run the supplied addition. Then append `12 / 4` on a new line, run again and submit. `/` means divide.
+
+```{r divide, exercise=TRUE}
+2 + 3
+
+# Add your command below.
+```
+
+```{r divide-check}
+# Checked by checker.
+```
+
+```{r divide-hint-1}
+# Keep the example and append 12 / 4.
+```
+
+```{r divide-solution}
+2 + 3
+12 / 4
+```
+
+### Plan the plate
+
+Three plates, four wells each: how many wells? Predict first. Append `3 * 4`; `*` means multiply.
+
+```{r multiply, exercise=TRUE}
+3 + 4
+
+# Add your command below.
+```
+
+```{r multiply-check}
+# Checked by checker.
+```
+
+```{r multiply-hint-1}
+# Append 3 * 4 below the example.
+```
+
+```{r multiply-solution}
+3 + 4
+3 * 4
+```
+
+### Give a result a name
+
+An **object** is information kept under a name. Read `wells <- 12` as “store 12 in wells”. The arrow is `<` followed by `-`. A name on its own displays its value. Keep the example, then append `wells <- 16` and `wells` on separate lines.
+
+```{r store, exercise=TRUE}
+wells <- 12
+wells
+```
+
+```{r store-check}
+# Checked by checker.
+```
+
+```{r store-hint-1}
+# Append wells <- 16, then wells.
+```
+
+```{r store-solution}
+wells <- 12
+wells
+wells <- 16
+wells
+```
+
+### Keep several measurements together: c()
+
+`c()` combines values into a **vector**, an ordered collection. A **function** is a named operation; its inputs go inside parentheses. In `c(2, 4, 6)`, commas separate three values. Nothing is being added yet! Run the example. Then append `counts <- c(2, 4, 6, 8)` and `counts` to keep and display four values.
+
+```{r combine, exercise=TRUE}
+counts <- c(2, 4, 6)
+counts
+```
+
+```{r combine-check}
+# Checked by checker.
+```
+
+```{r combine-hint-1}
+# Append counts <- c(2, 4, 6, 8), then counts.
+```
+
+```{r combine-solution}
+counts <- c(2, 4, 6)
+counts
+counts <- c(2, 4, 6, 8)
+counts
+```
+
+### An average in two ways: mean()
+
+The **mean** is the sum divided by the number of observations. The example calculates it by hand. Append `mean(counts)`: give the stored vector to the function by putting its name inside parentheses. Does it agree? `length(counts)` reports how many values there are, not their average.
+
+```{r average, exercise=TRUE}
+counts <- c(2, 4, 6)
+(2 + 4 + 6) / 3
+length(counts)
+```
+
+```{r average-check}
+# Checked by checker.
+```
+
+```{r average-hint-1}
+# Append mean(counts) at the bottom.
+```
+
+```{r average-solution}
+counts <- c(2, 4, 6)
+(2 + 4 + 6) / 3
+length(counts)
+mean(counts)
+```
+
+### Predict before you press Run
+
+These are made-up assay readings. Before running, predict whether adding 9 will raise or lower the mean. Keep the example and append a new vector containing 4, 5, 6, 9, then calculate its mean. Explain the change to your partner.
+
+```{r add_value, exercise=TRUE}
+readings <- c(4, 5, 6)
+mean(readings)
+```
+
+```{r add_value-check}
+# Checked by checker.
+```
+
+```{r add_value-hint-1}
+# Append readings <- c(4, 5, 6, 9), then mean(readings).
+```
+
+```{r add_value-solution}
+readings <- c(4, 5, 6)
+mean(readings)
+readings <- c(4, 5, 6, 9)
+mean(readings)
+```
+
+### Recover from a small error
+
+Run this editor once. R names are case-sensitive: `Readings` and `readings` are different. Repair the capital letter and rerun. In RStudio, a Console prompt of `+` means an unfinished command; press Esc, then repair and rerun the complete command in your notebook.
+
+```{r rescue, exercise=TRUE}
+readings <- c(4, 5, 6)
+mean(Readings)
+```
+
+```{r rescue-check}
+# Checked by checker.
+```
+
+```{r rescue-hint-1}
+# Use readings with a lower-case r in both lines.
+```
+
+```{r rescue-solution}
+readings <- c(4, 5, 6)
+mean(readings)
+```
+
+## 2. Meet the data — 10 minutes
+
+One row is one rat, summarised by the mean of its recorded cells. Baseline and acquisition use different rats, not the same rat measured twice. All core animals received the cue followed by reward protocol. In the original paper this protocol is called paired conditioning; that name does not mean our statistical samples are paired.
+
+Our prepared table has **13 animals**: 7 Baseline and 6 Acquisition.
+The original measurements are real, openly available research data. The preparation and exact source
+are in `data/dictionary.html`. [Dataset](https://datadryad.org/dataset/doi:10.5061/dryad.44j0zpcv7) · [Original study](https://doi.org/10.1038/s41467-025-66838-x).
+
+| Column | Meaning |
+|---|---|
+| `sample_id` | Animal identifier; a label, not a measured quantity |
+| `group` | Baseline or Acquisition |
+| `value` | Mean GABA reversal potential (mV) |
+| `companion` | Mean resting membrane potential (mV), from the same animal |
+
+A table in R is called a **data frame**. A row holds information about one animal;
+a column holds one variable. A **nominal** category names groups with no ranking;
+an **ordinal** category has an order but need not have equal gaps. A **continuous** measurement
+can take intermediate values even if the instrument rounds them. Biological meaning matters,
+not just whether R stores digits. A day number and a named learning phase are different descriptions.
+
+### Open the table
+
+`read.csv()` reads a comma-separated table. Quotes mark literal text, including a file path. `<-` stores the table as study. `head()` previews rows, `names()` lists columns, and `dim()` reports rows then columns. Run the supplied import, then append `head(study)`, `names(study)` and `dim(study)` in that order.
+
+```{r import, exercise=TRUE}
+study <- read.csv("data/study.csv")
+```
+
+```{r import-check}
+# Checked by checker.
+```
+
+```{r import-hint-1}
+# Append head(study), names(study), then dim(study).
+```
+
+```{r import-solution}
+study <- read.csv("data/study.csv")
+head(study)
+names(study)
+dim(study)
+```
+
+```{r note-import}
+note("row")
+```
+
+## 3. Follow one group — 10 minutes
+
+`study$value` retrieves the measurement column. `study$group == "Baseline"` asks a yes/no
+question for each row. **Two equals signs compare; `<-` assigns.** Square brackets keep
+the values whose group comparison is TRUE. The selection code is supplied: you need to
+explain and adapt it, not memorise it.
+
+### Follow the Acquisition animals
+
+Run the Baseline example. Append a selection for `"Acquisition"`, store it as `second`, then append `length(second)` and `mean(second)`. Say which animals contributed before reading the mean.
+
+```{r select, exercise=TRUE}
+study <- read.csv("data/study.csv")
+first <- study$value[study$group == "Baseline"]
+length(first)
+mean(first)
+```
+
+```{r select-check}
+# Checked by checker.
+```
+
+```{r select-hint-1}
+# Append second <- study$value[study$group == "Acquisition"], then length(second) and mean(second).
+```
+
+```{r select-solution}
+study <- read.csv("data/study.csv")
+first <- study$value[study$group == "Baseline"]
+length(first)
+mean(first)
+second <- study$value[study$group == "Acquisition"]
+length(second)
+mean(second)
+```
+
+```{r note-select}
+note("selection")
+```
+
+## 4. Typical values, variation and an awkward reading — 20 minutes
+
+The mean gives each observation equal weight. The **median** is the middle of the ordered
+observations (the mean of the two middle ones when there is an even number).
+The **sample standard deviation (SD)** describes variation among observations, in the same
+units as the measurement. A larger SD means more variation; it does not by itself tell us
+how uncertain the mean is. Sample size also matters for that.
+
+### Which group varies more?
+
+Run the supplied mean and median calculations. Append `sd_first <- sd(first)` and `sd_second <- sd(second)`, then display each named result on its own line. Compare the SDs in your answer.
+
+```{r spread, exercise=TRUE}
+study <- read.csv("data/study.csv")
+first <- study$value[study$group == "Baseline"]
+second <- study$value[study$group == "Acquisition"]
+mean(first)
+median(first)
+mean(second)
+median(second)
+```
+
+```{r spread-check}
+# Checked by checker.
+```
+
+```{r spread-hint-1}
+# Append sd_first <- sd(first) and sd_second <- sd(second); display both.
+```
+
+```{r spread-solution}
+study <- read.csv("data/study.csv")
+first <- study$value[study$group == "Baseline"]
+second <- study$value[study$group == "Acquisition"]
+mean(first)
+median(first)
+mean(second)
+median(second)
+sd_first <- sd(first)
+sd_second <- sd(second)
+sd_first
+sd_second
+```
+
+```{r note-spread}
+note("spread")
+```
+
+### Challenge: double the headline
+
+A colleague reports that “the average response doubled”. Four of five made-up culture
+readings are fixed at 4, 5, 5 and 6. Only the fifth reading can change. Can you double
+the original mean without changing the median? Work out a candidate before moving the slider.
+These are separate invented readings, not edits to our animal measurements.
+
+```{r slider-outlier}
+sliderInput("extreme","Fifth assay reading (arbitrary units)",0,40,7,step=1)
+plotOutput("assay_plot")
+verbatimTextOutput("assay_stats")
+```
+
+### Test the headline in code
+
+Keep the original readings. Append a new assay vector with your chosen fifth value, then `new_mean <- mean(assay)` and `new_median <- median(assay)`. Display both results. Bonus: with the other four readings fixed, which median values are even possible?
+
+```{r outlier, exercise=TRUE}
+assay <- c(4, 5, 5, 6, 7)
+mean(assay)
+median(assay)
+```
+
+```{r outlier-check}
+# Checked by checker.
+```
+
+```{r outlier-hint-1}
+# The original sum is 27. Double it to 54; subtract the four fixed values. Store both new summaries.
+```
+
+```{r outlier-solution}
+assay <- c(4, 5, 5, 6, 7)
+mean(assay)
+median(assay)
+assay <- c(4, 5, 5, 6, 34)
+new_mean <- mean(assay)
+new_median <- median(assay)
+new_mean
+new_median
+```
+
+```{r note-outlier}
+note("outlier")
+```
+
+## 5. The assay that failed — 10 minutes
+
+`NA` means missing. It does not mean zero. Imagine one assay failed: would writing zero
+describe what happened? First predict what R should do when a required input is unknown.
+Then compare two decisions using these invented values; keep the source table untouched.
+
+### Missing is a different claim from zero
+
+Run the starter: `mean(example)` returns NA. Count the recorded numbers by looking at the vector. Append `observed_n <- 3` and `observed_mean <- mean(example, na.rm = TRUE)`. The comma introduces another argument; `na.rm = TRUE` excludes missing entries for this calculation only. In a separate vector called `zero_example`, use 0 instead of NA; calculate `zero_mean <- mean(zero_example)`. Display the count and both means.
+
+```{r missing, exercise=TRUE}
+example <- c(4, 6, NA, 8)
+mean(example)
+observed_n <- length(example) # Change: count observed values, excluding NAs
+```
+
+```{r missing-check}
+# Checked by checker.
+```
+
+```{r missing-hint-1}
+# Count the three recorded numbers. Use mean(example, na.rm = TRUE); calculate the zero substitution separately.
+```
+
+```{r missing-solution}
+example <- c(4, 6, NA, 8)
+mean(example)
+observed_n <- length(example) # Counts every slot, including NA.
+observed_n <- 3
+observed_mean <- mean(example, na.rm = TRUE)
+zero_example <- c(4, 6, 0, 8)
+zero_mean <- mean(zero_example)
+observed_n
+observed_mean
+zero_mean
+```
+
+```{r note-missing}
+note("missing")
+```
+
+Excluding a missing value does not recover it. If high values fail more often, the observed
+values may systematically miss the high end of the distribution.
+
+```{r checkpoint}
+downloadButton("notebook_checkpoint","Download before the break")
+```
+
+**Take a 15-minute break.** On return, swap typing and explanation roles.
+
+## 6. How many bars tell the story? — 15 minutes
+
+A **histogram** groups measurements into intervals called bins. Bar height counts observations
+inside each interval. A few broad bins can hide structure; many narrow bins can make a small
+sample look full of gaps. Neither setting adds information. The marks below the bars show
+where the actual observations lie. Both groups below use the same bins and axes.
+
+Try to make the data look as smooth as possible, then as irregular as possible. Ask your
+partner which biological conclusions survive both views. This is a challenge to the display,
+not an invitation to select whichever plot supports your preferred story.
+
+```{r histogram-controls}
+radioButtons("hist_mode","Control the bins using",c("Number of bins"="count","Bin width"="width"),inline=TRUE)
+sliderInput("hist_bins","Number of bins",3,20,6,step=1)
+```
+
+```{r histogram-width}
+sliderInput("hist_width","Bin width (measurement units)",0.989647,29.6894,4.94824,step=0.296894)
+plotOutput("hist_explorer")
+textOutput("bin_summary")
+```
+
+### Make a histogram you can rerun
+
+`hist()` draws a histogram. `breaks = 5` requests roughly five bins; base R chooses convenient boundaries, so the actual count can differ. The slider above uses exact boundaries. `main` sets the title and `xlab` labels the horizontal axis. Keep the Baseline example and append `second_hist <- hist(second, breaks = 5, main = "Acquisition", xlab = "Mean GABA reversal potential (mV)")`.
+
+```{r histogram, exercise=TRUE}
+study <- read.csv("data/study.csv")
+first <- study$value[study$group == "Baseline"]
+second <- study$value[study$group == "Acquisition"]
+hist(first, breaks=5, main="Baseline", xlab="Mean GABA reversal potential (mV)")
+```
+
+```{r histogram-check}
+# Checked by checker.
+```
+
+```{r histogram-hint-1}
+# Keep the first plot and append second_hist <- hist(second, breaks=5, main="Second group", xlab="Measurement units").
+```
+
+```{r histogram-solution}
+study <- read.csv("data/study.csv")
+first <- study$value[study$group == "Baseline"]
+second <- study$value[study$group == "Acquisition"]
+hist(first, breaks=5, main="Baseline", xlab="Mean GABA reversal potential (mV)")
+second_hist <- hist(second, breaks=5, main="Acquisition", xlab="Mean GABA reversal potential (mV)")
+```
+
+```{r note-histogram}
+note("histogram")
+```
+
+## 7. Show the animals behind the average — 10 minutes
+
+`factor()` below fixes the display order so colours and group positions stay consistent across figures. It does not change any measurements.
+
+A **boxplot** puts the middle half of the observations inside a box. The line is the median.
+Whiskers extend to observations within 1.5 box lengths of the box; more distant observations
+are conventionally drawn separately. These points deserve investigation, not automatic deletion.
+With small samples, always look at the actual observations as well.
+
+In R's plot formula `value ~ group`, read `~` as “shown by group”. `data = study` tells R where
+those column names live. `stripchart()` adds individual observations. Jitter moves points
+sideways slightly to reveal overlap; it never changes their measured height. `set.seed(7)`
+makes that sideways movement repeatable.
+
+### Can the mean-only chart tell the whole story?
+
+Run the supplied bar chart, which shows only two means. Append the following worked template to add a boxplot with all animals. Run, inspect and submit. You do not need to invent the plotting syntax.
+
+```r
+study$group <- factor(study$group, levels=c("Baseline","Acquisition"))
+comparison <- boxplot(value ~ group, data=study, outline=FALSE,
+  ylab="Mean GABA reversal potential (mV)", xlab="Group", col=c("lightblue","peachpuff"))
+set.seed(7)
+stripchart(value ~ group, data=study, vertical=TRUE, method="jitter",
+  jitter=0.1, add=TRUE, pch=16)
+```
+
+```{r boxplot, exercise=TRUE}
+study <- read.csv("data/study.csv")
+first <- study$value[study$group == "Baseline"]
+second <- study$value[study$group == "Acquisition"]
+barplot(c(mean(first),mean(second)),names.arg=c("Baseline","Acquisition"),
+  ylab="Mean: Mean GABA reversal potential (mV)",main="Only the means")
+```
+
+```{r boxplot-check}
+# Checked by checker.
+```
+
+```{r boxplot-hint-1}
+# Append the supplied boxplot and stripchart template below the mean-only example.
+```
+
+```{r boxplot-solution}
+study <- read.csv("data/study.csv")
+first <- study$value[study$group == "Baseline"]
+second <- study$value[study$group == "Acquisition"]
+barplot(c(mean(first),mean(second)),names.arg=c("Baseline","Acquisition"),ylab="Mean: Mean GABA reversal potential (mV)")
+study$group <- factor(study$group, levels=c("Baseline","Acquisition"))
+comparison <- boxplot(value ~ group, data=study, outline=FALSE,
+  ylab="Mean GABA reversal potential (mV)", xlab="Group", col=c("lightblue","peachpuff"))
+set.seed(7)
+stripchart(value ~ group, data=study, vertical=TRUE, method="jitter",
+  jitter=0.1, add=TRUE, pch=16)
+```
+
+```{r note-boxplot}
+note("boxplot")
+```
+
+### A smooth violin from a small sample?
+
+A violin's width estimates where measurements are more concentrated. The dots are observed;
+the smooth outline is calculated. Each violin here has equal maximum width and stops at its
+observed range; width does not encode sample size or a confidence interval. The short line is
+the median. Change the smoothing: can you make a bump vanish without changing a single animal?
+
+```{r violin-controls}
+sliderInput("smooth","Smoothing multiplier",0.4,2.5,1,step=0.1)
+plotOutput("violin")
+note("violin")
+```
+
+## 8. Two measurements from the same animal — 10 minutes
+
+A **scatterplot** gives each animal one point. Its horizontal and vertical positions show
+two different measurements from that animal. A rising pattern suggests positive association;
+a falling pattern suggests negative association. First inspect a single group, so a difference
+between groups is not mistaken for a relationship within a group.
+
+### Does the pattern travel to the other group?
+
+In `study[condition, ]`, the part before the comma selects rows and the blank after it keeps all columns. Run the supplied Baseline plot. Append the same three commands for Acquisition, naming the selected table `second_data`. Keep the same measurement axes and label the group.
+
+```{r scatter, exercise=TRUE}
+study <- read.csv("data/study.csv")
+first_data <- study[study$group == "Baseline", ]
+plot(first_data$value, first_data$companion,
+  xlab="Mean GABA reversal potential (mV)", ylab="Mean resting membrane potential (mV)", main="Baseline", pch=19)
+```
+
+```{r scatter-check}
+# Checked by checker.
+```
+
+```{r scatter-hint-1}
+# Append second_data <- study[study$group == "Acquisition", ], then plot(second_data$value, second_data$companion, xlab="Measurement", ylab="Companion measurement").
+```
+
+```{r scatter-solution}
+study <- read.csv("data/study.csv")
+first_data <- study[study$group == "Baseline", ]
+plot(first_data$value, first_data$companion,
+  xlab="Mean GABA reversal potential (mV)", ylab="Mean resting membrane potential (mV)", main="Baseline", pch=19)
+second_data <- study[study$group == "Acquisition", ]
+plot(second_data$value, second_data$companion,
+  xlab="Mean GABA reversal potential (mV)", ylab="Mean resting membrane potential (mV)", main="Acquisition", pch=19)
+```
+
+```{r note-scatter}
+note("scatter")
+```
+
+```{r quiz-samples}
+question("Your colleague counts every repeated cell or assay reading as a new animal. What should you check?",
+ answer("Whether the measurements share the same animal ID",correct=TRUE),
+ answer("Whether the spreadsheet uses different rows"),
+ answer("Whether the larger sample size gives a smaller p-value"),
+ correct="The experimental design determines independence. More rows can mean more measurements of the same animals.",allow_retry=TRUE)
+```
+
+## 9. Your own notebook — 5 minutes
+
+```{r reflection}
+note("exit")
+note("help")
+textOutput("completion")
+downloadButton("notebook_final","Download my completed basics notebook (.Rmd)")
+```
+
+1. Submit after your final edits, then download. Save the file in the project's `notebooks/` folder.
+2. Open that Rmd in RStudio. **Source editor:** saved code and written explanations. **Console:** temporary execution and messages. **Environment:** temporary objects created by running code.
+3. In Session → Restart R, clear those temporary objects. Run the setup chunk with its green triangle, then run the remaining chunks in order. Ctrl+Enter (Windows/Linux) or Cmd+Enter (Mac) runs the current line; the chunk's green triangle runs the whole chunk.
+4. Type your prose outside code chunks. Keep the opening and closing chunk fences. Click **Knit** to make an HTML notebook. Knit starts a fresh R session; it cannot use objects created only in your Console.
+5. Check the rendered HTML for errors, missing explanations and unfinished tasks. A successful Knit is not proof of a complete analysis.
+
+Continue with `notebooks/03_statistical_analysis.Rmd` in RStudio. Day 2 uses
+`notebooks/04_investigation.Rmd`. Keep your Rmd source and submit the final HTML to the learning system.
+On a shared computer, save your download and use **Start Over** before the next student.
+
+## Extra: the middle half
+
+Quartiles split ordered data into four parts. The interquartile range, IQR, is the upper
+quartile minus the lower quartile. Try `quantile(first)`, `IQR(first)` and `range(first)` in
+your downloaded notebook after creating `first`. Explain why the range is especially sensitive
+to a single extreme value. With small samples, software conventions for quartiles can differ.
+
+```{r server, context="server"}
+output$assay_plot <- renderPlot({
+ x<-c(4,5,5,6,input$extreme)
+ plot(x,1:5,xlim=c(0,42),pch=19,xlab="Made-up assay reading (arbitrary units)",ylab="Observation")
+ abline(v=mean(x),col="#a54821",lwd=2); abline(v=median(x),col="#16776d",lwd=2,lty=2)
+ legend("topright",c("Mean","Median"),col=c("#a54821","#16776d"),lty=c(1,2),lwd=2,bty="n")
+})
+output$assay_stats <- renderPrint({x<-c(4,5,5,6,input$extreme); c(mean=mean(x),median=median(x))})
+output$hist_explorer <- renderPlot(hist_view(read.csv("data/study.csv"),input$hist_mode,input$hist_bins,input$hist_width))
+output$bin_summary <- renderText({e<-hist_edges(read.csv("data/study.csv"),input$hist_mode,input$hist_bins,input$hist_width); paste(length(e)-1,"shared bins; width",signif(e[2]-e[1],3),"measurement units. Both axes are shared.")})
+output$violin <- renderPlot(violin_view(read.csv("data/study.csv"),input$smooth))
+output$completion <- renderText({s<-learnr::get_tutorial_state(); passed<-sum(vapply(names(exercise_info),function(n)isTRUE(s[[n]]$correct),logical(1))); paste(passed,"of",length(exercise_info),"code checks passed. Review your explanations and rerun in RStudio too.")})
+handler <- function() downloadHandler(filename=function()"01_my_basics_and_plots.Rmd",content=function(file){
+ s<-isolate(learnr::get_tutorial_state())
+ notes<-setNames(lapply(names(note_labels),function(n)input[[paste0("note_",n)]]),names(note_labels))
+ settings<-list(mode=input$hist_mode,bins=input$hist_bins,width=input$hist_width,smooth=input$smooth)
+ writeLines(export_notebook(s,notes,input$student,input$partner,settings),file,useBytes=TRUE)
+},contentType="text/plain; charset=utf-8")
+output$notebook <- handler()
+output$notebook_checkpoint <- handler()
+output$notebook_final <- handler()
+```

@@ -1,0 +1,9 @@
+.Rproj.user/
+.Rhistory
+.RData
+.learnr-library
+*_files/
+*_cache/
+tutorials/01_basics/01_basics.html
+outputs/*
+!outputs/.gitkeep

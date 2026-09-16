@@ -1,0 +1,16 @@
+{
+  "variant": "chloride",
+  "folder": "chloride-transport",
+  "title": "When a neuron changes its response",
+  "question": "Does the GABA reversal potential differ between baseline and the acquisition phase of reward learning?",
+  "group_a": "Baseline",
+  "group_b": "Acquisition",
+  "measurement": "Mean GABA reversal potential (mV)",
+  "companion": "Mean resting membrane potential (mV)",
+  "n_a": 7,
+  "n_b": 6,
+  "story": "GABA is a signalling molecule whose electrical effect depends partly on chloride regulation. Researchers recorded neurons in the ventral tegmental area of rats during reward learning. The GABA reversal potential is the voltage at which the measured GABA current changes direction. A less negative value is a shift towards more positive voltage; you do not need prior electrophysiology to compare these measurements.",
+  "row": "One row is one rat, summarised by the mean of its recorded cells. Baseline and acquisition use different rats, not the same rat measured twice. All core animals received the cue followed by reward protocol. In the original paper this protocol is called paired conditioning; that name does not mean our statistical samples are paired.",
+  "source": "https://datadryad.org/dataset/doi:10.5061/dryad.44j0zpcv7",
+  "publication": "https://doi.org/10.1038/s41467-025-66838-x"
+}

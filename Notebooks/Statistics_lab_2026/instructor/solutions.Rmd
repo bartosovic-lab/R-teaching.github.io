@@ -1,0 +1,57 @@
+---
+title: "Instructor reference: When a neuron changes its response"
+output:
+  html_document:
+    toc: true
+    self_contained: true
+    mathjax: null
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir=normalizePath(".."))
+```
+
+## Numerical reference, not a required conclusion
+
+Students should interpret the observed estimates and their limits; do not assess whether
+their hypothesis was supported. This calculation uses the same prepared animal table as
+the course. The subtraction and interval are **Acquisition minus Baseline**.
+
+```{r core-results}
+d <- read.csv("data/study.csv")
+first <- d$value[d$group == "Baseline"]
+second <- d$value[d$group == "Acquisition"]
+data.frame(group=c("Baseline","Acquisition"),n=c(length(first),length(second)),
+ mean=c(mean(first),mean(second)),median=c(median(first),median(second)),
+ SD=c(sd(first),sd(second)))
+mean(second)-mean(first)
+t.test(second,first)
+wilcox.test(second,first,exact=FALSE)
+```
+
+## What to listen for
+
+- One row represents one animal under the documented preparation rule; counting repeated cells or dilution readings inflates animal n.
+- A larger SD describes more variation among animals. It is not the standard error of a mean.
+- The outlier puzzle needs a fifth value of 34; mean 10.8, median 5. Four fixed readings imply the median stays 5 for every fifth value.
+- Missingness exercise: observed n 3, observed mean 6, zero-substituted mean 4.5. Exclusion may still be biased.
+- Histogram bins and violin smoothing change a display, not the measurements. Neither establishes population shape from a small sample.
+- A Welch estimate targets means; the rank test is not generally a median comparison. Methods should not be chosen by the smallest p-value.
+- A p-value does not give the probability that a hypothesis is true. Lack of significance does not demonstrate equivalence.
+- Within-group association avoids one obvious pooling confound, but does not establish causation or remove shared assay effects.
+- The invented Bonferroni example returns 0.05, 0.15, 1, 1, 0.20. Only the first meets the declared <= 0.05 threshold.
+
+## Within-group association reference
+
+```{r association-results}
+for(g in c("Baseline","Acquisition")) {
+ cat("Group:",g,"\n")
+ s<-d[d$group==g,]
+ print(cor.test(s$value,s$companion,method="pearson"))
+ print(cor.test(s$value,s$companion,method="spearman",exact=FALSE))
+}
+```
+
+Read `guide.md` and `data/dictionary.html` before teaching. Day-2 answers depend on the selected
+question. The validation script runs every allowed combination; an exploratory result remains
+exploratory even when p is small.
