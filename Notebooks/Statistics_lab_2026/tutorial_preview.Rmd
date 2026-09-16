@@ -210,15 +210,17 @@ question for each row. **Two equals signs compare; `<-` assigns.** Square bracke
 the values whose group comparison is TRUE. The selection code is supplied: you need to
 explain and adapt it, not memorise it.
 
+The name `baseline_reversal_mV` tells us both the biological measurement and its group. We will use `acquisition_reversal_mV` for the other group. Descriptive names help you check which animals a calculation includes.
+
 ### Follow the Acquisition animals
 
-Run the Baseline example. Append a selection for `"Acquisition"`, store it as `second`, then append `length(second)` and `mean(second)`. Say which animals contributed before reading the mean.
+Run the Baseline example. Append a selection for `"Acquisition"`, store it as `acquisition_reversal_mV`, then append `length(acquisition_reversal_mV)` and `mean(acquisition_reversal_mV)`. Say which animals contributed before reading the mean.
 
 ```{r select,eval=FALSE,echo=TRUE}
 study <- read.csv("data/study.csv")
-first <- study$reversal_mV[study$group == "Baseline"]
-length(first)
-mean(first)
+baseline_reversal_mV <- study$reversal_mV[study$group == "Baseline"]
+length(baseline_reversal_mV)
+mean(baseline_reversal_mV)
 ```
 
 
@@ -239,16 +241,16 @@ how uncertain the mean is. Sample size also matters for that.
 
 ### Which group varies more?
 
-Run the supplied mean and median calculations. Append `sd_first <- sd(first)` and `sd_second <- sd(second)`, then display each named result on its own line. Compare the SDs in your answer.
+Run the supplied mean and median calculations. Append `sd_baseline_reversal_mV <- sd(baseline_reversal_mV)` and `sd_acquisition_reversal_mV <- sd(acquisition_reversal_mV)`, then display each named result on its own line. Compare the SDs in your answer.
 
 ```{r spread,eval=FALSE,echo=TRUE}
 study <- read.csv("data/study.csv")
-first <- study$reversal_mV[study$group == "Baseline"]
-second <- study$reversal_mV[study$group == "Acquisition"]
-mean(first)
-median(first)
-mean(second)
-median(second)
+baseline_reversal_mV <- study$reversal_mV[study$group == "Baseline"]
+acquisition_reversal_mV <- study$reversal_mV[study$group == "Acquisition"]
+mean(baseline_reversal_mV)
+median(baseline_reversal_mV)
+mean(acquisition_reversal_mV)
+median(acquisition_reversal_mV)
 ```
 
 
@@ -336,13 +338,13 @@ hist_view(read.csv("data/study.csv"))
 
 ### Make a histogram you can rerun
 
-`hist()` draws a histogram. `breaks = 5` requests roughly five bins; base R chooses convenient boundaries, so the actual count can differ. The slider above uses exact boundaries. `main` sets the title and `xlab` labels the horizontal axis. Keep the Baseline example and append `second_hist <- hist(second, breaks = 5, main = "Acquisition", xlab = "Mean GABA reversal potential (mV)")`.
+`hist()` draws a histogram. `breaks = 5` requests roughly five bins; base R chooses convenient boundaries, so the actual count can differ. The slider above uses exact boundaries. `main` sets the title and `xlab` labels the horizontal axis. Keep the Baseline example and append `hist_acquisition_reversal_mV <- hist(acquisition_reversal_mV, breaks = 5, main = "Acquisition", xlab = "Mean GABA reversal potential (mV)")`.
 
 ```{r histogram,eval=FALSE,echo=TRUE}
 study <- read.csv("data/study.csv")
-first <- study$reversal_mV[study$group == "Baseline"]
-second <- study$reversal_mV[study$group == "Acquisition"]
-hist(first, breaks=5, main="Baseline", xlab="Mean GABA reversal potential (mV)")
+baseline_reversal_mV <- study$reversal_mV[study$group == "Baseline"]
+acquisition_reversal_mV <- study$reversal_mV[study$group == "Acquisition"]
+hist(baseline_reversal_mV, breaks=5, main="Baseline", xlab="Mean GABA reversal potential (mV)")
 ```
 
 
@@ -382,9 +384,9 @@ stripchart(reversal_mV ~ group, data=study, vertical=TRUE, method="jitter",
 
 ```{r boxplot,eval=FALSE,echo=TRUE}
 study <- read.csv("data/study.csv")
-first <- study$reversal_mV[study$group == "Baseline"]
-second <- study$reversal_mV[study$group == "Acquisition"]
-barplot(c(mean(first),mean(second)),names.arg=c("Baseline","Acquisition"),
+baseline_reversal_mV <- study$reversal_mV[study$group == "Baseline"]
+acquisition_reversal_mV <- study$reversal_mV[study$group == "Acquisition"]
+barplot(c(mean(baseline_reversal_mV),mean(acquisition_reversal_mV)),names.arg=c("Baseline","Acquisition"),
   ylab="Mean: Mean GABA reversal potential (mV)",main="Only the means")
 ```
 
@@ -418,12 +420,12 @@ between groups is not mistaken for a relationship within a group.
 
 ### Does the pattern travel to the other group?
 
-In `study[condition, ]`, the part before the comma selects rows and the blank after it keeps all columns. Run the supplied Baseline plot. Append the same three commands for Acquisition, naming the selected table `second_data`. Keep the same measurement axes and label the group.
+In `study[condition, ]`, the part before the comma selects rows and the blank after it keeps all columns. Run the supplied Baseline plot. Append the same three commands for Acquisition, naming the selected table `acquisition_rats`. Keep the same measurement axes and label the group.
 
 ```{r scatter,eval=FALSE,echo=TRUE}
 study <- read.csv("data/study.csv")
-first_data <- study[study$group == "Baseline", ]
-plot(first_data$reversal_mV, first_data$resting_mV,
+baseline_rats <- study[study$group == "Baseline", ]
+plot(baseline_rats$reversal_mV, baseline_rats$resting_mV,
   xlab="Mean GABA reversal potential (mV)", ylab="Mean resting membrane potential (mV)", main="Baseline", pch=19)
 ```
 
@@ -454,6 +456,6 @@ On a shared computer, save your download and use **Start Over** before the next 
 ## Extra: the middle half
 
 Quartiles split ordered data into four parts. The interquartile range, IQR, is the upper
-quartile minus the lower quartile. Try `quantile(first)`, `IQR(first)` and `range(first)` in
-your downloaded notebook after creating `first`. Explain why the range is especially sensitive
+quartile minus the lower quartile. Try `quantile(baseline_reversal_mV)`, `IQR(baseline_reversal_mV)` and `range(baseline_reversal_mV)` in
+your downloaded notebook after creating `baseline_reversal_mV`. Explain why the range is especially sensitive
 to a single extreme value. With small samples, software conventions for quartiles can differ.

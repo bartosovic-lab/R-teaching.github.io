@@ -101,10 +101,15 @@ if (!is.null(selected)) {
   complete <- selected[!is.na(selected$value), ]
   complete$group <- factor(complete$group, levels=c(group_a,group_b))
   table(complete$group)
-  first <- complete$value[complete$group == group_a]
-  second <- complete$value[complete$group == group_b]
+  voltage_by_group <- split(complete$value, complete$group)
+  voltage_by_group # Each vector is labelled with its biological group.
 }
 ```
+
+`split()` keeps a separate measurement vector for each named group in `voltage_by_group`.
+For example, `voltage_by_group[[group_a]]` retrieves the group whose name is stored in
+`group_a`. Displaying the collection shows the actual group names and measurements,
+so these labels stay correct when you choose a different biological question.
 
 Here `is.na()` marks missing values, `!` reverses those marks, and the bracket selection keeps
 the observed values. You met missingness yesterday; this supplied pattern now automates the
@@ -120,13 +125,13 @@ if (!is.null(selected)) {
   set.seed(7)
   stripchart(value ~ group,data=complete,vertical=TRUE,method="jitter",add=TRUE,pch=19)
   par(mfrow=c(1,2))
-  qqnorm(first,main=group_a); qqline(first)
-  qqnorm(second,main=group_b); qqline(second)
+  qqnorm(voltage_by_group[[group_a]],main=group_a); qqline(voltage_by_group[[group_a]])
+  qqnorm(voltage_by_group[[group_b]],main=group_b); qqline(voltage_by_group[[group_b]])
   par(mfrow=c(1,1))
-  mean(first); mean(second)
-  median(first); median(second)
-  sd(first); sd(second)
-  shapiro.test(first); shapiro.test(second)
+  mean(voltage_by_group[[group_a]]); mean(voltage_by_group[[group_b]])
+  median(voltage_by_group[[group_a]]); median(voltage_by_group[[group_b]])
+  sd(voltage_by_group[[group_a]]); sd(voltage_by_group[[group_b]])
+  shapiro.test(voltage_by_group[[group_a]]); shapiro.test(voltage_by_group[[group_b]])
 }
 ```
 
@@ -148,13 +153,13 @@ With very small samples neither is a magic fix for limited information.
 ```{r group-test}
 method_choice <- "choose" # Change to "welch" or "wilcoxon".
 if (!is.null(selected)) {
-  mean_difference <- mean(second) - mean(first)
+  mean_difference <- mean(voltage_by_group[[group_b]]) - mean(voltage_by_group[[group_a]])
   mean_difference # group_b minus group_a
   if (method_choice == "welch") {
-    group_result <- t.test(second,first)
+    group_result <- t.test(voltage_by_group[[group_b]],voltage_by_group[[group_a]])
     print(group_result)
   } else if (method_choice == "wilcoxon") {
-    group_result <- wilcox.test(second,first,exact=FALSE)
+    group_result <- wilcox.test(voltage_by_group[[group_b]],voltage_by_group[[group_a]],exact=FALSE)
     print(group_result)
   } else cat("Choose and justify your method above.
 ")

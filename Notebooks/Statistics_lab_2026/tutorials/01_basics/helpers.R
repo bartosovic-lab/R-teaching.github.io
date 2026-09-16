@@ -16,18 +16,18 @@ checker <- function(label,envir_result,last_value,stage,user_code='',...) {
     add_value=near(obj('readings'),c(4,5,6,9))&&near(last_value,6),
     rescue=near(obj('readings'),c(4,5,6))&&near(last_value,5),
     import=isTRUE(all.equal(obj('study'),d))&&near(last_value,dim(d)),
-    select=near(obj('second'),b)&&near(last_value,mean(b)),
-    spread=near(obj('sd_first'),sd(a))&&near(obj('sd_second'),sd(b)),
+    select=near(obj('acquisition_reversal_mV'),b)&&near(last_value,mean(b)),
+    spread=near(obj('sd_baseline_reversal_mV'),sd(a))&&near(obj('sd_acquisition_reversal_mV'),sd(b)),
     outlier=near(obj('assay'),c(4,5,5,6,34))&&near(obj('new_mean'),10.8)&&near(obj('new_median'),5),
     missing=near(obj('observed_n'),3)&&near(obj('observed_mean'),6)&&near(obj('zero_mean'),4.5),
-    histogram={h<-obj('second_hist'); expected<-hist(b,breaks=5,plot=FALSE); inherits(h,'histogram')&&near(h$breaks,expected$breaks)&&near(h$counts,expected$counts)},
+    histogram={h<-obj('hist_acquisition_reversal_mV'); expected<-hist(b,breaks=5,plot=FALSE); inherits(h,'histogram')&&near(h$breaks,expected$breaks)&&near(h$counts,expected$counts)},
     boxplot={z<-obj('comparison'); d$group<-factor(d$group,levels=c(course$group_a,course$group_b)); ref<-boxplot(reversal_mV~group,data=d,plot=FALSE); is.list(z)&&isTRUE(all.equal(z$stats,ref$stats))&&'stripchart'%in%all.names(parse(text=user_code))},
-    scatter={v<-obj('second_data'); is.data.frame(v)&&isTRUE(all.equal(v,d[d$group==course$group_b,]))&&'plot'%in%all.names(parse(text=user_code))},
+    scatter={v<-obj('acquisition_rats'); is.data.frame(v)&&isTRUE(all.equal(v,d[d$group==course$group_b,]))&&'plot'%in%all.names(parse(text=user_code))},
     FALSE)
   reply(ok,exercise_info[[label]]$success,exercise_info[[label]]$hint)
 }
 note_labels <- c(row='Describe one row, the measurement and its unit. Is group nominal or ordinal? Is reversal_mV a continuous measurement? Explain why an ID is a label even when it contains digits.',
- selection='Which animals contributed to second? Explain the selection to your partner.',
+ selection='Which animals contributed to acquisition_reversal_mV? Explain the selection to your partner.',
  spread='Write both SDs with units. Which group varies more? Does that tell you how precisely its mean is known?',
  outlier='Which fifth reading doubles the mean? Why can the median stay fixed? Critique: “The average doubled, so every culture responded twice as much.” What would you check before deleting the unusual reading?',
  missing='How many observations contributed to observed_mean? Explain why inserting zero changes the scientific meaning. What if the assay fails more often for very high values?',

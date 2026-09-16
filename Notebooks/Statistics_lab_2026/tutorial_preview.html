@@ -619,16 +619,22 @@ row. <strong>Two equals signs compare; <code>&lt;-</code>
 assigns.</strong> Square brackets keep the values whose group comparison
 is TRUE. The selection code is supplied: you need to explain and adapt
 it, not memorise it.</p>
+<p>The name <code>baseline_reversal_mV</code> tells us both the
+biological measurement and its group. We will use
+<code>acquisition_reversal_mV</code> for the other group. Descriptive
+names help you check which animals a calculation includes.</p>
 <div id="follow-the-acquisition-animals" class="section level3">
 <h3>Follow the Acquisition animals</h3>
 <p>Run the Baseline example. Append a selection for
-<code>&quot;Acquisition&quot;</code>, store it as <code>second</code>, then append
-<code>length(second)</code> and <code>mean(second)</code>. Say which
-animals contributed before reading the mean.</p>
+<code>&quot;Acquisition&quot;</code>, store it as
+<code>acquisition_reversal_mV</code>, then append
+<code>length(acquisition_reversal_mV)</code> and
+<code>mean(acquisition_reversal_mV)</code>. Say which animals
+contributed before reading the mean.</p>
 <pre class="r"><code>study &lt;- read.csv(&quot;data/study.csv&quot;)
-first &lt;- study$reversal_mV[study$group == &quot;Baseline&quot;]
-length(first)
-mean(first)</code></pre>
+baseline_reversal_mV &lt;- study$reversal_mV[study$group == &quot;Baseline&quot;]
+length(baseline_reversal_mV)
+mean(baseline_reversal_mV)</code></pre>
 <p><strong>Pause and explain:</strong> selection. Write your answer in
 the live tutorial.</p>
 </div>
@@ -646,16 +652,17 @@ mean is. Sample size also matters for that.</p>
 <div id="which-group-varies-more" class="section level3">
 <h3>Which group varies more?</h3>
 <p>Run the supplied mean and median calculations. Append
-<code>sd_first &lt;- sd(first)</code> and
-<code>sd_second &lt;- sd(second)</code>, then display each named result
-on its own line. Compare the SDs in your answer.</p>
+<code>sd_baseline_reversal_mV &lt;- sd(baseline_reversal_mV)</code> and
+<code>sd_acquisition_reversal_mV &lt;- sd(acquisition_reversal_mV)</code>,
+then display each named result on its own line. Compare the SDs in your
+answer.</p>
 <pre class="r"><code>study &lt;- read.csv(&quot;data/study.csv&quot;)
-first &lt;- study$reversal_mV[study$group == &quot;Baseline&quot;]
-second &lt;- study$reversal_mV[study$group == &quot;Acquisition&quot;]
-mean(first)
-median(first)
-mean(second)
-median(second)</code></pre>
+baseline_reversal_mV &lt;- study$reversal_mV[study$group == &quot;Baseline&quot;]
+acquisition_reversal_mV &lt;- study$reversal_mV[study$group == &quot;Acquisition&quot;]
+mean(baseline_reversal_mV)
+median(baseline_reversal_mV)
+mean(acquisition_reversal_mV)
+median(acquisition_reversal_mV)</code></pre>
 <p><strong>Pause and explain:</strong> spread. Write your answer in the
 live tutorial.</p>
 </div>
@@ -731,11 +738,11 @@ requests roughly five bins; base R chooses convenient boundaries, so the
 actual count can differ. The slider above uses exact boundaries.
 <code>main</code> sets the title and <code>xlab</code> labels the
 horizontal axis. Keep the Baseline example and append
-<code>second_hist &lt;- hist(second, breaks = 5, main = &quot;Acquisition&quot;, xlab = &quot;Mean GABA reversal potential (mV)&quot;)</code>.</p>
+<code>hist_acquisition_reversal_mV &lt;- hist(acquisition_reversal_mV, breaks = 5, main = &quot;Acquisition&quot;, xlab = &quot;Mean GABA reversal potential (mV)&quot;)</code>.</p>
 <pre class="r"><code>study &lt;- read.csv(&quot;data/study.csv&quot;)
-first &lt;- study$reversal_mV[study$group == &quot;Baseline&quot;]
-second &lt;- study$reversal_mV[study$group == &quot;Acquisition&quot;]
-hist(first, breaks=5, main=&quot;Baseline&quot;, xlab=&quot;Mean GABA reversal potential (mV)&quot;)</code></pre>
+baseline_reversal_mV &lt;- study$reversal_mV[study$group == &quot;Baseline&quot;]
+acquisition_reversal_mV &lt;- study$reversal_mV[study$group == &quot;Acquisition&quot;]
+hist(baseline_reversal_mV, breaks=5, main=&quot;Baseline&quot;, xlab=&quot;Mean GABA reversal potential (mV)&quot;)</code></pre>
 <p><strong>Pause and explain:</strong> histogram. Write your answer in
 the live tutorial.</p>
 </div>
@@ -769,9 +776,9 @@ set.seed(7)
 stripchart(reversal_mV ~ group, data=study, vertical=TRUE, method=&quot;jitter&quot;,
   jitter=0.1, add=TRUE, pch=16)</code></pre>
 <pre class="r"><code>study &lt;- read.csv(&quot;data/study.csv&quot;)
-first &lt;- study$reversal_mV[study$group == &quot;Baseline&quot;]
-second &lt;- study$reversal_mV[study$group == &quot;Acquisition&quot;]
-barplot(c(mean(first),mean(second)),names.arg=c(&quot;Baseline&quot;,&quot;Acquisition&quot;),
+baseline_reversal_mV &lt;- study$reversal_mV[study$group == &quot;Baseline&quot;]
+acquisition_reversal_mV &lt;- study$reversal_mV[study$group == &quot;Acquisition&quot;]
+barplot(c(mean(baseline_reversal_mV),mean(acquisition_reversal_mV)),names.arg=c(&quot;Baseline&quot;,&quot;Acquisition&quot;),
   ylab=&quot;Mean: Mean GABA reversal potential (mV)&quot;,main=&quot;Only the means&quot;)</code></pre>
 <p><strong>Pause and explain:</strong> boxplot. Write your answer in the
 live tutorial.</p>
@@ -802,11 +809,11 @@ group.</p>
 <p>In <code>study[condition, ]</code>, the part before the comma selects
 rows and the blank after it keeps all columns. Run the supplied Baseline
 plot. Append the same three commands for Acquisition, naming the
-selected table <code>second_data</code>. Keep the same measurement axes
-and label the group.</p>
+selected table <code>acquisition_rats</code>. Keep the same measurement
+axes and label the group.</p>
 <pre class="r"><code>study &lt;- read.csv(&quot;data/study.csv&quot;)
-first_data &lt;- study[study$group == &quot;Baseline&quot;, ]
-plot(first_data$reversal_mV, first_data$resting_mV,
+baseline_rats &lt;- study[study$group == &quot;Baseline&quot;, ]
+plot(baseline_rats$reversal_mV, baseline_rats$resting_mV,
   xlab=&quot;Mean GABA reversal potential (mV)&quot;, ylab=&quot;Mean resting membrane potential (mV)&quot;, main=&quot;Baseline&quot;, pch=19)</code></pre>
 <p><strong>Pause and explain:</strong> scatter. Write your answer in the
 live tutorial.</p>
@@ -843,11 +850,12 @@ before the next student.</p>
 <h2>Extra: the middle half</h2>
 <p>Quartiles split ordered data into four parts. The interquartile
 range, IQR, is the upper quartile minus the lower quartile. Try
-<code>quantile(first)</code>, <code>IQR(first)</code> and
-<code>range(first)</code> in your downloaded notebook after creating
-<code>first</code>. Explain why the range is especially sensitive to a
-single extreme value. With small samples, software conventions for
-quartiles can differ.</p>
+<code>quantile(baseline_reversal_mV)</code>,
+<code>IQR(baseline_reversal_mV)</code> and
+<code>range(baseline_reversal_mV)</code> in your downloaded notebook
+after creating <code>baseline_reversal_mV</code>. Explain why the range
+is especially sensitive to a single extreme value. With small samples,
+software conventions for quartiles can differ.</p>
 </div>
 
 

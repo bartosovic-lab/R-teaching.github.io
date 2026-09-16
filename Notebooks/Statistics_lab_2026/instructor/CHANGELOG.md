@@ -23,3 +23,10 @@ This log describes authored changes. Actual validation results are recorded sepa
 - Renamed the first-day measurement columns from `value` and `companion` to `reversal_mV` and `resting_mV`.
 - Updated selections, plots, feedback, exports, references, dictionaries and data-generation checks.
 - Preserved all measurements, sample IDs, group labels and the separate investigation dataset.
+
+## Biological group object names
+
+- Replaced `first` / `second` in the worked comparison with `baseline_reversal_mV` / `acquisition_reversal_mV`.
+- Named the selected animal tables `baseline_rats` / `acquisition_rats` and updated SD and histogram object names.
+- Updated hints, feedback, exports, statistical examples and validation.
+- Day-2 choices use `voltage_by_group`, indexed by actual group labels, to keep different biological comparisons correctly named.

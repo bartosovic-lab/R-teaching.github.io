@@ -50,16 +50,16 @@
   },
   "select": {
     "title": "Follow the Acquisition animals",
-    "task": "Run the Baseline example. Append a selection for `\"Acquisition\"`, store it as `second`, then append `length(second)` and `mean(second)`. Say which animals contributed before reading the mean.",
+    "task": "Run the Baseline example. Append a selection for `\"Acquisition\"`, store it as `acquisition_reversal_mV`, then append `length(acquisition_reversal_mV)` and `mean(acquisition_reversal_mV)`. Say which animals contributed before reading the mean.",
     "success": "The selection and mean are correct. Check the printed sample size before interpreting the average.",
-    "hint": "Append second <- study$reversal_mV[study$group == \"Acquisition\"], then length(second) and mean(second).",
+    "hint": "Append acquisition_reversal_mV <- study$reversal_mV[study$group == \"Acquisition\"], then length(acquisition_reversal_mV) and mean(acquisition_reversal_mV).",
     "note": "selection"
   },
   "spread": {
     "title": "Which group varies more?",
-    "task": "Run the supplied mean and median calculations. Append `sd_first <- sd(first)` and `sd_second <- sd(second)`, then display each named result on its own line. Compare the SDs in your answer.",
+    "task": "Run the supplied mean and median calculations. Append `sd_baseline_reversal_mV <- sd(baseline_reversal_mV)` and `sd_acquisition_reversal_mV <- sd(acquisition_reversal_mV)`, then display each named result on its own line. Compare the SDs in your answer.",
     "success": "Both SD calculations are correct. State which is larger and what that means biologically.",
-    "hint": "Append sd_first <- sd(first) and sd_second <- sd(second); display both.",
+    "hint": "Append sd_baseline_reversal_mV <- sd(baseline_reversal_mV) and sd_acquisition_reversal_mV <- sd(acquisition_reversal_mV); display both.",
     "note": "spread"
   },
   "outlier": {
@@ -78,9 +78,9 @@
   },
   "histogram": {
     "title": "Make a histogram you can rerun",
-    "task": "`hist()` draws a histogram. `breaks = 5` requests roughly five bins; base R chooses convenient boundaries, so the actual count can differ. The slider above uses exact boundaries. `main` sets the title and `xlab` labels the horizontal axis. Keep the Baseline example and append `second_hist <- hist(second, breaks = 5, main = \"Acquisition\", xlab = \"Mean GABA reversal potential (mV)\")`.",
-    "success": "The histogram contains the selected second group. The check verifies data and bins; inspect the labels yourself.",
-    "hint": "Keep the first plot and append second_hist <- hist(second, breaks=5, main=\"Second group\", xlab=\"Measurement units\").",
+    "task": "`hist()` draws a histogram. `breaks = 5` requests roughly five bins; base R chooses convenient boundaries, so the actual count can differ. The slider above uses exact boundaries. `main` sets the title and `xlab` labels the horizontal axis. Keep the Baseline example and append `hist_acquisition_reversal_mV <- hist(acquisition_reversal_mV, breaks = 5, main = \"Acquisition\", xlab = \"Mean GABA reversal potential (mV)\")`.",
+    "success": "The histogram contains the Acquisition group. The check verifies data and bins; inspect the labels yourself.",
+    "hint": "Keep the first plot and append hist_acquisition_reversal_mV <- hist(acquisition_reversal_mV, breaks=5, main=\"Acquisition\", xlab=\"Measurement units\").",
     "note": "histogram"
   },
   "boxplot": {
@@ -92,9 +92,9 @@
   },
   "scatter": {
     "title": "Does the pattern travel to the other group?",
-    "task": "In `study[condition, ]`, the part before the comma selects rows and the blank after it keeps all columns. Run the supplied Baseline plot. Append the same three commands for Acquisition, naming the selected table `second_data`. Keep the same measurement axes and label the group.",
-    "success": "The second-group table is correct and you included a plot command. Check the plotted axes and explain the pattern; a code check cannot judge your caption.",
-    "hint": "Append second_data <- study[study$group == \"Acquisition\", ], then plot(second_data$reversal_mV, second_data$resting_mV, xlab=\"Measurement\", ylab=\"Mean resting membrane potential (mV)\").",
+    "task": "In `study[condition, ]`, the part before the comma selects rows and the blank after it keeps all columns. Run the supplied Baseline plot. Append the same three commands for Acquisition, naming the selected table `acquisition_rats`. Keep the same measurement axes and label the group.",
+    "success": "The Acquisition table is correct and you included a plot command. Check the plotted axes and explain the pattern; a code check cannot judge your caption.",
+    "hint": "Append acquisition_rats <- study[study$group == \"Acquisition\", ], then plot(acquisition_rats$reversal_mV, acquisition_rats$resting_mV, xlab=\"Measurement\", ylab=\"Mean resting membrane potential (mV)\").",
     "note": "scatter"
   }
 }

@@ -41,10 +41,10 @@ closing bracket or quote in the Source editor. Save often.
 study <- read.csv("data/study.csv")
 head(study)
 study$group <- factor(study$group, levels=c("Baseline","Acquisition"))
-first <- study$reversal_mV[study$group == "Baseline"]
-second <- study$reversal_mV[study$group == "Acquisition"]
-length(first)
-length(second)
+baseline_reversal_mV <- study$reversal_mV[study$group == "Baseline"]
+acquisition_reversal_mV <- study$reversal_mV[study$group == "Acquisition"]
+length(baseline_reversal_mV)
+length(acquisition_reversal_mV)
 ```
 
 **Before testing:** predict the direction of the difference, and write what evidence could
@@ -63,12 +63,12 @@ boxplot(reversal_mV ~ group, data=study, outline=FALSE, ylab="Mean GABA reversal
         col=c("lightblue","peachpuff"))
 set.seed(7)
 stripchart(reversal_mV ~ group, data=study, vertical=TRUE, method="jitter", add=TRUE,pch=19)
-mean(first)
-mean(second)
-sd(first)
-sd(second)
-median(first)
-median(second)
+mean(baseline_reversal_mV)
+mean(acquisition_reversal_mV)
+sd(baseline_reversal_mV)
+sd(acquisition_reversal_mV)
+median(baseline_reversal_mV)
+median(acquisition_reversal_mV)
 ```
 
 Write both sample sizes, a difference in means and which group has greater spread.
@@ -85,11 +85,11 @@ group means can produce a misleading shape.
 
 ```{r normality}
 par(mfrow=c(1,2))
-qqnorm(first, main="Baseline"); qqline(first)
-qqnorm(second, main="Acquisition"); qqline(second)
+qqnorm(baseline_reversal_mV, main="Baseline"); qqline(baseline_reversal_mV)
+qqnorm(acquisition_reversal_mV, main="Acquisition"); qqline(acquisition_reversal_mV)
 par(mfrow=c(1,1))
-shapiro.test(first)
-shapiro.test(second)
+shapiro.test(baseline_reversal_mV)
+shapiro.test(acquisition_reversal_mV)
 ```
 
 Shapiro–Wilk tests compatibility with a normal model. Its **p-value** measures how unusual
@@ -109,9 +109,9 @@ variances. It needs independent animals; with small samples, strong skew and ext
 can make its results fragile. The analysis below compares **Acquisition minus Baseline**.
 
 ```{r welch}
-mean_difference <- mean(second) - mean(first)
+mean_difference <- mean(acquisition_reversal_mV) - mean(baseline_reversal_mV)
 mean_difference
-welch <- t.test(second, first)
+welch <- t.test(acquisition_reversal_mV, baseline_reversal_mV)
 welch
 welch$conf.int
 welch$p.value
@@ -138,7 +138,7 @@ it is not simply a test of medians. Under a common-shape location-shift model it
 as a location comparison. `exact = FALSE` requests the approximate calculation and accommodates ties.
 
 ```{r ranks}
-rank_result <- wilcox.test(second, first, exact=FALSE)
+rank_result <- wilcox.test(acquisition_reversal_mV, baseline_reversal_mV, exact=FALSE)
 rank_result
 ```
 

@@ -498,9 +498,15 @@ useful when you type a column name directly.</p>
   complete &lt;- selected[!is.na(selected$value), ]
   complete$group &lt;- factor(complete$group, levels=c(group_a,group_b))
   table(complete$group)
-  first &lt;- complete$value[complete$group == group_a]
-  second &lt;- complete$value[complete$group == group_b]
+  voltage_by_group &lt;- split(complete$value, complete$group)
+  voltage_by_group # Each vector is labelled with its biological group.
 }</code></pre>
+<p><code>split()</code> keeps a separate measurement vector for each
+named group in <code>voltage_by_group</code>. For example,
+<code>voltage_by_group[[group_a]]</code> retrieves the group whose name
+is stored in <code>group_a</code>. Displaying the collection shows the
+actual group names and measurements, so these labels stay correct when
+you choose a different biological question.</p>
 <p>Here <code>is.na()</code> marks missing values, <code>!</code>
 reverses those marks, and the bracket selection keeps the observed
 values. You met missingness yesterday; this supplied pattern now
@@ -516,13 +522,13 @@ means: write here.</em></p>
   set.seed(7)
   stripchart(value ~ group,data=complete,vertical=TRUE,method=&quot;jitter&quot;,add=TRUE,pch=19)
   par(mfrow=c(1,2))
-  qqnorm(first,main=group_a); qqline(first)
-  qqnorm(second,main=group_b); qqline(second)
+  qqnorm(voltage_by_group[[group_a]],main=group_a); qqline(voltage_by_group[[group_a]])
+  qqnorm(voltage_by_group[[group_b]],main=group_b); qqline(voltage_by_group[[group_b]])
   par(mfrow=c(1,1))
-  mean(first); mean(second)
-  median(first); median(second)
-  sd(first); sd(second)
-  shapiro.test(first); shapiro.test(second)
+  mean(voltage_by_group[[group_a]]); mean(voltage_by_group[[group_b]])
+  median(voltage_by_group[[group_a]]); median(voltage_by_group[[group_b]])
+  sd(voltage_by_group[[group_a]]); sd(voltage_by_group[[group_b]])
+  shapiro.test(voltage_by_group[[group_a]]); shapiro.test(voltage_by_group[[group_b]])
 }</code></pre>
 <p><em>Caption: measured quantity and units, groups, sample sizes, one
 visible pattern, one limitation.</em></p>
@@ -542,13 +548,13 @@ information.</p>
 and main limitation: </em></strong>.</em></p>
 <pre class="r"><code>method_choice &lt;- &quot;choose&quot; # Change to &quot;welch&quot; or &quot;wilcoxon&quot;.
 if (!is.null(selected)) {
-  mean_difference &lt;- mean(second) - mean(first)
+  mean_difference &lt;- mean(voltage_by_group[[group_b]]) - mean(voltage_by_group[[group_a]])
   mean_difference # group_b minus group_a
   if (method_choice == &quot;welch&quot;) {
-    group_result &lt;- t.test(second,first)
+    group_result &lt;- t.test(voltage_by_group[[group_b]],voltage_by_group[[group_a]])
     print(group_result)
   } else if (method_choice == &quot;wilcoxon&quot;) {
-    group_result &lt;- wilcox.test(second,first,exact=FALSE)
+    group_result &lt;- wilcox.test(voltage_by_group[[group_b]],voltage_by_group[[group_a]],exact=FALSE)
     print(group_result)
   } else cat(&quot;Choose and justify your method above.
 &quot;)

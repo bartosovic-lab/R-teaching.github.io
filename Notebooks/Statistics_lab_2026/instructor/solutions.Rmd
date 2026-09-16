@@ -19,14 +19,14 @@ the course. The subtraction and interval are **Acquisition minus Baseline**.
 
 ```{r core-results}
 d <- read.csv("data/study.csv")
-first <- d$reversal_mV[d$group == "Baseline"]
-second <- d$reversal_mV[d$group == "Acquisition"]
-data.frame(group=c("Baseline","Acquisition"),n=c(length(first),length(second)),
- mean=c(mean(first),mean(second)),median=c(median(first),median(second)),
- SD=c(sd(first),sd(second)))
-mean(second)-mean(first)
-t.test(second,first)
-wilcox.test(second,first,exact=FALSE)
+baseline_reversal_mV <- d$reversal_mV[d$group == "Baseline"]
+acquisition_reversal_mV <- d$reversal_mV[d$group == "Acquisition"]
+data.frame(group=c("Baseline","Acquisition"),n=c(length(baseline_reversal_mV),length(acquisition_reversal_mV)),
+ mean=c(mean(baseline_reversal_mV),mean(acquisition_reversal_mV)),median=c(median(baseline_reversal_mV),median(acquisition_reversal_mV)),
+ SD=c(sd(baseline_reversal_mV),sd(acquisition_reversal_mV)))
+mean(acquisition_reversal_mV)-mean(baseline_reversal_mV)
+t.test(acquisition_reversal_mV,baseline_reversal_mV)
+wilcox.test(acquisition_reversal_mV,baseline_reversal_mV,exact=FALSE)
 ```
 
 ## What to listen for

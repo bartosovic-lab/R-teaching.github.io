@@ -17,10 +17,10 @@ for(label in names(exercises)) {
  states[[label]]<-list(type='exercise',answer=ex$solution,correct=TRUE)
  cat('PASS exercise',label,'\n')
 }
-wrong_codes<-list(divide='12 / 3',rescue='mean(Readings)',select='second <- c(1,2,3); mean(second)',
- spread='sd_first <- 0; sd_second <- 0',histogram='second_hist <- hist(c(1,2,3),breaks=5)',
+wrong_codes<-list(divide='12 / 3',rescue='mean(Readings)',select='acquisition_reversal_mV <- c(1,2,3); mean(acquisition_reversal_mV)',
+ spread='sd_baseline_reversal_mV <- 0; sd_acquisition_reversal_mV <- 0',histogram='hist_acquisition_reversal_mV <- hist(c(1,2,3),breaks=5)',
  boxplot='study <- read.csv("data/study.csv"); comparison <- boxplot(reversal_mV~group,data=study)',
- scatter='study <- read.csv("data/study.csv"); second_data <- study; plot(study$reversal_mV,study$resting_mV)')
+ scatter='study <- read.csv("data/study.csv"); acquisition_rats <- study; plot(study$reversal_mV,study$resting_mV)')
 for(label in names(wrong_codes)) {
  ex<-exercises[[label]]; ex$code<-wrong_codes[[label]]; ex$tutorial<-list(language='en')
  result<-learnr:::evaluate_exercise(ex,new.env(parent=globalenv()),data_dir=file.path(tutorial,'data'))
