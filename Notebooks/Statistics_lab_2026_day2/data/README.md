@@ -4,8 +4,9 @@
 (Marcus et al., 2010; https://sites.wustl.edu/oasisbrains/home/oasis-2/), as used
 in this course for several years. Values are unchanged. One row is one
 **MRI visit**; the same person can appear in several rows (336 rows from 136
-participants), and subject IDs were removed from this copy. Keep this in mind
-when a task asks about "individuals". Participants of the study's "Converted"
+participants), and subject IDs were removed from this copy. For the Day 2
+exercises every row is treated as an independent observation; this is a
+simplification to mention in your limitations. Participants of the study's "Converted"
 group are not included.
 
 | Column | Meaning | Type |

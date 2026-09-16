@@ -34,7 +34,7 @@ YAML
   awk 'BEGIN{n=0} /^---/{n++; next} n>=2{print}' "$SRC" \
     | sed -e "s#'\.\./\.\./data/alzheimer_data.csv'#'data/alzheimer_data.csv'#" \
           -e 's#\[Link for data download\](https://github.com/bartosovic-lab/R-teaching.github.io/tree/main/data)#The data file is in the `data/` folder of this project; see `data/README.md` for what every column means.#' \
-          -e 's#!\[Example answer to Q26\](\.\./\.\./Figures/all_in_one.png)#![Example answer to Q26](https://raw.githubusercontent.com/bartosovic-lab/R-teaching.github.io/main/Figures/all_in_one.png)#'
+          -e 's#!\[Example answer to Q32\](\.\./\.\./Figures/all_in_one.png)#![Example answer to Q32](https://raw.githubusercontent.com/bartosovic-lab/R-teaching.github.io/main/Figures/all_in_one.png)#'
   cat <<'TAIL'
 
 ------------------------------------------------------------------------

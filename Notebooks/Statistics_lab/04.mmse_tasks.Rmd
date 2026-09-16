@@ -23,6 +23,8 @@ Key Variables in the Dataset:
 
 [Link for data download](https://github.com/bartosovic-lab/R-teaching.github.io/tree/main/data)
 
+**One simplification for today:** in the original study some people were scanned more than once, so a row is really one visit. For these exercises, treat every row as an independent observation. Keep in mind that this is a simplification when you write your limitations at the end.
+
 ## Import the dataset
 
 ```{r}
@@ -63,7 +65,7 @@ mmse
 
 **Q11:** What is the mean age of the demented male group?
 
-**Q12:** What is the mean and standard deviation of normalized whole brain volume (nWBV) across the groups (demented vs. non-demented)? *(mind the missing values or NAs)*
+**Q12:** What is the mean and standard deviation of normalized whole brain volume (nWBV) across the groups (demented vs. non-demented)?
 
 **Q13:** What is the minimum and maximum value of the MMSE score?
 
@@ -81,9 +83,9 @@ mmse
 
 **Q18:** Plot a histogram of age, splitting it by demented vs. non-demented individuals. What does this show about the age distribution of each group?
 
-**Q19:** Create a scatter plot to investigate the relationship between nWBV (Normalized Whole Brain Volume) and MMSE scores.
+**Q19:** Create a scatter plot to investigate the relationship between nWBV (Normalized Whole Brain Volume) and MMSE scores. Then colour the points by group (demented vs. non-demented). Does the cloud of points look like one relationship, or two?
 
-**Q20:* Plot the distribution of years of education (EDUC) using a boxplot for demented vs. non-demented groups. Does there appear to be any noticeable trend in educational attainment between the two groups?
+**Q20:** Plot the distribution of years of education (EDUC) using a boxplot for demented vs. non-demented groups. Does there appear to be any noticeable trend in educational attainment between the two groups?
 
 ------------------------------------------------------------------------
 
@@ -93,17 +95,32 @@ mmse
 
 **Q22:** Does the age of groups (demented, non-demented) and age overall follow normal distribution ? (test for all 3 groups)
 
-**Q23:** Conduct a statistical test to compare the mean MMSE scores between demented and non-demented individuals. Decide which statistical test should be used. Is there a statistically significant difference between the two groups?
+**Q23:** Are the two groups comparable in age? Compare the mean age of demented and non-demented individuals with a t-test (`t.test(Age ~ Group, data = mmse)`). Report the estimated difference in years and its 95% confidence interval. Does the result show that the groups have the same age? What does it show?
+
+**Q24:** Conduct a statistical test to compare the mean MMSE scores between demented and non-demented individuals. Decide which statistical test should be used. Is there a statistically significant difference between the two groups?
+
+**Q25:** Perform a correlation analysis between age and MMSE score. Decide which correlation method to use (spearman vs pearson). Plot scatterplot of Age and MMSE first. Then use function `cor.test` (with parameter method='spearman') to perform correlation analysis. What does the correlation coefficient suggest about the relationship between these two variables? 
+
+**Q26:** Return to the scatter plot of Q19. Compute the correlation between nWBV and MMSE for all rows, then separately within the demented group and within the non-demented group (`cor.test` on a subset, e.g. `mmse[mmse$Group == "Demented", ]`). Why does the overall coefficient differ from the within-group values, and which of the three numbers answers the question "is brain volume related to cognition"?
+
+**Q27:** Conduct a chi-square test to see if there is an association between gender and the dementia classification (demented vs. non-demented). Use combination of `table` and `chisq.test` functions. *Hint: the Day 1 tutorial, section Extras, shows how; check the expected counts as well.*
+
+**Q28:** The Clinical Dementia Rating (CDR) takes the values 0, 0.5, 1 and 2. Plot MMSE by CDR level (`boxplot(MMSE ~ CDR, data = mmse)`) and report the median MMSE at each level. Why is CDR an ordinal variable rather than a number, and why do we compare medians rather than means across its levels?
+
+**Q29:** You have now run three tests on this dataset: the MMSE comparison (Q24), the age–MMSE correlation (Q25) and the gender–group association (Q27). Collect their three p-values into a vector and apply `p.adjust(p_values, method = "bonferroni")` (Day 1, Mission 7). Which conclusions change after the adjustment, which do not, and what stays exactly the same regardless of the adjustment?
+
+------------------------------------------------------------------------
+
+## Reflection
+
+**Q30:** Write the result of your MMSE comparison (Q24) as a full result sentence, following the Day 1 template: sample sizes, direction, size of the difference in points, confidence interval, method used, and one limitation. Then name one limitation of this dataset as a whole for answering "does dementia lower cognitive scores?"
+
+**Q31:** A short reflection on help you used: "I asked (a classmate / the instructor / an LLM) for help with ___; I checked the suggestion by ___; I now understand ___." Two or three sentences are enough. If you used no help, describe one place where you checked your own result against the data.
 
 <br>
 
-*Bonus tasks: *
+*Bonus task:*
 
- 
-**Q24:** Perform a correlation analysis between age and MMSE score. Decide which correlation method to use (spearman vs pearson). Plot scatterplot of Age and MMSE first. Then use function `cor` (with parameter method='spearman', and use='complete.obs') to perform correlation analysis.What does the correlation coefficient suggest about the relationship between these two variables? 
+**Q32:** “One-figure story”: Make a 2×2 plotting window showing (i) Age histogram, (ii) MMSE boxplot by group, (iii) nWBV vs MMSE scatter, (iv) SES histogram (omit NAs). Add titles to each. *Hint: Use par(mfrow) function* 
 
-**Q25:** Conduct a chi-square test to see if there is an association between gender and the dementia classification (demented vs. non-demented). Use combination of `table` and `chisq.test` functions. 
-
-**Q26:** “One-figure story”: Make a 2×2 plotting window showing (i) Age histogram, (ii) MMSE boxplot by group, (iii) nWBV vs MMSE scatter, (iv) SES histogram (omit NAs). Add titles to each. *Hint: Use par(mfrow) function* 
-
-![Example answer to Q26](../../Figures/all_in_one.png)
+![Example answer to Q32](../../Figures/all_in_one.png)
