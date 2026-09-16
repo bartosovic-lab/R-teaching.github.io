@@ -8,7 +8,7 @@ source('helpers.R')
 resources <- rmarkdown::find_external_resources('01_basics.Rmd')
 stopifnot(all(c('helpers.R','course.json','exercises.json') %in% resources$path))
 exercises<-learnr:::get_tutorial_exercises('01_basics.Rmd')
-stopifnot(length(exercises)==15)
+stopifnot(length(exercises)==18)
 states<-list()
 for(label in names(exercises)) {
  ex<-exercises[[label]]; ex$code<-ex$solution; ex$tutorial<-list(language='en')
@@ -21,6 +21,9 @@ wrong_codes<-list(divide='12 / 3',rescue='mean(Readings)',select='memantine_bdnf
  spread='sd_saline_bdnf <- 0; sd_memantine_bdnf <- 0',histogram='hist_memantine_bdnf <- hist(c(1,2,3),breaks=5)',
  boxplot='study <- read.csv("data/study.csv"); comparison <- boxplot(BDNF~group,data=study)',
  scatter='study <- read.csv("data/study.csv"); memantine_mice <- study; plot(study$BDNF,study$pCREB)')
+wrong_codes$count_replicates <- 'replicates <- read.csv("data/replicates.csv"); measurement_n <- nrow(replicates); animal_ids <- replicates$sample_id; animal_n <- measurement_n'
+wrong_codes$follow_animal <- 'replicates <- read.csv("data/replicates.csv"); one_animal <- replicates; one_animal_n <- nrow(one_animal)'
+wrong_codes$report_animals <- paste(exercises$report_animals$solution, 'n_saline <- 135; n_memantine <- 150', sep='\n')
 for(label in names(wrong_codes)) {
  ex<-exercises[[label]]; ex$code<-wrong_codes[[label]]; ex$tutorial<-list(language='en')
  result<-learnr:::evaluate_exercise(ex,new.env(parent=globalenv()),data_dir=file.path(tutorial,'data'))
@@ -66,4 +69,4 @@ for(choice in 1:3) for(method in c('welch','wilcoxon')) for(cor_method in c('pea
  stopifnot(env$ready,inherits(env$group_result,'htest'),length(env$x)>=3,all(is.finite(env$x)),all(is.finite(env$y)))
 }
 dev.off()
-cat('PASS: 15 real learnr solutions; 7 incorrect attempts; state, sliders and three downloads; export and notebook renders; 24 day-2 question, test, association-group and correlation-method combinations.\n')
+cat('PASS: 18 real learnr solutions; 10 incorrect attempts; state, sliders and three downloads; export and notebook renders; 24 day-2 question, test, association-group and correlation-method combinations.\n')

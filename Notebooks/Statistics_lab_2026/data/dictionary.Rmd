@@ -74,3 +74,11 @@ rebuilds the teaching tables; `scripts/validate_data.py` independently reconcile
 group counts and selected transformations. No outcomes were changed to manufacture a result.
 
 [Dataset](https://archive.ics.uci.edu/dataset/342/mice+protein+expression) · [Study](https://doi.org/10.1371/journal.pone.0129126)
+
+## Measurement-level table for the day-1 replication investigation
+
+`replicates.csv` contains 1080 measurement rows from 72 distinct mice.
+It retains all original assay records, not just record 1: sample_id, record_number, source_record, genotype, treatment, learning, BDNF and pCREB. record_number is the original assay suffix; it is not a documented dilution-level label. Original missing values remain NA. No assay values are averaged or imputed.
+
+The reveal plot uses the first four Control, Memantine, C/S mice in source order only, keeping condition fixed and the plot readable. The count exercises use the full table, then return to the original comparison.
+The copy-slider demonstration duplicates the original animal-level Saline observations in memory. It labels the resulting independence-based standard error as naive; no new biological evidence is created and no data files are changed.

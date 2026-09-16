@@ -26,7 +26,7 @@ measurements into a figure. You are allowed to be surprised by the data. A resul
 not support your prediction is still a result worth explaining.
 
 Work in pairs. One person types and the other predicts or explains; swap after each section.
-Keep your own written answers. Allow 70 minutes for basics, a break, 35 for plots and 5 for the handoff.
+Keep your own written answers. Allow 70 minutes for basics, a break, 35 for plots, 35 for the biological-replication investigation and 5 for the handoff.
 
 - **Code editor:** type R commands in the box containing code. Click **Run Code** to see results below it.
 - **Answer box:** type your scientific explanation in ordinary words.
@@ -619,15 +619,196 @@ plot(memantine_mice$BDNF, memantine_mice$pCREB,
 note("scatter")
 ```
 
-```{r quiz-samples}
-question("Your colleague counts every repeated cell or assay reading as a new animal. What should you check?",
- answer("Whether the measurements share the same animal ID",correct=TRUE),
- answer("Whether the spreadsheet uses different rows"),
- answer("Whether the larger sample size gives a smaller p-value"),
- correct="The experimental design determines independence. More rows can mean more measurements of the same animals.",allow_retry=TRUE)
+## 9. More rows, more evidence? — 35 minutes
+
+### Two lab members, two sample sizes
+
+One colleague says: “We have 1,080 observations.” Another says: “We have 72 mice.”
+They are looking at the same experiment. **Can they both be right?** Write your prediction
+on paper or tell your partner before opening the larger table.
+
+So far we have used one row per animal. Now open `replicates.csv`, where a row is
+one assay reading. It includes more experimental groups than our first comparison.
+Do not choose a statistical test yet. First find out what was actually replicated.
+
+### Count measurements, then count animals
+
+`nrow()` counts table rows. `unique()` keeps each distinct ID once; it does not average or remove measurements from the source. Work in short steps: append `measurement_n <- nrow(replicates)`, then `animal_ids <- unique(replicates$sample_id)`, then `animal_n <- length(animal_ids)`. Display both counts on separate lines.
+
+```{r count_replicates, exercise=TRUE}
+replicates <- read.csv("data/replicates.csv")
+head(replicates)
 ```
 
-## 9. Your own notebook — 5 minutes
+```{r count_replicates-check}
+# Checked by checker.
+```
+
+```{r count_replicates-hint-1}
+# Count rows with nrow(); store distinct sample_id values with unique(); count those IDs with length().
+```
+
+```{r count_replicates-solution}
+replicates <- read.csv("data/replicates.csv")
+head(replicates)
+measurement_n <- nrow(replicates)
+animal_ids <- unique(replicates$sample_id)
+animal_n <- length(animal_ids)
+measurement_n
+animal_n
+```
+
+```{r note-count_replicates}
+note("replication_count")
+```
+
+### Reveal: what was repeated?
+
+The mouse study measured each sample at five dilution levels, with three assay replicates per level: 15 readings per mouse. These are repeated assay measurements of the same biological source. Their spread can reflect both dilution conditions and technical variation. **Do not average the 15 rows blindly** or treat their record numbers as time or as known dilution labels. Our introductory table deliberately selected record 1 consistently; it did not create new animals.
+
+A **biological replicate** is an independent biological unit relevant to the question.
+The **experimental unit** is the unit independently assigned to an experimental condition.
+Repeated readings of the same sample are **technical replicates**; multiple cells within an
+animal are biological subsamples, not simply repeated instrument readings. These distinctions
+come from the experimental design, not from how many spreadsheet rows appear.
+
+For our animal-level question, the animal is the biological unit we retain. A unique ID alone
+does not prove independence: shared litters, cages, treatments or batches may matter. If a
+treatment were assigned to whole cages, for example, counting every animal as an independent
+treatment replicate could still be wrong.
+
+### Follow mouse 309
+
+The supplied selection keeps every reading belonging to one animal. Run it, then append `one_animal_n <- nrow(one_animal)` and display the count. Append this supplied plot to inspect the readings. `record_number` is a record index, **not time**.
+
+```r
+plot(one_animal$record_number, one_animal$BDNF, pch=19,
+     xlab="Record within one animal (not time)", ylab="BDNF assay signal (relative units)")
+```
+
+```{r follow_animal, exercise=TRUE}
+replicates <- read.csv("data/replicates.csv")
+head(replicates)
+one_animal <- replicates[replicates$sample_id == "309", ]
+one_animal
+```
+
+```{r follow_animal-check}
+# Checked by checker.
+```
+
+```{r follow_animal-hint-1}
+# Keep the supplied selection, then append one_animal_n <- nrow(one_animal) and one_animal_n. Add the supplied plot.
+```
+
+```{r follow_animal-solution}
+replicates <- read.csv("data/replicates.csv")
+head(replicates)
+one_animal <- replicates[replicates$sample_id == "309", ]
+one_animal
+one_animal_n <- nrow(one_animal)
+one_animal_n
+plot(one_animal$record_number, one_animal$BDNF, pch=19,
+     xlab="Record within one animal (not time)", ylab="BDNF assay signal (relative units)")
+```
+
+```{r note-follow_animal}
+note("replication_animal")
+```
+
+### Give the dots their owners
+
+The next display uses a small selection of animals **from the same condition** so the plot
+stays readable. First look at the pooled cloud. Then reveal animal IDs. The vertical positions
+and the number of measurements stay fixed; the revealed groups show which observations share
+an animal. Compare variation within an animal with differences between animals. This small
+view illustrates the structure; it does not establish the structure of the entire population.
+
+```{r replicate-controls}
+checkboxInput("replicate_owners","Reveal which animal owns each dot",FALSE)
+plotOutput("replicate_plot")
+```
+
+### The copy-and-paste experiment: can we manufacture precision?
+
+Predict what will happen if we copy every row of the original comparison's reference group
+five times. Will the mean change? Will the number of animals change? Could a computer be
+fooled by the larger row count?
+
+This is a **deliberately incorrect analysis of duplicated rows**, using the small animal-level
+table from earlier. No new assays, cells or animals are collected. The source files stay intact.
+This exaggerated example exposes an assumption; real repeated measurements need not be identical.
+
+The **standard error (SE)** describes uncertainty in an estimated mean under a statistical model;
+it is different from the SD describing spread among observations. A familiar SE calculation,
+`SD / sqrt(n)`, assumes independent observations. The solid line below deliberately breaks that
+assumption by pretending copied rows are independent. The dashed reference uses the original
+animal-level values and stays fixed. It too relies on the original animals being independent.
+
+```{r copy-controls}
+sliderInput("copy_factor","Copies of each existing row (1 means original table)",1,10,1,step=1)
+tableOutput("copy_counts")
+plotOutput("copy_precision")
+note("replication_copies")
+```
+
+This mistake is called **pseudoreplication**: treating dependent observations as if they independently
+replicated the biological comparison. Extra readings can help estimate measurement variability
+or characterise an animal better. They cannot substitute for collecting additional independent
+biological replicates. A sophisticated statistical model must still respect that structure.
+
+### Return to our actual biological question
+
+The larger file contains other experimental groups. We must select the original comparison
+before reporting its sample size. The filtering code is supplied; `&` means both conditions
+must hold. The extra readings below must lead back to the same animals we started with.
+
+### Defend the n in your report
+
+Run the supplied selection and read the measurement counts. Append `n_saline <- length(saline_ids)` and `n_memantine <- length(memantine_ids)`, then display both. Explain why the animal counts—not the number of assay or cell rows—belong in our original animal-level comparison.
+
+```{r report_animals, exercise=TRUE}
+replicates <- read.csv("data/replicates.csv")
+comparison_readings <- replicates[replicates$genotype == "Control" & replicates$learning == "C/S", ]
+table(comparison_readings$treatment) # Measurement counts, not animal counts.
+saline_ids <- unique(comparison_readings$sample_id[comparison_readings$treatment == "Saline"])
+memantine_ids <- unique(comparison_readings$sample_id[comparison_readings$treatment == "Memantine"])
+```
+
+```{r report_animals-check}
+# Checked by checker.
+```
+
+```{r report_animals-hint-1}
+# Append n_saline <- length(saline_ids) and n_memantine <- length(memantine_ids), then display both counts.
+```
+
+```{r report_animals-solution}
+replicates <- read.csv("data/replicates.csv")
+comparison_readings <- replicates[replicates$genotype == "Control" & replicates$learning == "C/S", ]
+table(comparison_readings$treatment) # Measurement counts, not animal counts.
+saline_ids <- unique(comparison_readings$sample_id[comparison_readings$treatment == "Saline"])
+memantine_ids <- unique(comparison_readings$sample_id[comparison_readings$treatment == "Memantine"])
+n_saline <- length(saline_ids)
+n_memantine <- length(memantine_ids)
+n_saline
+n_memantine
+```
+
+```{r note-report_animals}
+note("replication_report")
+```
+
+**Your final recommendation to the lab:** “Our comparison contains ___ and ___ biological
+units. Additional readings tell us ___, but do not independently replicate ___. Before choosing
+an analysis I would check ___.” Exchange recommendations with your partner.
+
+For these assays, a defensible summary must account for dilution and technical measurement structure; the fixed record-1 teaching subset is a transparent simplification, not a claim that this is the optimal assay analysis. A hierarchical model is an extension, not a command you need to learn today.
+
+**Bridge to inference:** before asking whether two means differ, ask what independently
+replicates the comparison. A smaller p-value cannot repair the wrong sample unit.
+
+## 10. Your own notebook — 5 minutes
 
 ```{r reflection}
 note("exit")
@@ -664,11 +845,14 @@ output$assay_stats <- renderPrint({x<-c(4,5,5,6,input$extreme); c(mean=mean(x),m
 output$hist_explorer <- renderPlot(hist_view(read.csv("data/study.csv"),input$hist_mode,input$hist_bins,input$hist_width))
 output$bin_summary <- renderText({e<-hist_edges(read.csv("data/study.csv"),input$hist_mode,input$hist_bins,input$hist_width); paste(length(e)-1,"shared bins; width",signif(e[2]-e[1],3),"measurement units. Both axes are shared.")})
 output$violin <- renderPlot(violin_view(read.csv("data/study.csv"),input$smooth))
+output$replicate_plot <- renderPlot(replication_plot(read.csv("data/replicates.csv"),input$replicate_owners))
+output$copy_counts <- renderTable(copy_summary(read.csv("data/study.csv"),input$copy_factor),digits=4)
+output$copy_precision <- renderPlot(copy_plot(read.csv("data/study.csv"),input$copy_factor))
 output$completion <- renderText({s<-learnr::get_tutorial_state(); passed<-sum(vapply(names(exercise_info),function(n)isTRUE(s[[n]]$correct),logical(1))); paste(passed,"of",length(exercise_info),"code checks passed. Review your explanations and rerun in RStudio too.")})
 handler <- function() downloadHandler(filename=function()"01_my_basics_and_plots.Rmd",content=function(file){
  s<-isolate(learnr::get_tutorial_state())
  notes<-setNames(lapply(names(note_labels),function(n)input[[paste0("note_",n)]]),names(note_labels))
- settings<-list(mode=input$hist_mode,bins=input$hist_bins,width=input$hist_width,smooth=input$smooth)
+ settings<-list(mode=input$hist_mode,bins=input$hist_bins,width=input$hist_width,smooth=input$smooth,owners=input$replicate_owners,copies=input$copy_factor)
  writeLines(export_notebook(s,notes,input$student,input$partner,settings),file,useBytes=TRUE)
 },contentType="text/plain; charset=utf-8")
 output$notebook <- handler()

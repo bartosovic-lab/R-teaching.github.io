@@ -357,22 +357,24 @@ investigation</h1>
 <div id="TOC">
 <ul>
 <li><a href="#your-report-starts-here" id="toc-your-report-starts-here">Your report starts here</a></li>
-<li><a href="#choose-a-question-before-looking-for-a-result-20-minutes" id="toc-choose-a-question-before-looking-for-a-result-20-minutes">1.
-Choose a question before looking for a result — 20 minutes</a></li>
-<li><a href="#inspect-and-select-25-minutes" id="toc-inspect-and-select-25-minutes">2. Inspect and select — 25
+<li><a href="#start-together-ranks-and-correlation-35-minutes" id="toc-start-together-ranks-and-correlation-35-minutes">Start together:
+ranks and correlation — 35 minutes</a></li>
+<li><a href="#choose-a-question-before-looking-for-a-result-15-minutes" id="toc-choose-a-question-before-looking-for-a-result-15-minutes">1.
+Choose a question before looking for a result — 15 minutes</a></li>
+<li><a href="#inspect-and-select-20-minutes" id="toc-inspect-and-select-20-minutes">2. Inspect and select — 20
 minutes</a></li>
-<li><a href="#give-the-reader-a-picture-30-minutes" id="toc-give-the-reader-a-picture-30-minutes">3. Give the reader a
-picture — 30 minutes</a></li>
+<li><a href="#give-the-reader-a-picture-25-minutes" id="toc-give-the-reader-a-picture-25-minutes">3. Give the reader a
+picture — 25 minutes</a></li>
 <li><a href="#choose-run-and-interpret-35-minutes" id="toc-choose-run-and-interpret-35-minutes">4. Choose, run and
 interpret — 35 minutes</a></li>
 <li><a href="#investigate-one-association-30-minutes" id="toc-investigate-one-association-30-minutes">5. Investigate one
 association — 30 minutes</a></li>
 <li><a href="#the-tempting-hunt-for-a-small-p-value-20-minutes" id="toc-the-tempting-hunt-for-a-small-p-value-20-minutes">6. The
 tempting hunt for a small p-value — 20 minutes</a></li>
-<li><a href="#peer-review-and-a-reproducible-hand-in-40-minutes" id="toc-peer-review-and-a-reproducible-hand-in-40-minutes">7. Peer
-review and a reproducible hand-in — 40 minutes</a></li>
-<li><a href="#extra-1080-rows-but-how-many-mice" id="toc-extra-1080-rows-but-how-many-mice">Extra: 1,080 rows, but how
-many mice?</a></li>
+<li><a href="#peer-review-and-a-reproducible-hand-in-35-minutes" id="toc-peer-review-and-a-reproducible-hand-in-35-minutes">7. Peer
+review and a reproducible hand-in — 35 minutes</a></li>
+<li><a href="#transfer-design-the-next-experiment" id="toc-transfer-design-the-next-experiment">Transfer: design the next
+experiment</a></li>
 <li><a href="#data-source" id="toc-data-source">Data source</a></li>
 </ul>
 </div>
@@ -391,8 +393,17 @@ earlier notebooks where it helps explain your decisions.</p>
 prior statistical vocabulary is assumed: use yesterday’s notebook and
 ask for explanations whenever a term is unclear.</p>
 </div>
-<div id="choose-a-question-before-looking-for-a-result-20-minutes" class="section level2">
-<h2>1. Choose a question before looking for a result — 20 minutes</h2>
+<div id="start-together-ranks-and-correlation-35-minutes" class="section level2">
+<h2>Start together: ranks and correlation — 35 minutes</h2>
+<p>Return to sections 4 and 5 of
+<code>03_statistical_analysis.Rmd</code>: spend 20 minutes comparing
+Welch and Wilcoxon questions, then 15 minutes on correlation. Yesterday
+we learned why counting independent biological units comes before either
+analysis. Explain that principle to your partner before continuing. Then
+return here to choose your investigation.</p>
+</div>
+<div id="choose-a-question-before-looking-for-a-result-15-minutes" class="section level2">
+<h2>1. Choose a question before looking for a result — 15 minutes</h2>
 <table>
 <colgroup>
 <col width="33%" />
@@ -439,8 +450,8 @@ exploratory teaching analyses of a published dataset, not a new
 confirmatory study. Do not try every option and present only the
 smallest p-value.</p>
 </div>
-<div id="inspect-and-select-25-minutes" class="section level2">
-<h2>2. Inspect and select — 25 minutes</h2>
+<div id="inspect-and-select-20-minutes" class="section level2">
+<h2>2. Inspect and select — 20 minutes</h2>
 <pre class="r"><code>full &lt;- read.csv(&quot;data/investigation.csv&quot;)
 head(full)</code></pre>
 <pre><code>##   sample_id genotype treatment learning      BDNF     pCREB      NR1
@@ -514,8 +525,8 @@ with zero.</p>
 <p><em>Rows included, exclusions, observed sample sizes and what one row
 means: write here.</em></p>
 </div>
-<div id="give-the-reader-a-picture-30-minutes" class="section level2">
-<h2>3. Give the reader a picture — 30 minutes</h2>
+<div id="give-the-reader-a-picture-25-minutes" class="section level2">
+<h2>3. Give the reader a picture — 25 minutes</h2>
 <pre class="r"><code>if (!is.null(selected)) {
   boxplot(value ~ group, data=complete, outline=FALSE,ylab=unit)
   set.seed(7)
@@ -620,8 +631,8 @@ completely different scientific conclusions?</p>
 <p><em>My explanation and the family of questions I explored: write
 here.</em></p>
 </div>
-<div id="peer-review-and-a-reproducible-hand-in-40-minutes" class="section level2">
-<h2>7. Peer review and a reproducible hand-in — 40 minutes</h2>
+<div id="peer-review-and-a-reproducible-hand-in-35-minutes" class="section level2">
+<h2>7. Peer review and a reproducible hand-in — 35 minutes</h2>
 <p>Give your partner three minutes to read your best figure and result.
 They ask:</p>
 <ol style="list-style-type: decimal">
@@ -657,8 +668,8 @@ replaced, and the draft notice is resolved.</label></li>
 <p>Submit this integrated <strong>HTML</strong> to the learning system;
 keep the <code>.Rmd</code> as your editable recipe.</p>
 </div>
-<div id="extra-1080-rows-but-how-many-mice" class="section level2">
-<h2>Extra: 1,080 rows, but how many mice?</h2>
+<div id="transfer-design-the-next-experiment" class="section level2">
+<h2>Transfer: design the next experiment</h2>
 <p>The source workbook contains 15 assay records per mouse: three
 replicates of a five-point dilution series. The supplied teaching CSV
 retains record <code>_1</code> consistently for each mouse. This

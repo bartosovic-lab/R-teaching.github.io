@@ -1,5 +1,6 @@
 # Instructor implementation: student-facing code uses base R.
 course <- jsonlite::fromJSON('course.json')
+source('replication.R',local=TRUE)
 exercise_info <- jsonlite::fromJSON('exercises.json', simplifyVector=FALSE)
 near <- function(a,b) is.numeric(a) && length(a)==length(b) && !anyNA(a) && isTRUE(all.equal(as.numeric(a),as.numeric(b),tolerance=1e-7))
 checker <- function(label,envir_result,last_value,stage,user_code='',...) {
@@ -8,7 +9,11 @@ checker <- function(label,envir_result,last_value,stage,user_code='',...) {
   if(stage!='check') return(NULL)
   obj <- function(n) if(exists(n,envir_result,inherits=FALSE))get(n,envir_result) else NULL
   d<-read.csv('data/study.csv'); a<-d$BDNF[d$group==course$group_a]; b<-d$BDNF[d$group==course$group_b]
+  reps<-read.csv('data/replicates.csv')
   ok<-switch(label,
+    count_replicates=near(obj('measurement_n'),nrow(reps)) && identical(sort(as.character(obj('animal_ids'))),sort(unique(as.character(reps$sample_id)))) && near(obj('animal_n'),length(unique(reps$sample_id))),
+    follow_animal=isTRUE(all.equal(obj('one_animal'),reps[reps$sample_id=="309",])) && near(obj('one_animal_n'),15),
+    report_animals=near(obj('n_saline'),9) && near(obj('n_memantine'),10) && identical(sort(as.character(obj('saline_ids'))),sort(as.character(d$sample_id[d$group==course$group_a]))) && identical(sort(as.character(obj('memantine_ids'))),sort(as.character(d$sample_id[d$group==course$group_b]))),
     divide=near(last_value,3), multiply=near(last_value,12),
     store=near(obj('wells'),16)&&near(last_value,16),
     combine=near(obj('counts'),c(2,4,6,8))&&near(last_value,c(2,4,6,8)),
@@ -26,7 +31,8 @@ checker <- function(label,envir_result,last_value,stage,user_code='',...) {
     FALSE)
   reply(ok,exercise_info[[label]]$success,exercise_info[[label]]$hint)
 }
-note_labels <- c(row='Describe one row, the measurement and its unit. Is group nominal or ordinal? Is BDNF a continuous measurement? Explain why an ID is a label even when it contains digits.',
+note_labels <- c(replication_count="The full table has ___ measurement rows from ___ distinct mice. Why can both counts be correct? Which count represents the number of animals available for biological comparisons, before choosing groups?",replication_animal="What varies within mouse 309, and what do these readings share? Explain what extra measurements can tell us and why they are not additional mice.",replication_copies="Predict first, then move the copy slider. Which numbers change? Why is the smaller naive standard error not evidence that new biological information was collected?",replication_report="For our original comparison, report both animal sample sizes and distinguish them from measurement counts. Explain why all 72 animals cannot be pooled into that two-group question. Recommend a defensible analysis and one design fact you would check before assuming independence.",
+ row='Describe one row, the measurement and its unit. Is group nominal or ordinal? Is BDNF a continuous measurement? Explain why an ID is a label even when it contains digits.',
  selection='Which animals contributed to memantine_bdnf? Explain the selection to your partner.',
  spread='Write both SDs with units. Which group varies more? Does that tell you how precisely its mean is known?',
  outlier='Which fifth reading doubles the mean? Why can the median stay fixed? Critique: “The average doubled, so every culture responded twice as much.” What would you check before deleting the unusual reading?',
@@ -84,7 +90,7 @@ export_notebook <- function(states,notes,student='',partner='',settings=list()) 
   if(!is.null(e$note)) lines<-c(lines,paste0('**',note_labels[[e$note]],'**'),'',literal(notes[[e$note]]),'')
  }
  lines<-c(lines,'## My interactive views','',
- 'These supplied reference plots record my slider settings at download time. My submitted plotting code is above. The source measurements are unchanged.','',
+ 'These supplied reference plots record my slider settings at download time. My submitted plotting code is above. The replication copy experiment deliberately duplicates existing rows: it collects no new animals, and its naive standard error is not valid evidence of increased biological precision. Source data are unchanged.','',
  '```{r interactive-views}',
  'local({',
  '  helper_env <- new.env()',
@@ -95,8 +101,11 @@ export_notebook <- function(states,notes,student='',partner='',settings=list()) 
  '  d <- read.csv("data/study.csv")',
  sprintf('  helper_env$hist_view(d, "%s", %d, %.10g)',settings$mode %||% 'count',settings$bins %||% 6,settings$width %||% 1),
  sprintf('  helper_env$violin_view(d, %.10g)',settings$smooth %||% 1),
+ sprintf('  helper_env$replication_plot(read.csv("data/replicates.csv"), owners=%s)',if(isTRUE(settings$owners))'TRUE' else 'FALSE'),
+ sprintf('  print(helper_env$copy_summary(d, %d))',settings$copies %||% 1),
+ sprintf('  helper_env$copy_plot(d, %d)',settings$copies %||% 1),
  '})','```','')
- for(id in c('violin','exit','help'))lines<-c(lines,paste0('### ',note_labels[[id]]),'',literal(notes[[id]]),'')
+ for(id in c('violin','replication_copies','exit','help'))lines<-c(lines,paste0('### ',note_labels[[id]]),'',literal(notes[[id]]),'')
  for(label in setdiff(names(states),names(exercise_info))) {
   s<-states[[label]]
   if(identical(s$type,'question')&&length(s$answer)) lines<-c(lines,paste0('**Quiz ',label,':** ',literal(paste(s$answer,collapse='; '))),'')

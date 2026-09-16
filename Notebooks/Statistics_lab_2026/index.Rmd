@@ -36,3 +36,5 @@ R session**; opening an HTML file or a GitHub page does not start its exercise e
 Keep your work in `notebooks/`. The Source editor holds your saved recipe; the Console executes
 commands; Knit makes the HTML you submit. Ask for help early. Explaining a result is more
 important than remembering a command.
+
+Day 1 builds towards **More rows, more evidence?**: identify animals behind the measurements, reveal their dots, and investigate why copying data cannot create biological replication.

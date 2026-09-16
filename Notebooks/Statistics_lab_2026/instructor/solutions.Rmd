@@ -55,3 +55,11 @@ for(g in c("Saline","Memantine")) {
 Read `guide.md` and `data/dictionary.html` before teaching. Day-2 answers depend on the selected
 question. The validation script runs every allowed combination; an exploratory result remains
 exploratory even when p is small.
+
+## Day-1 biological replication investigation
+
+The full assay table contains 1,080 readings from 72 mice. Mouse 309 has 15 readings. The original comparison contains 9 saline and 10 memantine mice, represented by 135 and 150 assay rows. Record 1 is a transparent teaching simplification; averaging across dilution levels without assay modelling is not an adequate substitute.
+
+Copying rows adds no independent evidence. The mean and animal count stay fixed; only the
+naive SE shrinks. Counting distinct IDs is necessary but cannot establish independence:
+check treatment allocation, shared cage/litter or batch, and the biological target of inference.

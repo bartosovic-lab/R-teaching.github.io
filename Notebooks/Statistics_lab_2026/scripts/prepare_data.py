@@ -20,6 +20,12 @@ if cfg['variant'] == 'mouse':
     s = xlrd.open_workbook(raw / 'Data_Cortex_Nuclear.xls').sheet_by_index(0)
     records = [dict(zip(s.row_values(0), s.row_values(i))) for i in range(1, s.nrows)]
     assert len(records) == 1080
+    measurement_rows = [dict(sample_id=r['MouseID'].rsplit('_',1)[0],
+        record_number=int(r['MouseID'].rsplit('_',1)[1]),source_record=r['MouseID'],
+        genotype=r['Genotype'],treatment=r['Treatment'],learning=r['Behavior'],
+        BDNF=r['BDNF_N'] if r['BDNF_N'] != '' else 'NA',
+        pCREB=r['pCREB_N'] if r['pCREB_N'] != '' else 'NA') for r in records]
+    write('replicates.csv',measurement_rows)
     # A fixed, outcome-independent assay index. No averaging across dilution levels.
     selected = [r for r in records if r['MouseID'].endswith('_1')]
     assert len(selected) == 72
@@ -52,6 +58,12 @@ else:
                                   day_label=day, reversal_mV=reversal, resting_mV=resting,
                                   source_row=n, source_label=label))
     write('cells.csv',cells)
+    per_animal = {}
+    measurement_rows = []
+    for cell in cells:
+        per_animal[cell['sample_id']] = per_animal.get(cell['sample_id'],0)+1
+        measurement_rows.append(dict(cell,record_number=per_animal[cell['sample_id']]))
+    write('replicates.csv',measurement_rows)
     groups = {}
     for r in cells: groups.setdefault((r['sample_id'],r['conditioning'],r['phase']),[]).append(r)
     rows = [dict(sample_id=k[0],conditioning=k[1],phase=k[2],day_label=v[0]['day_label'],
@@ -77,7 +89,8 @@ measurements = ('BDNF','pCREB') if cfg['variant']=='mouse' else ('reversal_mV','
 assert all(r[name]!='NA' for r in core for name in measurements)
 dest=root/'tutorials/01_basics/data'
 dest.mkdir(parents=True,exist_ok=True)
-shutil.copy2(root/'data/study.csv',dest/'study.csv')
+for name in ['study.csv','replicates.csv']:
+    shutil.copy2(root/'data'/name,dest/name)
 manifest={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(raw.iterdir()) if p.is_file()}
 (raw/'checksums.json').write_text(json.dumps({k:v for k,v in manifest.items() if k!='checksums.json'},indent=2)+'\n')
 print(cfg['variant'], 'core:',len(core),'independent animals; full:',len(rows))
