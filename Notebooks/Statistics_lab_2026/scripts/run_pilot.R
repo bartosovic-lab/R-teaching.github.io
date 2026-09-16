@@ -13,6 +13,7 @@ if(!rmarkdown::pandoc_available())stop('Pandoc is needed. Launch from RStudio.')
 stopifnot(identical(unname(tools::md5sum('data/study.csv')),unname(tools::md5sum('tutorials/01_basics/data/study.csv'))))
 stopifnot(identical(unname(tools::md5sum('course.json')),unname(tools::md5sum('tutorials/01_basics/course.json'))))
 stopifnot(identical(unname(tools::md5sum('data/replicates.csv')),unname(tools::md5sum('tutorials/01_basics/data/replicates.csv'))))
+stopifnot(identical(unname(tools::md5sum('data/investigation.csv')),unname(tools::md5sum('tutorials/01_basics/data/investigation.csv'))))
 local({
  old<-getwd(); on.exit(setwd(old)); setwd('tutorials/01_basics')
  port<-getOption('course.port',NULL)

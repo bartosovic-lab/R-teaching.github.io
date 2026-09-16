@@ -11,7 +11,7 @@ raw = root / 'data/source'
 
 def write(name, rows):
     with (root / 'data' / name).open('w', newline='') as f:
-        out = csv.DictWriter(f, fieldnames=list(rows[0]))
+        out = csv.DictWriter(f, fieldnames=list(rows[0]), lineterminator="\n")
         out.writeheader()
         out.writerows(rows)
 
@@ -57,6 +57,10 @@ else:
                 cells.append(dict(sample_id=animal, conditioning=condition, phase=phase,
                                   day_label=day, reversal_mV=reversal, resting_mV=resting,
                                   source_row=n, source_label=label))
+    original_ids = list(dict.fromkeys(cell['sample_id'] for cell in cells))
+    id_map = {old:f'Rat_{i:02d}' for i,old in enumerate(original_ids,1)}
+    write('animal_id_key.csv',[dict(sample_id=new,source_sample_id=old) for old,new in id_map.items()])
+    for cell in cells: cell['sample_id'] = id_map[cell['sample_id']]
     write('cells.csv',cells)
     per_animal = {}
     measurement_rows = []
@@ -89,7 +93,7 @@ measurements = ('BDNF','pCREB') if cfg['variant']=='mouse' else ('reversal_mV','
 assert all(r[name]!='NA' for r in core for name in measurements)
 dest=root/'tutorials/01_basics/data'
 dest.mkdir(parents=True,exist_ok=True)
-for name in ['study.csv','replicates.csv']:
+for name in ['study.csv','replicates.csv','investigation.csv']:
     shutil.copy2(root/'data'/name,dest/name)
 manifest={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(raw.iterdir()) if p.is_file()}
 (raw/'checksums.json').write_text(json.dumps({k:v for k,v in manifest.items() if k!='checksums.json'},indent=2)+'\n')

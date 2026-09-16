@@ -43,10 +43,24 @@
   },
   "import": {
     "title": "Open the table",
-    "task": "`read.csv()` reads a comma-separated table. Quotes mark literal text, including a file path. `<-` stores the table as study. `head()` previews rows, `names()` lists columns, and `dim()` reports rows then columns. Run the supplied import, then append `head(study)`, `names(study)` and `dim(study)` in that order.",
+    "task": "`read.csv()` reads a comma-separated table. Quotes mark literal text, including a file path. `<-` stores the table as animals. `head()` previews rows, `names()` lists columns, and `dim()` reports rows then columns. Run the supplied import, then append `head(animals)`, `names(animals)` and `dim(animals)` in that order.",
     "success": "You imported the complete teaching table. Four columns do not mean four times as many animals.",
-    "hint": "Append head(study), names(study), then dim(study).",
+    "hint": "Append head(animals), names(animals), then dim(animals).",
     "note": "row"
+  },
+  "count_replicates": {
+    "title": "Count measurements, then count animals",
+    "task": "`nrow()` counts table rows. `unique()` keeps each distinct ID once; it does not average or remove measurements from the source. Work in short steps: append `measurement_n <- nrow(replicates)`, then `animal_ids <- unique(replicates$sample_id)`, then `animal_n <- length(animal_ids)`. Display both counts on separate lines.",
+    "hint": "Count rows with nrow(); store distinct sample_id values with unique(); count those IDs with length().",
+    "success": "47 measurement rows belong to 26 animals. More rows need not mean more animals.",
+    "note": "replication_count"
+  },
+  "follow_animal": {
+    "title": "Follow rat Rat_08",
+    "task": "The supplied selection keeps every reading belonging to one animal. Run it, then append `one_animal_n <- nrow(one_animal)` and display the count. Append this supplied plot to inspect the readings. `record_number` is a record index, **not time**.\n\n```r\nplot(one_animal$record_number, one_animal$reversal_mV, pch=19,\n     xlab=\"Record within one animal (not time)\", ylab=\"Cell GABA reversal potential (mV)\")\n```",
+    "hint": "Keep the supplied selection, then append one_animal_n <- nrow(one_animal) and one_animal_n. Add the supplied plot.",
+    "success": "This animal contributes 3 recorded measurements, but remains one biological source.",
+    "note": "replication_animal"
   },
   "select": {
     "title": "Follow the Acquisition animals",
@@ -54,6 +68,13 @@
     "success": "The selection and mean are correct. Check the printed sample size before interpreting the average.",
     "hint": "Append acquisition_reversal_mV <- study$reversal_mV[study$group == \"Acquisition\"], then length(acquisition_reversal_mV) and mean(acquisition_reversal_mV).",
     "note": "selection"
+  },
+  "report_animals": {
+    "title": "Defend the n in your report",
+    "task": "Run the supplied selection and read the measurement counts. Append `n_baseline <- length(baseline_ids)` and `n_acquisition <- length(acquisition_ids)`, then display both. Explain why the animal counts\u2014not the number of assay or cell rows\u2014belong in our original animal-level comparison.",
+    "hint": "Append n_baseline <- length(baseline_ids) and n_acquisition <- length(acquisition_ids), then display both counts.",
+    "success": "The comparison still contains 7 Baseline and 6 Acquisition animals. Repeated measurements did not increase these sample sizes.",
+    "note": "replication_report"
   },
   "spread": {
     "title": "Which group varies more?",
@@ -96,26 +117,5 @@
     "success": "The Acquisition table is correct and you included a plot command. Check the plotted axes and explain the pattern; a code check cannot judge your caption.",
     "hint": "Append acquisition_rats <- study[study$group == \"Acquisition\", ], then plot(acquisition_rats$reversal_mV, acquisition_rats$resting_mV, xlab=\"Measurement\", ylab=\"Mean resting membrane potential (mV)\").",
     "note": "scatter"
-  },
-  "count_replicates": {
-    "title": "Count measurements, then count animals",
-    "task": "`nrow()` counts table rows. `unique()` keeps each distinct ID once; it does not average or remove measurements from the source. Work in short steps: append `measurement_n <- nrow(replicates)`, then `animal_ids <- unique(replicates$sample_id)`, then `animal_n <- length(animal_ids)`. Display both counts on separate lines.",
-    "hint": "Count rows with nrow(); store distinct sample_id values with unique(); count those IDs with length().",
-    "success": "47 measurement rows belong to 26 animals. More rows need not mean more animals.",
-    "note": "replication_count"
-  },
-  "follow_animal": {
-    "title": "Follow rat g+212.10",
-    "task": "The supplied selection keeps every reading belonging to one animal. Run it, then append `one_animal_n <- nrow(one_animal)` and display the count. Append this supplied plot to inspect the readings. `record_number` is a record index, **not time**.\n\n```r\nplot(one_animal$record_number, one_animal$reversal_mV, pch=19,\n     xlab=\"Record within one animal (not time)\", ylab=\"Cell GABA reversal potential (mV)\")\n```",
-    "hint": "Keep the supplied selection, then append one_animal_n <- nrow(one_animal) and one_animal_n. Add the supplied plot.",
-    "success": "This animal contributes 3 recorded measurements, but remains one biological source.",
-    "note": "replication_animal"
-  },
-  "report_animals": {
-    "title": "Defend the n in your report",
-    "task": "Run the supplied selection and read the measurement counts. Append `n_baseline <- length(baseline_ids)` and `n_acquisition <- length(acquisition_ids)`, then display both. Explain why the animal counts\u2014not the number of assay or cell rows\u2014belong in our original animal-level comparison.",
-    "hint": "Append n_baseline <- length(baseline_ids) and n_acquisition <- length(acquisition_ids), then display both counts.",
-    "success": "The comparison still contains 7 Baseline and 6 Acquisition animals. Repeated measurements did not increase these sample sizes.",
-    "note": "replication_report"
   }
 }

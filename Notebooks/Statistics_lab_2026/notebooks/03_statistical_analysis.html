@@ -363,11 +363,9 @@ not a busy Console — 10 minutes</a></li>
 observations and distributions — 20 minutes</a></li>
 <li><a href="#what-question-does-a-test-answer-30-minutes" id="toc-what-question-does-a-test-answer-30-minutes">3. What question
 does a test answer? — 30 minutes</a></li>
-<li><a href="#day-2-opening-compare-ranks-20-minutes" id="toc-day-2-opening-compare-ranks-20-minutes">4. Day 2 opening:
-compare ranks — 20 minutes</a></li>
-<li><a href="#day-2-opening-do-two-measurements-travel-together-15-minutes" id="toc-day-2-opening-do-two-measurements-travel-together-15-minutes">5.
-Day 2 opening: do two measurements travel together? — 15
-minutes</a></li>
+<li><a href="#compare-ranks-20-minutes" id="toc-compare-ranks-20-minutes">4. Compare ranks — 20 minutes</a></li>
+<li><a href="#do-two-measurements-travel-together-15-minutes" id="toc-do-two-measurements-travel-together-15-minutes">5. do two
+measurements travel together? — 15 minutes</a></li>
 <li><a href="#keep-a-result-you-can-reproduce-5-minutes" id="toc-keep-a-result-you-can-reproduce-5-minutes">6. Keep a result you
 can reproduce — 5 minutes</a></li>
 </ul>
@@ -402,12 +400,12 @@ closing bracket or quote in the Source editor. Save often.</p>
 <pre class="r"><code>study &lt;- read.csv(&quot;data/study.csv&quot;)
 head(study)</code></pre>
 <pre><code>##   sample_id    group reversal_mV resting_mV
-## 1   g+292.2 Baseline   -73.85000  -60.15000
-## 2   g+296.4 Baseline   -84.48682  -56.83034
-## 3  g+292.12 Baseline   -76.01080  -70.75610
-## 4   g+312.8 Baseline   -75.73190  -59.34840
-## 5  g+312.10 Baseline   -78.74960  -45.29000
-## 6    g339.7 Baseline   -74.72376  -51.49626</code></pre>
+## 1    Rat_01 Baseline   -73.85000  -60.15000
+## 2    Rat_02 Baseline   -84.48682  -56.83034
+## 3    Rat_03 Baseline   -76.01080  -70.75610
+## 4    Rat_04 Baseline   -75.73190  -59.34840
+## 5    Rat_05 Baseline   -78.74960  -45.29000
+## 6    Rat_06 Baseline   -74.72376  -51.49626</code></pre>
 <pre class="r"><code>study$group &lt;- factor(study$group, levels=c(&quot;Baseline&quot;,&quot;Acquisition&quot;))
 baseline_reversal_mV &lt;- study$reversal_mV[study$group == &quot;Baseline&quot;]
 acquisition_reversal_mV &lt;- study$reversal_mV[study$group == &quot;Acquisition&quot;]
@@ -528,12 +526,11 @@ to <strong><em>; n = </em></strong> and <strong><em>; Welch p =
 </em></strong>). The main design or distribution concern is
 <strong><em>. The data do not establish </em></strong>.</p>
 <p><em>My result: write here.</em></p>
-<p><strong>End of day 1:</strong> complete the reproducibility checklist
-in section 6 (5 minutes). Sections 4 and 5 below open day 2; they remain
-here so the worked analysis stays together.</p>
+<p>Continue with ranks and correlation today, then finish with the
+reproducibility checklist.</p>
 </div>
-<div id="day-2-opening-compare-ranks-20-minutes" class="section level2">
-<h2>4. Day 2 opening: compare ranks — 20 minutes</h2>
+<div id="compare-ranks-20-minutes" class="section level2">
+<h2>4. Compare ranks — 20 minutes</h2>
 <p>Ranks replace measurements by their order: smallest, next smallest,
 and so on. The <strong>Wilcoxon rank-sum test</strong> compares the
 groups through ranks. It does not require normal measurements, but it
@@ -561,9 +558,8 @@ differ, I would explain </em></strong>. Write here.</em></p>
 headline, then swap notebooks. Your partner identifies one claim that
 the sample cannot support.</p>
 </div>
-<div id="day-2-opening-do-two-measurements-travel-together-15-minutes" class="section level2">
-<h2>5. Day 2 opening: do two measurements travel together? — 15
-minutes</h2>
+<div id="do-two-measurements-travel-together-15-minutes" class="section level2">
+<h2>5. do two measurements travel together? — 15 minutes</h2>
 <p>Here we use only Baseline. An association across mixed groups can be
 driven by the groups themselves. Correlation requires <strong>two
 measurements from the same animal</strong>, not two unrelated columns
@@ -615,8 +611,8 @@ comparison direction.</label></li>
 and I reported sample sizes.</label></li>
 <li><label><input type="checkbox"></input>I justified my test and interpreted
 its estimate, uncertainty and p-value.</label></li>
-<li><label><input type="checkbox"></input>On day 2, I explained the rank
-comparison and correlation in my own words.</label></li>
+<li><label><input type="checkbox"></input>Before finishing, I explained the
+rank comparison and correlation in my own words.</label></li>
 <li><label><input type="checkbox"></input>I restarted R, ran all chunks in
 order and checked the knitted HTML.</label></li>
 </ul>

@@ -25,7 +25,13 @@ knitr::opts_chunk$set(echo=FALSE,fig.width=8,fig.height=4.5)
 
 ## Welcome: you are the analysis team
 
-GABA is a signalling molecule whose electrical effect depends partly on chloride regulation. Researchers recorded neurons in the ventral tegmental area of rats during reward learning. The GABA reversal potential is the voltage at which the measured GABA current changes direction. A less negative value is a shift towards more positive voltage; you do not need prior electrophysiology to compare these measurements.
+GABA is the brain’s main inhibitory neurotransmitter. When GABA activates GABA_A receptors, their channels allow anions, mainly chloride, to cross the membrane. The chloride gradient helps determine the voltage towards which that current drives the neuron: the **GABA reversal potential (E_GABA)**. At that voltage the net GABA_A current is zero; on either side it flows in opposite directions.
+
+Imagine a neuron resting at −65 mV. If E_GABA is −80 mV, opening these channels tends to make its voltage more negative. If E_GABA shifts to −55 mV, the same input can instead depolarize it. Depolarizing GABA does not automatically trigger spikes: opening channels can still reduce the effect of other inputs (shunting inhibition), and spike threshold matters. Thus “less negative E_GABA” does not simply mean “a more sensitive neuron.” These example voltages illustrate the principle; they are not extra observations.
+
+Here researchers studied **GABA neurons in the ventral tegmental area (VTA)** during cue–reward learning in rats. In one protocol a tone predicted a sugar pellet; in the control protocol tone and reward were unpaired. Recordings were made in brain slices from different animals at baseline, acquisition and plateau. Acquisition is a learning phase, not a drug treatment. The study links a temporary depolarizing E_GABA shift to reduced function of KCC2, a transporter that helps remove chloride from neurons. Our table lets us investigate the voltage pattern; by itself it cannot establish that mechanism or a change in firing.
+
+[Experiment and methods: Woo et al., 2025](https://www.nature.com/articles/s41467-025-66838-x).
 
 **Your question:** Does the GABA reversal potential differ between baseline and the acquisition phase of reward learning?
 
@@ -34,7 +40,7 @@ measurements into a figure. You are allowed to be surprised by the data. A resul
 not support your prediction is still a result worth explaining.
 
 Work in pairs. One person types and the other predicts or explains; swap after each section.
-Keep your own written answers. Allow 70 minutes for basics, a break, 35 for plots, 35 for the biological-replication investigation and 5 for the handoff.
+Keep your own written answers. We start with a quick command warm-up, then meet all the animals and their cells. Replication will guide our selections, summaries and plots. Day 1 includes guided statistics in RStudio; day 2 is your independent project.
 
 - **Code editor:** type R commands in the box containing code. Click **Run Code** to see results below it.
 - **Answer box:** type your scientific explanation in ordinary words.
@@ -50,7 +56,7 @@ Download regularly. Written answers are session-only; download before closing or
 Your notebook contains your submitted code, your explanations and your current slider views.
 It will become an ordinary editable R notebook in RStudio.
 
-## 1. First successful runs — 20 minutes
+## 1. First successful runs — 5 minutes
 
 Click inside the editor and press Enter for a new line. Running an editor runs every line,
 top to bottom. Output appears in the same order. The printed `[1]` marks the position of the
@@ -164,35 +170,27 @@ mean(Readings)
 
 
 
-## 2. Meet the data — 10 minutes
+## 2. Meet the data — 20 minutes
 
-One row is one rat, summarised by the mean of its recorded cells. Baseline and acquisition use different rats, not the same rat measured twice. All core animals received the cue followed by reward protocol. In the original paper this protocol is called paired conditioning; that name does not mean our statistical samples are paired.
+We have **26 rats and 47 recorded cells**, across two conditioning protocols and three learning phases. We will inspect both levels before selecting a comparison.
 
-Our prepared table has **13 animals**: 7 Baseline and 6 Acquisition.
-The original measurements are real, openly available research data. The preparation and exact source
-are in `data/dictionary.html`. [Dataset](https://datadryad.org/dataset/doi:10.5061/dryad.44j0zpcv7) · [Original study](https://doi.org/10.1038/s41467-025-66838-x).
+- `investigation.csv`: one row per rat, with its mean voltages and `n_cells`.
+- `replicates.csv`: one row per recorded cell, with the rat ID it belongs to.
+- `sample_id`: a readable label, `Rat_01` to `Rat_26`. It is not a measurement or a rank. The original labels remain in `data/animal_id_key.csv`.
+- `conditioning`: Paired (tone predicts reward) or Unpaired (control protocol).
+- `phase`: Baseline, Acquisition or Plateau; `day_label` records the source day label.
+- `reversal_mV` and `resting_mV`: GABA reversal and resting membrane potentials, in millivolts. In the animal table these are means of the recorded cells; in the cell table they are individual cell measurements.
 
-| Column | Meaning |
-|---|---|
-| `sample_id` | Animal identifier; a label, not a measured quantity |
-| `group` | Baseline or Acquisition |
-| `reversal_mV` | Mean GABA reversal potential (mV) |
-| `resting_mV` | Mean resting membrane potential (mV), from the same animal |
+A table in R is a **data frame**. Its columns are variables. Conditioning is **nominal**: categories without a ranking. Learning phase has an **order**, but equal steps between phase labels do not represent equal amounts of learning. Voltage is a **continuous** measurement. Biological meaning matters more than whether a value contains digits.
 
-`reversal_mV` is the GABA reversal potential; `resting_mV` is the resting membrane potential. The suffix `_mV` means millivolts. Each value is the mean of the recorded cells from one rat.
-
-A table in R is called a **data frame**. A row holds information about one animal;
-a column holds one variable. A **nominal** category names groups with no ranking;
-an **ordinal** category has an order but need not have equal gaps. A **continuous** measurement
-can take intermediate values even if the instrument rounds them. Biological meaning matters,
-not just whether R stores digits. A day number and a named learning phase are different descriptions.
+The source workbook has ten paired plateau cells while the paper caption reports nine. We retain the workbook observations and flag the discrepancy; the baseline/acquisition comparison is unaffected. See `data/dictionary.html` in the course project for the preparation details.
 
 ### Open the table
 
-`read.csv()` reads a comma-separated table. Quotes mark literal text, including a file path. `<-` stores the table as study. `head()` previews rows, `names()` lists columns, and `dim()` reports rows then columns. Run the supplied import, then append `head(study)`, `names(study)` and `dim(study)` in that order.
+`read.csv()` reads a comma-separated table. Quotes mark literal text, including a file path. `<-` stores the table as animals. `head()` previews rows, `names()` lists columns, and `dim()` reports rows then columns. Run the supplied import, then append `head(animals)`, `names(animals)` and `dim(animals)` in that order.
 
 ```{r import,eval=FALSE,echo=TRUE}
-study <- read.csv("data/study.csv")
+animals <- read.csv("data/investigation.csv")
 ```
 
 
@@ -203,7 +201,102 @@ study <- read.csv("data/study.csv")
 
 **Pause and explain:** row. Write your answer in the live tutorial.
 
-## 3. Follow one group — 10 minutes
+### Every animal, every recorded cell
+
+Open either table below. Find a rat in the first table and all its cells in the second.
+Does every rat contribute the same number of cells? These are all animals in this electrophysiology table, not every animal in the publication.
+
+<details><summary>Show all 26 animals</summary>
+
+```{r all-animals}
+knitr::kable(read.csv("data/investigation.csv"))
+```
+
+</details>
+
+<details><summary>Show all 47 cells, grouped by animal ID</summary>
+
+```{r all-cells}
+cells <- read.csv("data/replicates.csv")
+cells <- cells[order(cells$sample_id,cells$record_number), ]
+knitr::kable(cells[c("sample_id","record_number","conditioning","phase","reversal_mV","resting_mV")])
+```
+
+</details>
+
+### Two lab members, two sample sizes
+
+One colleague says: “We have 47 observations.” Another says: “We have 26 rats.”
+They are looking at the same experiment. **Can they both be right?** Write your prediction
+on paper or tell your partner before opening the larger table.
+
+Open `replicates.csv`, where a row is one recorded cell. We begin with all experimental groups.
+Do not choose a statistical test yet. First find out what was actually replicated.
+
+### Count measurements, then count animals
+
+`nrow()` counts table rows. `unique()` keeps each distinct ID once; it does not average or remove measurements from the source. Work in short steps: append `measurement_n <- nrow(replicates)`, then `animal_ids <- unique(replicates$sample_id)`, then `animal_n <- length(animal_ids)`. Display both counts on separate lines.
+
+```{r count_replicates,eval=FALSE,echo=TRUE}
+replicates <- read.csv("data/replicates.csv")
+head(replicates)
+```
+
+
+
+
+
+
+
+**Pause and explain:** replication_count. Write your answer in the live tutorial.
+
+### Reveal: what was repeated?
+
+The rat study recorded several cells from some animals. Different cells are real biological observations, but cells from the same rat share their animal and experimental history. For our comparison across animals, cells are **nested within rats**: several observations belong to one biological unit. Our animal table averages the recorded cells within each rat. A rat with three recorded cells still contributes one animal mean.
+
+A **biological replicate** is an independent biological unit relevant to the question.
+The **experimental unit** is the unit independently assigned to an experimental condition.
+Repeated readings of the same sample are **technical replicates**; multiple cells within an
+animal are biological subsamples, not simply repeated instrument readings. These distinctions
+come from the experimental design, not from how many spreadsheet rows appear.
+
+For our animal-level question, the animal is the biological unit we retain. A unique ID alone
+does not prove independence: shared litters, cages, treatments or batches may matter. If a
+treatment were assigned to whole cages, for example, counting every animal as an independent
+treatment replicate could still be wrong.
+
+## 3. Follow one group — 20 minutes
+
+First follow the cells from one rat; then select an experimental group. We will use one mean per rat for the animal-level comparison, so animals with more recorded cells do not receive extra weight.
+
+### Follow rat Rat_08
+
+The supplied selection keeps every reading belonging to one animal. Run it, then append `one_animal_n <- nrow(one_animal)` and display the count. Append this supplied plot to inspect the readings. `record_number` is a record index, **not time**.
+
+```r
+plot(one_animal$record_number, one_animal$reversal_mV, pch=19,
+     xlab="Record within one animal (not time)", ylab="Cell GABA reversal potential (mV)")
+```
+
+```{r follow_animal,eval=FALSE,echo=TRUE}
+replicates <- read.csv("data/replicates.csv")
+head(replicates)
+one_animal <- replicates[replicates$sample_id == "Rat_08", ]
+one_animal
+```
+
+
+
+
+
+
+
+**Pause and explain:** replication_animal. Write your answer in the live tutorial.
+
+### Select a focused biological comparison
+
+The full table includes several questions. For this worked example, `study.csv` contains the **13 rats** in the Paired protocol at Baseline (7) and Acquisition (6), each summarised by its recorded cells. It is a selected part of the 26-rat table you just inspected. The `group` column names the learning phase. “Paired” describes tone–reward timing; baseline and acquisition are different rats, not before-and-after measurements of the same rat.
+
 
 `study$reversal_mV` retrieves the measurement column. `study$group == "Baseline"` asks a yes/no
 question for each row. **Two equals signs compare; `<-` assigns.** Square brackets keep
@@ -231,7 +324,42 @@ mean(baseline_reversal_mV)
 
 **Pause and explain:** selection. Write your answer in the live tutorial.
 
-## 4. Typical values, variation and an awkward reading — 20 minutes
+### Return to our actual biological question
+
+The larger file contains other experimental groups. We must select the original comparison
+before reporting its sample size. The filtering code is supplied; `&` means both conditions
+must hold. The extra readings below must lead back to the same animals we started with.
+
+### Defend the n in your report
+
+Run the supplied selection and read the measurement counts. Append `n_baseline <- length(baseline_ids)` and `n_acquisition <- length(acquisition_ids)`, then display both. Explain why the animal counts—not the number of assay or cell rows—belong in our original animal-level comparison.
+
+```{r report_animals,eval=FALSE,echo=TRUE}
+replicates <- read.csv("data/replicates.csv")
+comparison_readings <- replicates[replicates$conditioning == "Paired" & replicates$phase != "Plateau", ]
+table(comparison_readings$phase) # Measurement counts, not animal counts.
+baseline_ids <- unique(comparison_readings$sample_id[comparison_readings$phase == "Baseline"])
+acquisition_ids <- unique(comparison_readings$sample_id[comparison_readings$phase == "Acquisition"])
+```
+
+
+
+
+
+
+
+**Pause and explain:** replication_report. Write your answer in the live tutorial.
+
+**Your final recommendation to the lab:** “Our comparison contains ___ and ___ biological
+units. Additional readings tell us ___, but do not independently replicate ___. Before choosing
+an analysis I would check ___.” Exchange recommendations with your partner.
+
+For this teaching comparison we use one mean per animal, giving each animal equal weight. A hierarchical model can retain cell-level variation while representing cells within rats. It is an extension, not a command you need to learn today.
+
+**Bridge to inference:** before asking whether two means differ, ask what independently
+replicates the comparison. A smaller p-value cannot repair the wrong sample unit.
+
+## 4. Typical values, variation and an awkward reading — 10 minutes
 
 The mean gives each observation equal weight. The **median** is the middle of the ordered
 observations (the mean of the two middle ones when there is an even number).
@@ -288,7 +416,7 @@ median(assay)
 
 **Pause and explain:** outlier. Write your answer in the live tutorial.
 
-## 5. The assay that failed — 10 minutes
+## 5. The assay that failed — 5 minutes
 
 `NA` means missing. It does not mean zero. Imagine one assay failed: would writing zero
 describe what happened? First predict what R should do when a required input is unknown.
@@ -355,7 +483,7 @@ hist(baseline_reversal_mV, breaks=5, main="Baseline", xlab="Mean GABA reversal p
 
 **Pause and explain:** histogram. Write your answer in the live tutorial.
 
-## 7. Show the animals behind the average — 10 minutes
+## 7. Show the animals behind the average — 20 minutes
 
 `factor()` below fixes the display order so colours and group positions stay consistent across figures. It does not change any measurements.
 
@@ -411,100 +539,6 @@ violin_view(read.csv("data/study.csv"))
 
 Change smoothing in the live tutorial and explain what is estimated.
 
-## 8. Two measurements from the same animal — 10 minutes
-
-A **scatterplot** gives each animal one point. Its horizontal and vertical positions show
-two different measurements from that animal. A rising pattern suggests positive association;
-a falling pattern suggests negative association. First inspect a single group, so a difference
-between groups is not mistaken for a relationship within a group.
-
-### Does the pattern travel to the other group?
-
-In `study[condition, ]`, the part before the comma selects rows and the blank after it keeps all columns. Run the supplied Baseline plot. Append the same three commands for Acquisition, naming the selected table `acquisition_rats`. Keep the same measurement axes and label the group.
-
-```{r scatter,eval=FALSE,echo=TRUE}
-study <- read.csv("data/study.csv")
-baseline_rats <- study[study$group == "Baseline", ]
-plot(baseline_rats$reversal_mV, baseline_rats$resting_mV,
-  xlab="Mean GABA reversal potential (mV)", ylab="Mean resting membrane potential (mV)", main="Baseline", pch=19)
-```
-
-
-
-
-
-
-
-**Pause and explain:** scatter. Write your answer in the live tutorial.
-
-## 9. More rows, more evidence? — 35 minutes
-
-### Two lab members, two sample sizes
-
-One colleague says: “We have 47 observations.” Another says: “We have 26 rats.”
-They are looking at the same experiment. **Can they both be right?** Write your prediction
-on paper or tell your partner before opening the larger table.
-
-So far we have used one row per animal. Now open `replicates.csv`, where a row is
-one recorded cell. It includes more experimental groups than our first comparison.
-Do not choose a statistical test yet. First find out what was actually replicated.
-
-### Count measurements, then count animals
-
-`nrow()` counts table rows. `unique()` keeps each distinct ID once; it does not average or remove measurements from the source. Work in short steps: append `measurement_n <- nrow(replicates)`, then `animal_ids <- unique(replicates$sample_id)`, then `animal_n <- length(animal_ids)`. Display both counts on separate lines.
-
-```{r count_replicates,eval=FALSE,echo=TRUE}
-replicates <- read.csv("data/replicates.csv")
-head(replicates)
-```
-
-
-
-
-
-
-
-**Pause and explain:** replication_count. Write your answer in the live tutorial.
-
-### Reveal: what was repeated?
-
-The rat study recorded several cells from some animals. Different cells are real biological observations, but cells from the same rat share their animal and experimental history. For our comparison across animals, cells are **nested within rats**: several observations belong to one biological unit. Our introductory table averaged the recorded cells within each rat. A rat with three recorded cells still contributes one animal mean.
-
-A **biological replicate** is an independent biological unit relevant to the question.
-The **experimental unit** is the unit independently assigned to an experimental condition.
-Repeated readings of the same sample are **technical replicates**; multiple cells within an
-animal are biological subsamples, not simply repeated instrument readings. These distinctions
-come from the experimental design, not from how many spreadsheet rows appear.
-
-For our animal-level question, the animal is the biological unit we retain. A unique ID alone
-does not prove independence: shared litters, cages, treatments or batches may matter. If a
-treatment were assigned to whole cages, for example, counting every animal as an independent
-treatment replicate could still be wrong.
-
-### Follow rat g+212.10
-
-The supplied selection keeps every reading belonging to one animal. Run it, then append `one_animal_n <- nrow(one_animal)` and display the count. Append this supplied plot to inspect the readings. `record_number` is a record index, **not time**.
-
-```r
-plot(one_animal$record_number, one_animal$reversal_mV, pch=19,
-     xlab="Record within one animal (not time)", ylab="Cell GABA reversal potential (mV)")
-```
-
-```{r follow_animal,eval=FALSE,echo=TRUE}
-replicates <- read.csv("data/replicates.csv")
-head(replicates)
-one_animal <- replicates[replicates$sample_id == "g+212.10", ]
-one_animal
-```
-
-
-
-
-
-
-
-**Pause and explain:** replication_animal. Write your answer in the live tutorial.
-
 ### Give the dots their owners
 
 The next display uses a small selection of animals **from the same condition** so the plot
@@ -543,22 +577,26 @@ replicated the biological comparison. Extra readings can help estimate measureme
 or characterise an animal better. They cannot substitute for collecting additional independent
 biological replicates. A sophisticated statistical model must still respect that structure.
 
-### Return to our actual biological question
+## 8. Two measurements from the same animal — 10 minutes
 
-The larger file contains other experimental groups. We must select the original comparison
-before reporting its sample size. The filtering code is supplied; `&` means both conditions
-must hold. The extra readings below must lead back to the same animals we started with.
+The source sheet records both voltages for the same identified cell. We average each voltage over the same cells within each rat: the two coordinates of a point therefore belong to **the same rat**. This is legitimate matching within a row. By contrast, a baseline rat and an acquisition rat are different animals and must not be matched by row position.
 
-### Defend the n in your report
+The question here is exploratory: within one learning phase, do rats with less negative mean E_GABA also have less negative resting potential? The two voltages describe different properties, so an association is not guaranteed. A weak pattern with six or seven rats is inconclusive; a correlation cannot establish chloride regulation or causation.
 
-Run the supplied selection and read the measurement counts. Append `n_baseline <- length(baseline_ids)` and `n_acquisition <- length(acquisition_ids)`, then display both. Explain why the animal counts—not the number of assay or cell rows—belong in our original animal-level comparison.
+A **scatterplot** gives each animal one point. Its horizontal and vertical positions show
+two different measurements from that animal. A rising pattern suggests positive association;
+a falling pattern suggests negative association. First inspect a single group, so a difference
+between groups is not mistaken for a relationship within a group.
 
-```{r report_animals,eval=FALSE,echo=TRUE}
-replicates <- read.csv("data/replicates.csv")
-comparison_readings <- replicates[replicates$conditioning == "Paired" & replicates$phase != "Plateau", ]
-table(comparison_readings$phase) # Measurement counts, not animal counts.
-baseline_ids <- unique(comparison_readings$sample_id[comparison_readings$phase == "Baseline"])
-acquisition_ids <- unique(comparison_readings$sample_id[comparison_readings$phase == "Acquisition"])
+### Does the pattern travel to the other group?
+
+In `study[condition, ]`, the part before the comma selects rows and the blank after it keeps all columns. Run the supplied Baseline plot. Append the same three commands for Acquisition, naming the selected table `acquisition_rats`. Keep the same measurement axes and label the group.
+
+```{r scatter,eval=FALSE,echo=TRUE}
+study <- read.csv("data/study.csv")
+baseline_rats <- study[study$group == "Baseline", ]
+plot(baseline_rats$reversal_mV, baseline_rats$resting_mV,
+  xlab="Mean GABA reversal potential (mV)", ylab="Mean resting membrane potential (mV)", main="Baseline", pch=19)
 ```
 
 
@@ -567,18 +605,9 @@ acquisition_ids <- unique(comparison_readings$sample_id[comparison_readings$phas
 
 
 
-**Pause and explain:** replication_report. Write your answer in the live tutorial.
+**Pause and explain:** scatter. Write your answer in the live tutorial.
 
-**Your final recommendation to the lab:** “Our comparison contains ___ and ___ biological
-units. Additional readings tell us ___, but do not independently replicate ___. Before choosing
-an analysis I would check ___.” Exchange recommendations with your partner.
-
-For this teaching comparison we use one mean per animal, giving each animal equal weight. A hierarchical model can retain cell-level variation while representing cells within rats. It is an extension, not a command you need to learn today.
-
-**Bridge to inference:** before asking whether two means differ, ask what independently
-replicates the comparison. A smaller p-value cannot repair the wrong sample unit.
-
-## 10. Your own notebook — 5 minutes
+## 9. Your own notebook — 5 minutes
 
 
 

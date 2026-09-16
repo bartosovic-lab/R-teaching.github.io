@@ -25,3 +25,5 @@ Run `Rscript scripts/validate.R`, `python3 scripts/validate_data.py` (author Exc
 The chloride source discrepancy and mouse fixed-record limitation are documented in the data dictionary. The plateau cell-count discrepancy does not affect the chloride first-day core.
 
 Replication checks reconcile every measurement row with its source, exercise the owner reveal and copy slider, and verify that duplicating rows changes neither animal count nor mean while reducing the naive SE.
+
+Chloride revision: all 26 readable animal IDs are reconciled through the source key, both voltages are checked against their source cell rows, and the complete animal table is included in the tutorial and exported notebook workflow. The 18 graded tasks now run in their revised teaching order.

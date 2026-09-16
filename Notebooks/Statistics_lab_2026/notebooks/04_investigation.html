@@ -357,18 +357,16 @@ investigation</h1>
 <div id="TOC">
 <ul>
 <li><a href="#your-report-starts-here" id="toc-your-report-starts-here">Your report starts here</a></li>
-<li><a href="#start-together-ranks-and-correlation-35-minutes" id="toc-start-together-ranks-and-correlation-35-minutes">Start together:
-ranks and correlation — 35 minutes</a></li>
-<li><a href="#choose-a-question-before-looking-for-a-result-15-minutes" id="toc-choose-a-question-before-looking-for-a-result-15-minutes">1.
-Choose a question before looking for a result — 15 minutes</a></li>
-<li><a href="#inspect-and-select-20-minutes" id="toc-inspect-and-select-20-minutes">2. Inspect and select — 20
+<li><a href="#choose-a-question-before-looking-for-a-result-20-minutes" id="toc-choose-a-question-before-looking-for-a-result-20-minutes">1.
+Choose a question before looking for a result — 20 minutes</a></li>
+<li><a href="#inspect-and-select-30-minutes" id="toc-inspect-and-select-30-minutes">2. Inspect and select — 30
 minutes</a></li>
-<li><a href="#give-the-reader-a-picture-25-minutes" id="toc-give-the-reader-a-picture-25-minutes">3. Give the reader a
-picture — 25 minutes</a></li>
-<li><a href="#choose-run-and-interpret-35-minutes" id="toc-choose-run-and-interpret-35-minutes">4. Choose, run and
-interpret — 35 minutes</a></li>
-<li><a href="#investigate-one-association-30-minutes" id="toc-investigate-one-association-30-minutes">5. Investigate one
-association — 30 minutes</a></li>
+<li><a href="#give-the-reader-a-picture-35-minutes" id="toc-give-the-reader-a-picture-35-minutes">3. Give the reader a
+picture — 35 minutes</a></li>
+<li><a href="#choose-run-and-interpret-40-minutes" id="toc-choose-run-and-interpret-40-minutes">4. Choose, run and
+interpret — 40 minutes</a></li>
+<li><a href="#investigate-one-association-35-minutes" id="toc-investigate-one-association-35-minutes">5. Investigate one
+association — 35 minutes</a></li>
 <li><a href="#the-tempting-hunt-for-a-small-p-value-20-minutes" id="toc-the-tempting-hunt-for-a-small-p-value-20-minutes">6. The
 tempting hunt for a small p-value — 20 minutes</a></li>
 <li><a href="#peer-review-and-a-reproducible-hand-in-35-minutes" id="toc-peer-review-and-a-reproducible-hand-in-35-minutes">7. Peer
@@ -393,17 +391,8 @@ earlier notebooks where it helps explain your decisions.</p>
 prior statistical vocabulary is assumed: use yesterday’s notebook and
 ask for explanations whenever a term is unclear.</p>
 </div>
-<div id="start-together-ranks-and-correlation-35-minutes" class="section level2">
-<h2>Start together: ranks and correlation — 35 minutes</h2>
-<p>Return to sections 4 and 5 of
-<code>03_statistical_analysis.Rmd</code>: spend 20 minutes comparing
-Welch and Wilcoxon questions, then 15 minutes on correlation. Yesterday
-we learned why counting independent biological units comes before either
-analysis. Explain that principle to your partner before continuing. Then
-return here to choose your investigation.</p>
-</div>
-<div id="choose-a-question-before-looking-for-a-result-15-minutes" class="section level2">
-<h2>1. Choose a question before looking for a result — 15 minutes</h2>
+<div id="choose-a-question-before-looking-for-a-result-20-minutes" class="section level2">
+<h2>1. Choose a question before looking for a result — 20 minutes</h2>
 <table>
 <colgroup>
 <col width="33%" />
@@ -457,17 +446,17 @@ exploratory teaching analyses of a published dataset, not a new
 confirmatory study. Do not try every option and present only the
 smallest p-value.</p>
 </div>
-<div id="inspect-and-select-20-minutes" class="section level2">
-<h2>2. Inspect and select — 20 minutes</h2>
+<div id="inspect-and-select-30-minutes" class="section level2">
+<h2>2. Inspect and select — 30 minutes</h2>
 <pre class="r"><code>full &lt;- read.csv(&quot;data/investigation.csv&quot;)
 head(full)</code></pre>
 <pre><code>##   sample_id conditioning    phase day_label reversal_mV resting_mV n_cells
-## 1   g+292.2       Paired Baseline         1   -73.85000  -60.15000       1
-## 2   g+296.4       Paired Baseline         1   -84.48682  -56.83034       2
-## 3  g+292.12       Paired Baseline         1   -76.01080  -70.75610       1
-## 4   g+312.8       Paired Baseline         1   -75.73190  -59.34840       1
-## 5  g+312.10       Paired Baseline         1   -78.74960  -45.29000       2
-## 6    g339.7       Paired Baseline         1   -74.72376  -51.49626       1</code></pre>
+## 1    Rat_01       Paired Baseline         1   -73.85000  -60.15000       1
+## 2    Rat_02       Paired Baseline         1   -84.48682  -56.83034       2
+## 3    Rat_03       Paired Baseline         1   -76.01080  -70.75610       1
+## 4    Rat_04       Paired Baseline         1   -75.73190  -59.34840       1
+## 5    Rat_05       Paired Baseline         1   -78.74960  -45.29000       2
+## 6    Rat_06       Paired Baseline         1   -74.72376  -51.49626       1</code></pre>
 <pre class="r"><code>dim(full)</code></pre>
 <pre><code>## [1] 26  7</code></pre>
 <pre class="r"><code>anyDuplicated(full$sample_id)</code></pre>
@@ -526,8 +515,8 @@ with zero.</p>
 <p><em>Rows included, exclusions, observed sample sizes and what one row
 means: write here.</em></p>
 </div>
-<div id="give-the-reader-a-picture-25-minutes" class="section level2">
-<h2>3. Give the reader a picture — 25 minutes</h2>
+<div id="give-the-reader-a-picture-35-minutes" class="section level2">
+<h2>3. Give the reader a picture — 35 minutes</h2>
 <pre class="r"><code>if (!is.null(selected)) {
   boxplot(value ~ group, data=complete, outline=FALSE,ylab=unit)
   set.seed(7)
@@ -548,8 +537,8 @@ observations and what the small sample prevents you from knowing. Do not
 use Shapiro p &gt; 0.05 as proof of normality.</em></p>
 <p><strong>15-minute break.</strong></p>
 </div>
-<div id="choose-run-and-interpret-35-minutes" class="section level2">
-<h2>4. Choose, run and interpret — 35 minutes</h2>
+<div id="choose-run-and-interpret-40-minutes" class="section level2">
+<h2>4. Choose, run and interpret — 40 minutes</h2>
 <p>Write your primary method and reason <strong>before</strong> changing
 <code>method_choice</code> below. Welch compares means; Wilcoxon uses
 ranks and is not generally a median test. Both need independent animals.
@@ -575,8 +564,8 @@ sizes, method, p-value and confidence interval if provided. A
 descriptive mean difference does not become the target of a rank test.
 Explain what the result does and does not support.</em></p>
 </div>
-<div id="investigate-one-association-30-minutes" class="section level2">
-<h2>5. Investigate one association — 30 minutes</h2>
+<div id="investigate-one-association-35-minutes" class="section level2">
+<h2>5. Investigate one association — 35 minutes</h2>
 <p>For your association, use the same selected subset and choose
 <strong>one</strong> group. Investigate its animal-mean GABA reversal
 potential versus resting membrane potential. Some choices have very few

@@ -12,7 +12,7 @@ checker <- function(label,envir_result,last_value,stage,user_code='',...) {
   reps<-read.csv('data/replicates.csv')
   ok<-switch(label,
     count_replicates=near(obj('measurement_n'),nrow(reps)) && identical(sort(as.character(obj('animal_ids'))),sort(unique(as.character(reps$sample_id)))) && near(obj('animal_n'),length(unique(reps$sample_id))),
-    follow_animal=isTRUE(all.equal(obj('one_animal'),reps[reps$sample_id=="g+212.10",])) && near(obj('one_animal_n'),3),
+    follow_animal=isTRUE(all.equal(obj('one_animal'),reps[reps$sample_id=="Rat_08",])) && near(obj('one_animal_n'),3),
     report_animals=near(obj('n_baseline'),7) && near(obj('n_acquisition'),6) && identical(sort(as.character(obj('baseline_ids'))),sort(as.character(d$sample_id[d$group==course$group_a]))) && identical(sort(as.character(obj('acquisition_ids'))),sort(as.character(d$sample_id[d$group==course$group_b]))),
     divide=near(last_value,3), multiply=near(last_value,12),
     store=near(obj('wells'),16)&&near(last_value,16),
@@ -20,7 +20,7 @@ checker <- function(label,envir_result,last_value,stage,user_code='',...) {
     average=near(obj('counts'),c(2,4,6))&&near(last_value,4),
     add_value=near(obj('readings'),c(4,5,6,9))&&near(last_value,6),
     rescue=near(obj('readings'),c(4,5,6))&&near(last_value,5),
-    import=isTRUE(all.equal(obj('study'),d))&&near(last_value,dim(d)),
+    import=isTRUE(all.equal(obj('animals'),read.csv('data/investigation.csv')))&&near(last_value,dim(read.csv('data/investigation.csv'))),
     select=near(obj('acquisition_reversal_mV'),b)&&near(last_value,mean(b)),
     spread=near(obj('sd_baseline_reversal_mV'),sd(a))&&near(obj('sd_acquisition_reversal_mV'),sd(b)),
     outlier=near(obj('assay'),c(4,5,5,6,34))&&near(obj('new_mean'),10.8)&&near(obj('new_median'),5),
@@ -31,8 +31,8 @@ checker <- function(label,envir_result,last_value,stage,user_code='',...) {
     FALSE)
   reply(ok,exercise_info[[label]]$success,exercise_info[[label]]$hint)
 }
-note_labels <- c(replication_count="The full table has ___ measurement rows from ___ distinct rats. Why can both counts be correct? Which count represents the number of animals available for biological comparisons, before choosing groups?",replication_animal="What varies within rat g+212.10, and what do these readings share? Explain what extra measurements can tell us and why they are not additional rats.",replication_copies="Predict first, then move the copy slider. Which numbers change? Why is the smaller naive standard error not evidence that new biological information was collected?",replication_report="For our original comparison, report both animal sample sizes and distinguish them from measurement counts. Explain why all 26 animals cannot be pooled into that two-group question. Recommend a defensible analysis and one design fact you would check before assuming independence.",
- row='Describe one row, the measurement and its unit. Is group nominal or ordinal? Is reversal_mV a continuous measurement? Explain why an ID is a label even when it contains digits.',
+note_labels <- c(replication_count="The full table has ___ measurement rows from ___ distinct rats. Why can both counts be correct? Which count represents the number of animals available for biological comparisons, before choosing groups?",replication_animal="What varies within rat Rat_08, and what do these readings share? Explain what extra measurements can tell us and why they are not additional rats.",replication_copies="Predict first, then move the copy slider. Which numbers change? Why is the smaller naive standard error not evidence that new biological information was collected?",replication_report="For our original comparison, report both animal sample sizes and distinguish them from measurement counts. Explain why all 26 animals cannot be pooled into that two-group question. Recommend a defensible analysis and one design fact you would check before assuming independence.",
+ row='In investigation.csv, describe one row, the measurement and its unit. Is conditioning nominal or ordinal? Is reversal_mV a continuous measurement? Explain why an ID is a label even when it contains digits.',
  selection='Which animals contributed to acquisition_reversal_mV? Explain the selection to your partner.',
  spread='Write both SDs with units. Which group varies more? Does that tell you how precisely its mean is known?',
  outlier='Which fifth reading doubles the mean? Why can the median stay fixed? Critique: “The average doubled, so every culture responded twice as much.” What would you check before deleting the unusual reading?',

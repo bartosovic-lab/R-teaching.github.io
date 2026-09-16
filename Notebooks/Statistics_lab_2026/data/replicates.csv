@@ -1,48 +1,48 @@
 sample_id,conditioning,phase,day_label,reversal_mV,resting_mV,source_row,source_label,record_number
-g+292.2,Paired,Baseline,1,-73.85,-60.15,5,"G+ 292,2 (cell 1)",1
-g+296.4,Paired,Baseline,1,-86.38743455497382,-63.945578231292515,6,"G+ 296,4 (cell 1)",1
-g+296.4,Paired,Baseline,1,-82.5862,-49.7151,7,"G+ 296,4 (cell 2)",2
-g+292.12,Paired,Baseline,1,-76.0108,-70.7561,8,"G+ 292,12 (cell 1)",1
-g+312.8,Paired,Baseline,1,-75.7319,-59.3484,9,"G+ 312,8 (cell 1)",1
-g+312.10,Paired,Baseline,1,-81.6392,-46.09,10,"G+ 312,10 (cell 1)",1
-g+312.10,Paired,Baseline,1,-75.86,-44.49,11,"G+ 312,10 (cell 2)",2
-g339.7,Paired,Baseline,1,-74.72375690607734,-51.49625935162094,12,g339.7 (cell 1),1
-g339.11,Paired,Baseline,1,-83.23353293413173,-61.875,13,g339.11 (cell 1),1
-g+212.10,Paired,Acquisition,7,-46.3,-56.7548,21,"G+ 212,10 (cell 1)",1
-g+212.10,Paired,Acquisition,7,-65.5046,-59.422,22,"G+ 212,10 (cell 2)",2
-g+212.10,Paired,Acquisition,7,-59.2254,-58.0029,23,"G+ 212,10 (cell 4)",3
-g+230.8,Paired,Acquisition,7,-57.3302,-53.0407,24,"G+ 230,8 (cell 1)",1
-g+230.8,Paired,Acquisition,7,-56.9443,-61.8367,25,"G+ 230,8 (cell 2)",2
-g+230.4,Paired,Acquisition,7,-51.5364,-63.6403,26,"G+ 230,4 (cell 1)",1
-g+230.4,Paired,Acquisition,7,-58.0584,-64.7163,27,"G+ 230,4 (cell 2)",2
-g431.7,Paired,Acquisition,7,-59.84615384615385,-59.32754880694143,28,g431.7 (cell 1),1
-g439.7,Paired,Acquisition,7,-62.5514403292181,-50.47872340425533,29,G439.7 (cell 1),1
-g451.5,Paired,Acquisition,7,-52.64150943396227,-62.71186440677966,30,g451.5 (cell 1),1
-g451.5,Paired,Acquisition,7,-64.7887323943662,-49.290780141843975,31,g451.5 (cell 2),2
-g451.5,Paired,Acquisition,7,-62.185929648241206,-53.099173553719005,32,g451.5 (cell 3),3
-g+232.4,Paired,Plateau,13,-75.8768,-56.8477,38,"G+ 232,4 (cell 1)",1
-g+232.4,Paired,Plateau,13,-77.9774,-61.6825,39,"G+ 232,4 (cell 2)",2
-g+268.4,Paired,Plateau,13,-79.2544,-67.0411,40,"G+ 268,4 (cell 1)",1
-g+310.6,Paired,Plateau,13,-76.5432,-56.1686,41,"G+ 310,6 (cell 1)",1
-g+310.6,Paired,Plateau,13,-76.4884,-72.6178,42,"G+ 310,6 (cell 2)",2
-g+310.6,Paired,Plateau,13,-76.5778,-64.4937,43,"G+ 310,6  (cell 3)",3
-g451.3,Paired,Plateau,13,-70.8108108108108,-58.75912408759124,44,g451.3 (cell 1),1
-g451.3,Paired,Plateau,13,-74.8792270531401,-56.52173913043479,45,g451.3 (cell 2),2
-g451.3,Paired,Plateau,13,-69.86301369863014,-69.81132075471697,46,g451.3 (cell 3),3
-g452.3,Paired,Plateau,13,-80.12422360248448,-73.8255033557047,47,g452.3 (cell 1),1
-g484.2,Unpaired,Baseline,1,-74.04129793510324,-45.4368932038835,5,g484.2 (cell ,1
-g484.6,Unpaired,Baseline,1,-76.87861271676302,-55.72254335260116,6,g484.6 (cell ,1
-g484.6,Unpaired,Baseline,1,-78.62068965517243,-48.32167832167832,7,g484.6 (cell ,2
-g484.4,Unpaired,Baseline,1,-78.20646506777894,-63.852459016393446,8,g484.4 (cell ,1
-g484.4,Unpaired,Baseline,1,-75.60137457044674,-50.76190476190476,9,g484.4 (cell ,2
-g445.10,Unpaired,Acquisition,7,-79.71530249110319,-60.62717770034843,21,g445.10 (cell ,1
-g445.6,Unpaired,Acquisition,7,-78.72340425531915,-53.55371900826446,22,G445.6 (cell ,1
-g445.6,Unpaired,Acquisition,7,-83.45864661654134,-64.92146596858639,23,G445.6 (cell ,2
-g445.6,Unpaired,Acquisition,7,-75.3071253071253,-42.810457516339866,24,G445.6 (cell ,3
-g445.12,Unpaired,Acquisition,7,-71.16071428571428,-42.608695652173914,25,g445.12 (cell ,1
-g445.12,Unpaired,Acquisition,7,-79.60526315789474,-53.85878489326765,26,g445.12 (cell ,2
-g445.12,Unpaired,Acquisition,7,-85.21126760563381,-62.430939226519335,27,g445.12 (cell ,3
-g474.8,Unpaired,Plateau,13,-74.58193979933111,-38.108108108108105,38,g474.8 (cell 1),1
-g474.8,Unpaired,Plateau,13,-76.20087336244542,-45.40654699049631,39,g474.8 (cell 2),2
-g476.10,Unpaired,Plateau,13,-79.56521739130434,-52.569169960474305,40,g476.10 (cell 1),1
-g476.10,Unpaired,Plateau,13,-80.72009291521488,-56.65024630541872,41,g476.10 (cell 2),2
+Rat_01,Paired,Baseline,1,-73.85,-60.15,5,"G+ 292,2 (cell 1)",1
+Rat_02,Paired,Baseline,1,-86.38743455497382,-63.945578231292515,6,"G+ 296,4 (cell 1)",1
+Rat_02,Paired,Baseline,1,-82.5862,-49.7151,7,"G+ 296,4 (cell 2)",2
+Rat_03,Paired,Baseline,1,-76.0108,-70.7561,8,"G+ 292,12 (cell 1)",1
+Rat_04,Paired,Baseline,1,-75.7319,-59.3484,9,"G+ 312,8 (cell 1)",1
+Rat_05,Paired,Baseline,1,-81.6392,-46.09,10,"G+ 312,10 (cell 1)",1
+Rat_05,Paired,Baseline,1,-75.86,-44.49,11,"G+ 312,10 (cell 2)",2
+Rat_06,Paired,Baseline,1,-74.72375690607734,-51.49625935162094,12,g339.7 (cell 1),1
+Rat_07,Paired,Baseline,1,-83.23353293413173,-61.875,13,g339.11 (cell 1),1
+Rat_08,Paired,Acquisition,7,-46.3,-56.7548,21,"G+ 212,10 (cell 1)",1
+Rat_08,Paired,Acquisition,7,-65.5046,-59.422,22,"G+ 212,10 (cell 2)",2
+Rat_08,Paired,Acquisition,7,-59.2254,-58.0029,23,"G+ 212,10 (cell 4)",3
+Rat_09,Paired,Acquisition,7,-57.3302,-53.0407,24,"G+ 230,8 (cell 1)",1
+Rat_09,Paired,Acquisition,7,-56.9443,-61.8367,25,"G+ 230,8 (cell 2)",2
+Rat_10,Paired,Acquisition,7,-51.5364,-63.6403,26,"G+ 230,4 (cell 1)",1
+Rat_10,Paired,Acquisition,7,-58.0584,-64.7163,27,"G+ 230,4 (cell 2)",2
+Rat_11,Paired,Acquisition,7,-59.84615384615385,-59.32754880694143,28,g431.7 (cell 1),1
+Rat_12,Paired,Acquisition,7,-62.5514403292181,-50.47872340425533,29,G439.7 (cell 1),1
+Rat_13,Paired,Acquisition,7,-52.64150943396227,-62.71186440677966,30,g451.5 (cell 1),1
+Rat_13,Paired,Acquisition,7,-64.7887323943662,-49.290780141843975,31,g451.5 (cell 2),2
+Rat_13,Paired,Acquisition,7,-62.185929648241206,-53.099173553719005,32,g451.5 (cell 3),3
+Rat_14,Paired,Plateau,13,-75.8768,-56.8477,38,"G+ 232,4 (cell 1)",1
+Rat_14,Paired,Plateau,13,-77.9774,-61.6825,39,"G+ 232,4 (cell 2)",2
+Rat_15,Paired,Plateau,13,-79.2544,-67.0411,40,"G+ 268,4 (cell 1)",1
+Rat_16,Paired,Plateau,13,-76.5432,-56.1686,41,"G+ 310,6 (cell 1)",1
+Rat_16,Paired,Plateau,13,-76.4884,-72.6178,42,"G+ 310,6 (cell 2)",2
+Rat_16,Paired,Plateau,13,-76.5778,-64.4937,43,"G+ 310,6  (cell 3)",3
+Rat_17,Paired,Plateau,13,-70.8108108108108,-58.75912408759124,44,g451.3 (cell 1),1
+Rat_17,Paired,Plateau,13,-74.8792270531401,-56.52173913043479,45,g451.3 (cell 2),2
+Rat_17,Paired,Plateau,13,-69.86301369863014,-69.81132075471697,46,g451.3 (cell 3),3
+Rat_18,Paired,Plateau,13,-80.12422360248448,-73.8255033557047,47,g452.3 (cell 1),1
+Rat_19,Unpaired,Baseline,1,-74.04129793510324,-45.4368932038835,5,g484.2 (cell ,1
+Rat_20,Unpaired,Baseline,1,-76.87861271676302,-55.72254335260116,6,g484.6 (cell ,1
+Rat_20,Unpaired,Baseline,1,-78.62068965517243,-48.32167832167832,7,g484.6 (cell ,2
+Rat_21,Unpaired,Baseline,1,-78.20646506777894,-63.852459016393446,8,g484.4 (cell ,1
+Rat_21,Unpaired,Baseline,1,-75.60137457044674,-50.76190476190476,9,g484.4 (cell ,2
+Rat_22,Unpaired,Acquisition,7,-79.71530249110319,-60.62717770034843,21,g445.10 (cell ,1
+Rat_23,Unpaired,Acquisition,7,-78.72340425531915,-53.55371900826446,22,G445.6 (cell ,1
+Rat_23,Unpaired,Acquisition,7,-83.45864661654134,-64.92146596858639,23,G445.6 (cell ,2
+Rat_23,Unpaired,Acquisition,7,-75.3071253071253,-42.810457516339866,24,G445.6 (cell ,3
+Rat_24,Unpaired,Acquisition,7,-71.16071428571428,-42.608695652173914,25,g445.12 (cell ,1
+Rat_24,Unpaired,Acquisition,7,-79.60526315789474,-53.85878489326765,26,g445.12 (cell ,2
+Rat_24,Unpaired,Acquisition,7,-85.21126760563381,-62.430939226519335,27,g445.12 (cell ,3
+Rat_25,Unpaired,Plateau,13,-74.58193979933111,-38.108108108108105,38,g474.8 (cell 1),1
+Rat_25,Unpaired,Plateau,13,-76.20087336244542,-45.40654699049631,39,g474.8 (cell 2),2
+Rat_26,Unpaired,Plateau,13,-79.56521739130434,-52.569169960474305,40,g476.10 (cell 1),1
+Rat_26,Unpaired,Plateau,13,-80.72009291521488,-56.65024630541872,41,g476.10 (cell 2),2

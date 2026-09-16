@@ -11,20 +11,27 @@ each student writes an individual integrated HTML report on day 2. Rmd is retain
 
 | Activity | Minutes |
 |---|---:|
-| Welcome and interface | 5 |
-| Learnr sections 1–5: R and descriptive basics | 70 |
+| Welcome and neuroscience background | 5 |
+| First successful runs | 5 |
+| Meet all animals and cells; count replication | 20 |
+| Follow a rat, then a group; defend n | 20 |
+| Typical values and spread | 10 |
+| Missing values | 5 |
 | Break | 15 |
-| Learnr sections 6–8: plots and association | 35 |
-| Learnr section 9: biological replication investigation | 35 |
+| Histograms | 15 |
+| Individual observations, owners and copying experiment | 20 |
+| Two matched measurements from each rat | 10 |
 | Download and RStudio handoff | 5 |
 | Analysis notebook sections 1–2: recipe and diagnostics | 30 |
 | Break | 10 |
 | Welch estimate and uncertainty | 30 |
+| Rank comparison | 20 |
+| Correlation | 15 |
 | Reproducible finish | 5 |
 
-Day 2: rank comparison 20, correlation 15 (return to notebook 03), question 15,
-selection 20, figures 25, break 15, group inference 35, association 30,
-break 10, multiple testing 20, peer review/write-up/render 35 = 240 minutes.
+Day 2 is entirely the independent project: question 20, selection 30, figures 35,
+break 15, group inference 40, association 35, break 10, multiple testing 20,
+peer review/write-up/render 35 = 240 minutes. There is no new guided lesson on day 2.
 Protect interpretation time. Extras are optional; shorten repeated plot practice if needed.
 
 ## Facilitation
@@ -66,19 +73,21 @@ than treating numeric assay measurements as ordinal scores. Independent animals 
 design assumption, not an inference from a histogram. All introduced terms have plain-language
 definitions in the student notebooks.
 
-## Day-1 highlight: more rows, more evidence? (35 minutes)
+## Replication throughout day 1
 
-Allow 7 minutes to count rows and animals, 8 to follow one animal, 10 for the owner
-reveal and copying experiment, and 10 to defend an animal-level analysis. Ask students
-to predict before revealing owners or moving the slider. The reveal shows four animals
-from one condition, not the whole dataset. Extra assay readings or cells can be useful,
-but they do not create independent animals. Technical measurements at different dilution
-levels are not interchangeable replicates. Treatment assignment, cage/litter and shared
-experimental batches still matter even after counting unique animal IDs.
+Section 2 starts with all 26 rats and all 47 cells. Count both; the tables can be expanded
+in full. Section 3 follows Rat_08 and its three cells before selecting the original
+baseline/acquisition comparison. Section 7 reveals which animal owns each dot, then
+uses deliberate row duplication to challenge apparent precision. These tasks replace the
+standalone replication chapter. Require a written sample-size justification before inference.
 
 The copying demonstration deliberately violates independence: the mean and number of
-animals stay fixed while the naive standard error decreases. Standard error describes
-uncertainty in an estimated mean; it is different from SD, the spread of measurements.
-The animal-level reference assumes independent animals and is not a guarantee that the
-original design satisfies that assumption. Do not ask beginners to fit a multilevel model.
-Require a written sample-size justification before proceeding to inferential statistics.
+animals stay fixed while the naive standard error decreases. Extra cells are biological
+subsamples, not extra independent animals or repeated instrument readings. Unique IDs
+alone do not establish independence; treatment allocation and shared cage/litter matter.
+
+The five-minute starter is a quick supported warm-up, not a speed assessment. Keep the
+examples, hints and small wins; students who need longer can use the guided practice time.
+Both voltages come from the same source cell, and animal means use the same cells. Thus
+within-group scatterplots have matched coordinates, while cross-phase rats are independent
+samples. Correlation is exploratory and cannot demonstrate the chloride mechanism.

@@ -356,8 +356,8 @@ response</h1>
 
 <div id="TOC">
 <ul>
-<li><a href="#the-first-table" id="toc-the-first-table">The first
-table</a></li>
+<li><a href="#the-whole-experiment-then-a-selected-comparison" id="toc-the-whole-experiment-then-a-selected-comparison">The whole
+experiment, then a selected comparison</a></li>
 <li><a href="#chloride-data-preparation-and-limits" id="toc-chloride-data-preparation-and-limits">Chloride data: preparation
 and limits</a>
 <ul>
@@ -370,18 +370,18 @@ protein puzzle</a></li>
 retained for review</a></li>
 <li><a href="#measurement-level-table-for-the-day-1-replication-investigation" id="toc-measurement-level-table-for-the-day-1-replication-investigation">Measurement-level
 table for the day-1 replication investigation</a></li>
+<li><a href="#readable-animal-ids-and-matched-voltages" id="toc-readable-animal-ids-and-matched-voltages">Readable animal IDs
+and matched voltages</a></li>
 </ul>
 </div>
 
-<div id="the-first-table" class="section level2">
-<h2>The first table</h2>
-<p>GABA is a signalling molecule whose electrical effect depends partly
-on chloride regulation. Researchers recorded neurons in the ventral
-tegmental area of rats during reward learning. The GABA reversal
-potential is the voltage at which the measured GABA current changes
-direction. A less negative value is a shift towards more positive
-voltage; you do not need prior electrophysiology to compare these
-measurements.</p>
+<div id="the-whole-experiment-then-a-selected-comparison" class="section level2">
+<h2>The whole experiment, then a selected comparison</h2>
+<p>The tutorial starts with <code>investigation.csv</code> (26 rats) and
+<code>replicates.csv</code> (47 cells), spanning both conditioning
+protocols and all three phases. <code>study.csv</code>, described below,
+is the selected baseline/acquisition comparison used for guided
+statistics.</p>
 <p>One row is one rat, summarised by the mean of its recorded cells.
 Baseline and acquisition use different rats, not the same rat measured
 twice. All core animals received the cue followed by reward protocol. In
@@ -440,10 +440,11 @@ Dryad CSV files.</p>
 <p>Source sheet <strong>Figure 1G+1H</strong>, rows 5–13, 21–32 and
 38–47, columns A:C (Paired) and F:H (Unpaired). Only rows with numeric
 reversal potentials are retained. Case, whitespace and decimal commas
-are standardised in animal IDs; source labels and row numbers remain in
-<code>cells.csv</code>. The Unpaired cell labels are truncated in the
-source, so source-row identity is retained rather than inventing cell
-numbers. All recorded values are preserved.</p>
+are standardised in the source ID key. Teaching labels Rat_01–Rat_26 are
+assigned consistently across tables; source labels and row numbers
+remain in <code>cells.csv</code>. The Unpaired cell labels are truncated
+in the source, so source-row identity is retained rather than inventing
+cell numbers. All recorded values are preserved.</p>
 <p><code>investigation.csv</code> contains <strong>26 rats</strong>. We
 average reversal and resting potentials within animal and retain
 <code>n_cells</code>. Thus each rat contributes once, regardless of the
@@ -564,6 +565,25 @@ comparison. The copy-slider demonstration duplicates the original
 animal-level Baseline observations in memory. It labels the resulting
 independence-based standard error as naive; no new biological evidence
 is created and no data files are changed.</p>
+</div>
+<div id="readable-animal-ids-and-matched-voltages" class="section level2">
+<h2>Readable animal IDs and matched voltages</h2>
+<p>All electrophysiology tables now use
+<code>Rat_01</code>–<code>Rat_26</code>, assigned by first appearance in
+the source extraction. These labels encode no condition, rank or
+response. <code>animal_id_key.csv</code> maps each label back to the
+normalized original animal ID; the cell table also retains the verbatim
+source label and row. Measurements and membership are unchanged.</p>
+<p>The two voltages occur on the same identified cell row in source
+sheet <code>Figure 1G+1H</code>. Each animal’s reversal and resting
+means use those same cells, so they can be shown together in an
+animal-level scatterplot. Baseline and acquisition are different
+animals: this within-row matching does not justify a paired cross-phase
+test.</p>
+<p>The tutorial begins with all 26 rats and 47 cells, including both
+protocols and all three phases. It then selects the 13-rat
+baseline/acquisition example explicitly. The replication exercises are
+integrated into sections 2, 3 and 7.</p>
 </div>
 
 

@@ -37,4 +37,4 @@ Keep your work in `notebooks/`. The Source editor holds your saved recipe; the C
 commands; Knit makes the HTML you submit. Ask for help early. Explaining a result is more
 important than remembering a command.
 
-Day 1 builds towards **More rows, more evidence?**: identify animals behind the measurements, reveal their dots, and investigate why copying data cannot create biological replication.
+Day 1 begins with all animals and cells, then weaves biological replication through selections, summaries and plots. Guided inference, ranks and correlation follow in RStudio. Day 2 is entirely your independent investigation.

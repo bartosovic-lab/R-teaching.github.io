@@ -58,7 +58,7 @@ exploratory even when p is small.
 
 ## Day-1 biological replication investigation
 
-The full cell table contains 47 cell measurements from 26 rats. Rat g+212.10 has three cells. The original comparison contains 7 baseline and 6 acquisition rats, represented by 9 and 12 cell measurements. Summarising within rat gives each animal equal weight; a multilevel analysis is a later extension.
+The full cell table contains 47 cell measurements from 26 rats. Rat Rat_08 has three cells. The original comparison contains 7 baseline and 6 acquisition rats, represented by 9 and 12 cell measurements. Summarising within rat gives each animal equal weight; a multilevel analysis is a later extension.
 
 Copying rows adds no independent evidence. The mean and animal count stay fixed; only the
 naive SE shrinks. Counting distinct IDs is necessary but cannot establish independence:

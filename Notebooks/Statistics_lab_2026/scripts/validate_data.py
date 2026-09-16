@@ -76,3 +76,12 @@ else:
   counts[r['sample_id']]=counts.get(r['sample_id'],0)+1
   assert int(r['record_number'])==counts[r['sample_id']]
 print('PASS: replication table source reconciliation and tutorial copy')
+
+key={v['sample_id']:v['source_sample_id'] for v in rows('animal_id_key.csv')}
+assert len(key)==26 and len(set(key.values()))==26
+assert set(key)=={f'Rat_{i:02d}' for i in range(1,27)}
+for cell in cells:
+ source_id=re.sub(r'\s*\(cell.*','',cell['source_label'],flags=re.I).lower().replace(',','.').replace(' ','')
+ assert key[cell['sample_id']]==source_id
+assert (root/'data/investigation.csv').read_bytes()==(root/'tutorials/01_basics/data/investigation.csv').read_bytes()
+print('PASS: reversible animal IDs, matched source voltages and complete tutorial animal table')

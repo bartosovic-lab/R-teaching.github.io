@@ -7,9 +7,9 @@ output:
     mathjax: null
 ---
 
-## The first table
+## The whole experiment, then a selected comparison
 
-GABA is a signalling molecule whose electrical effect depends partly on chloride regulation. Researchers recorded neurons in the ventral tegmental area of rats during reward learning. The GABA reversal potential is the voltage at which the measured GABA current changes direction. A less negative value is a shift towards more positive voltage; you do not need prior electrophysiology to compare these measurements.
+The tutorial starts with `investigation.csv` (26 rats) and `replicates.csv` (47 cells), spanning both conditioning protocols and all three phases. `study.csv`, described below, is the selected baseline/acquisition comparison used for guided statistics.
 
 One row is one rat, summarised by the mean of its recorded cells. Baseline and acquisition use different rats, not the same rat measured twice. All core animals received the cue followed by reward protocol. In the original paper this protocol is called paired conditioning; that name does not mean our statistical samples are paired.
 
@@ -42,7 +42,7 @@ equality between the publisher workbook and inaccessible Dryad CSV files.
 
 Source sheet **Figure 1G+1H**, rows 5–13, 21–32 and 38–47, columns A:C (Paired) and F:H
 (Unpaired). Only rows with numeric reversal potentials are retained. Case, whitespace and
-decimal commas are standardised in animal IDs; source labels and row numbers remain in
+decimal commas are standardised in the source ID key. Teaching labels Rat_01–Rat_26 are assigned consistently across tables; source labels and row numbers remain in
 `cells.csv`. The Unpaired cell labels are truncated in the source, so source-row identity
 is retained rather than inventing cell numbers. All recorded values are preserved.
 
@@ -108,3 +108,11 @@ It contains the same 47 records as cells.csv, adding record_number as a sequenti
 
 The reveal plot uses the first four Paired-protocol acquisition rats in source order only, keeping condition fixed and the plot readable. The count exercises use the full table, then return to the original comparison.
 The copy-slider demonstration duplicates the original animal-level Baseline observations in memory. It labels the resulting independence-based standard error as naive; no new biological evidence is created and no data files are changed.
+
+## Readable animal IDs and matched voltages
+
+All electrophysiology tables now use `Rat_01`–`Rat_26`, assigned by first appearance in the source extraction. These labels encode no condition, rank or response. `animal_id_key.csv` maps each label back to the normalized original animal ID; the cell table also retains the verbatim source label and row. Measurements and membership are unchanged.
+
+The two voltages occur on the same identified cell row in source sheet `Figure 1G+1H`. Each animal's reversal and resting means use those same cells, so they can be shown together in an animal-level scatterplot. Baseline and acquisition are different animals: this within-row matching does not justify a paired cross-phase test.
+
+The tutorial begins with all 26 rats and 47 cells, including both protocols and all three phases. It then selects the 13-rat baseline/acquisition example explicitly. The replication exercises are integrated into sections 2, 3 and 7.

@@ -131,10 +131,9 @@ The main design or distribution concern is ___. The data do not establish ___.
 
 *My result: write here.*
 
-**End of day 1:** complete the reproducibility checklist in section 6 (5 minutes).
-Sections 4 and 5 below open day 2; they remain here so the worked analysis stays together.
+Continue with ranks and correlation today, then finish with the reproducibility checklist.
 
-## 4. Day 2 opening: compare ranks — 20 minutes
+## 4. Compare ranks — 20 minutes
 
 Ranks replace measurements by their order: smallest, next smallest, and so on.
 The **Wilcoxon rank-sum test** compares the groups through ranks. It does not require normal
@@ -157,7 +156,7 @@ If the results differ, I would explain ___. Write here.*
 **Headline workshop:** propose an accurate one-sentence headline, then swap notebooks.
 Your partner identifies one claim that the sample cannot support.
 
-## 5. Day 2 opening: do two measurements travel together? — 15 minutes
+## 5. do two measurements travel together? — 15 minutes
 
 Here we use only Baseline. An association across mixed groups can be driven by the groups themselves.
 Correlation requires **two measurements from the same animal**, not two unrelated columns
@@ -185,7 +184,7 @@ addresses your question; avoid choosing by the p-value. Write here.*
 - [ ] I explained the sample unit and comparison direction.
 - [ ] My plots have units and captions, and I reported sample sizes.
 - [ ] I justified my test and interpreted its estimate, uncertainty and p-value.
-- [ ] On day 2, I explained the rank comparison and correlation in my own words.
+- [ ] Before finishing, I explained the rank comparison and correlation in my own words.
 - [ ] I restarted R, ran all chunks in order and checked the knitted HTML.
 
 Keep this notebook. On day 2, bring useful code into `04_investigation.Rmd` and build one

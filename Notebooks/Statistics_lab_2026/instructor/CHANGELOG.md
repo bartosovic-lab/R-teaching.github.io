@@ -39,3 +39,13 @@ This log describes authored changes. Actual validation results are recorded sepa
 - Exported new code, reflections and interactive settings into student notebooks.
 - Supplied a reproducible measurement-level CSV with provenance and independent reconciliation.
 - Moved the 20-minute rank-test and 15-minute correlation discussion to the start of day 2; both afternoons remain 240 minutes including breaks.
+
+## Chloride tutorial: biology first and replication throughout
+
+- Expanded GABA, chloride gradient, reversal potential, KCC2 and cue–reward experiment background; distinguished depolarization from spike sensitivity.
+- Replaced electrophysiology animal IDs with Rat_01–Rat_26 and supplied a reversible source key.
+- Introduced all 26 animals and 47 cell observations before the selected 13-animal comparison.
+- Moved row/animal counting into section 2, following one rat and defending n into section 3, and owner reveal/copying into section 7; removed the standalone replication chapter.
+- Retained the scatterplot after checking that both voltages belong to the same cells and animal summaries; explained matching versus different animals across phases.
+- Shortened the starter to 5 minutes, summaries to 10, missing values to 5. Restored ranks and correlation to day 1; day 2 is wholly the independent project.
+- Updated exports, checks, data documentation, previews and student package.
