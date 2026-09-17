@@ -76,13 +76,16 @@ reflect <- function(prompt, guide) {
     return(preview_block("Your explanation", prompt, NULL,
                          paste0("*Discussion guide:* ", guide)))
   }
+  # learnr stores answer_fn() functions as text and re-parses them later, so the
+  # closure is lost: the guide must be inlined as a literal, not referenced.
+  check <- eval(bquote(function(value) {
+    if (!nzchar(trimws(value))) {
+      return(learnr::incorrect("Write a thought first; a question is welcome too."))
+    }
+    learnr::correct(.(paste("Recorded. Discussion guide:", guide)))
+  }))
   learnr::question_text(prompt,
-    learnr::answer_fn(function(value) {
-      if (!nzchar(trimws(value))) {
-        return(learnr::incorrect("Write a thought first; a question is welcome too."))
-      }
-      learnr::correct(paste("Recorded. Discussion guide:", guide))
-    }, label = "Open reflection"),
+    learnr::answer_fn(check, label = "Open reflection"),
     rows = 4, allow_retry = TRUE, submit_button = "Record my explanation",
     try_again_button = "Revise", correct = "", try_again = "")
 }
