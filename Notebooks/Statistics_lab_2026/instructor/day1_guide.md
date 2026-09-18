@@ -21,7 +21,7 @@ what to fix, so pairs can self-correct without waiting for you.
 | Elapsed | Min | Section | What every pair should have |
 |---|---:|---|---|
 | 0:00 | 15 | Welcome, retrieval questions, RStudio panes, LLM policy | Tutorial open, know where to type |
-| 0:15 | 20 | Mission 1 | Ran, changed and repaired a command; Esc rescue done in the Console |
+| 0:15 | 20 | Mission 1 | Ran, changed and repaired a command (the Console is busy running the tutorial, so the stuck-console / Esc rescue is not in the tutorial; show it on Day 2 when students work in the Console) |
 | 0:35 | 20 | Mission 2 | Imported the table, selected a column and a group, named the observation unit |
 | 0:55 | 20 | Mission 3 | Can say mean vs median, SD, IQR, what NA does |
 | 1:15 | 15 | Break | |

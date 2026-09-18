@@ -324,23 +324,6 @@ mcq("R says: Error: object 'score' not found. What is the most likely cause?",
     2, "Object not found is the most common error of the day. Check spelling, then re-run the line that creates the object.")
 ```
 
-### Rescue a stuck Console
-
-With your instructor, go to the **RStudio Console** and type `mean(c(1, 2` and
-press Enter. The prompt changes from `>` to `+`: R is waiting for the missing
-bracket. Press **Esc** to cancel. When `>` is back, type `mean(c(1, 2))`.
-
-Never type the prompt characters themselves. The `+` continuation prompt is not
-the `+` you use for addition.
-
-```{r q-console, results="asis"}
-mcq("The Console shows a + prompt and nothing you type seems to work. What now?",
-    c("Keep pasting the next exercise; it will sort itself out",
-      "Press Esc to cancel the unfinished command, then type the complete command",
-      "Restart the computer"),
-    2, "A + prompt means an expression is unfinished. Esc cancels it; then the > prompt is ready again.")
-```
-
 ## Mission 2 · Open the evidence
 
 **Goal:** import a table, look inside it, and say what one row means.
