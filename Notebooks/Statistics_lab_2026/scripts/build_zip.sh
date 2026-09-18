@@ -15,5 +15,6 @@ zip -r -X Statistics_lab_2026.zip \
   Statistics_lab_2026/README.md \
   Statistics_lab_2026/data/README.md \
   Statistics_lab_2026/data/mmse_small.csv \
-  Statistics_lab_2026/data/neurites.csv
+  Statistics_lab_2026/data/neurites.csv \
+  Statistics_lab_2026/images/jellybean.png
 unzip -l Statistics_lab_2026.zip

@@ -1021,6 +1021,8 @@ reflect("Contrast this plot with the MMSE case. Why can a group mean not tell yo
 
 ### The jelly bean problem
 
+![xkcd 882, "Significant": twenty colours of jelly beans tested for a link to acne; only green comes out significant.](images/jellybean.png){width=45%}
+
 If nothing at all is going on and you test twenty hypotheses at the 0.05 level,
 you still expect about one "significant" result by pure chance. (The classic
 cartoon: scientists test twenty colours of jelly beans for acne; green comes out
