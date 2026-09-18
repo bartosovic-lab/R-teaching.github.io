@@ -10,6 +10,14 @@ on that computer, so a closed window loses nothing.
 
 ## Timing
 
+The tutorial itself shows no times: students work at their own pace so that
+nobody feels pressure to finish a mission in a given number of minutes. The
+schedule below is for you. Each mission opens with a short "The ideas behind
+this mission" theory subsection students can fall back to; every code window
+that asks for a change (2 + 4 to 2 + 10, mean to median, 12 to 100, pearson to
+spearman, ...) has a **Submit Answer** button that checks the change and says
+what to fix, so pairs can self-correct without waiting for you.
+
 | Elapsed | Min | Section | What every pair should have |
 |---|---:|---|---|
 | 0:00 | 15 | Welcome, retrieval questions, RStudio panes, LLM policy | Tutorial open, know where to type |

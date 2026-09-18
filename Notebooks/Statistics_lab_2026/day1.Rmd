@@ -63,7 +63,7 @@ Every investigation today follows the same six questions:
 | Button | What it does |
 |---|---|
 | **Run Code** | Runs the code in the window and shows the output below it |
-| **Submit Answer** | Some exercises check your final result against a reference |
+| **Submit Answer** | Checks whether you made the change the task asked for, and tells you what to fix if not |
 | **Hints** / **Solution** | Use hints when stuck; open the solution *after* an attempt |
 | **Start Over** | Resets the code window to the supplied version |
 | **Continue** | Reveals the next step of the section |
@@ -75,22 +75,24 @@ R scripts behave differently: later lines depend on earlier ones.
 
 ### Today's route
 
-| Time | Mission | Minimum outcome |
-|---|---|---|
-| 0:00–0:15 | Welcome and finding your way | Know where to type and where output appears |
-| 0:15–0:55 | Missions 1–2: first commands, first table | Run, change, repair, import |
-| 0:55–1:15 | Mission 3: typical values and spread | Explain mean vs median, SD, IQR, NA |
-| 1:15–1:30 | Break | |
-| 1:30–1:50 | Mission 4: make the observations visible | Read a histogram, boxplot, violin |
-| 1:50–2:20 | Mission 5: is it normal? | Write an assumption assessment |
-| 2:20–2:30 | Break | |
-| 2:30–3:20 | Mission 6: compare the groups | A result sentence with uncertainty |
-| 3:20–3:35 | Mission 7: many questions, many chances | Explain a Bonferroni-adjusted table |
-| 3:35–3:50 | Mission 8: association detective | Read a scatterplot and a correlation |
-| 3:50–4:00 | Finish: what you can do now, prepare Day 2 | Exit ticket |
+Work through the missions in order, at your own pace. Each one starts with a
+short piece of theory you can come back to whenever an exercise feels unclear.
 
-Sections after the Finish (**Toolbox**, **Gallery**, **Extras**) are optional
-reference material for curious pairs and for Day 2.
+| Mission | Minimum outcome |
+|---|---|
+| Welcome and finding your way | Know where to type and where output appears |
+| Missions 1–2: first commands, first table | Run, change, repair, import |
+| Mission 3: typical values and spread | Explain mean vs median, SD, IQR, NA |
+| Mission 4: make the observations visible | Read a histogram, boxplot, violin |
+| Mission 5: is it normal? | Write an assumption assessment |
+| Mission 6: compare the groups | A result sentence with uncertainty |
+| Mission 7: many questions, many chances | Explain a Bonferroni-adjusted table |
+| Mission 8: association detective | Read a scatterplot and a correlation |
+| Finish: what you can do now, prepare Day 2 | Exit ticket |
+
+There are two breaks, after Mission 3 and after Mission 5. Sections after the
+Finish (**Toolbox**, **Gallery**, **Extras**) are optional reference material for
+curious pairs and for Day 2.
 
 ### Where do I type?
 
@@ -116,14 +118,40 @@ mcq("You typed a command in the Console and it made a beautiful plot. Next week 
 
 ## Mission 1 · Make R do something
 
-**About 20 minutes.** Goal: run, change, break, repair.
+**Goal:** run, change, break, repair.
 
-R is a calculator that also remembers things and draws pictures. RStudio is the
-desk you sit at. In this tutorial, click **Run Code** under each window.
+### The ideas behind this mission
+
+R is a programming language for data: you write an instruction, R carries it
+out and shows the result. Think of it as a lab protocol that a very literal
+assistant follows. The assistant never improvises, so every step has to be
+spelled out, and every step can be repeated exactly. That is the whole point.
+When you analyse data by clicking in a spreadsheet, nobody (not even you, a
+month later) can say exactly what was done. A script written in R is the
+protocol itself: run it again and you get the same result, hand it to a
+colleague and they can check every step. Journals and reviewers increasingly
+ask for exactly this.
+
+Three words cover most of what you will see today. An **object** is anything R
+has stored under a name: a single number, a list of measurements, a whole table.
+A **function** is a verb: `mean()`, `plot()`, `read.csv()`. You give it an
+input inside the round brackets and it returns a result. An **argument** is an
+extra setting you pass to a function, written as `name = value`, such as
+`digits = 2`. Almost every line of R is "take this object, apply this function
+with these arguments".
+
+Errors are part of the workflow, not a sign that you are bad at this. R stops
+at the first thing it does not understand and prints a message in red. The
+useful information is almost always in the *last* line of that message: which
+name was not found, which bracket was missing. Experienced users see errors
+every day; the difference is that they read the message instead of panicking.
+RStudio is the desk you sit at while doing all this. In this tutorial, click
+**Run Code** under each window.
 
 ### R is a calculator
 
-**Predict → run → change.** What will this print? Run it, then change `4` to `10`.
+**Predict → run → change.** What will this print? Run it, then change `4` to `10`
+and click **Submit Answer**.
 
 ```{r first-command, exercise=TRUE}
 2 + 4
@@ -137,8 +165,17 @@ desk you sit at. In this tutorial, click **Run Code** under each window.
 2 + 10
 ```
 
+```{r first-command-check}
+function(value, env, code) {
+  if (same(value, 6)) return("That is still 2 + 4. Change the 4 to 10, then submit again.")
+  if (same(value, 12)) return(right("2 + 10 is 12. You have edited and re-run your first R command."))
+  "The last line should be 2 + 10, which gives 12."
+}
+```
+
 Try a few more. R has hundreds of built-in functions; a function is a verb with
-round brackets. Run these, then add a line that computes the square root of 144.
+round brackets. Run these, then add a line that computes the square root of 144
+and **Submit Answer**.
 
 ```{r calculator, exercise=TRUE}
 10 / 3
@@ -157,6 +194,14 @@ sqrt(81)
 sqrt(144)
 ```
 
+```{r calculator-check}
+function(value, env, code) {
+  if (!code_has(code, "sqrt(144)")) return("Add a new line with sqrt(144) below the three supplied lines.")
+  if (same(value, 12)) return(right("sqrt(144) is 12. The last line of a window is what the check reads."))
+  "sqrt(144) is there, but make it the last line so that its result is what the window ends with."
+}
+```
+
 ### Remember things with a name
 
 `<-` means "store the value on the right under the name on the left". `c()`
@@ -164,7 +209,7 @@ sqrt(144)
 function such as `mean()` takes an input and returns a result.
 
 Run these lines. Then change `mean` to `median`. Finally, ask R what `scores`
-contains by writing `scores` alone on a new line.
+contains by writing `scores` alone on a new line, and **Submit Answer**.
 
 ```{r first-vector, exercise=TRUE}
 scores <- c(27, 28, 30, 27, 29)
@@ -184,6 +229,18 @@ mean(scores)
 scores <- c(27, 28, 30, 27, 29)
 median(scores)
 scores
+```
+
+```{r first-vector-check}
+function(value, env, code) {
+  if (!exists("scores", envir = env) || !same(env$scores, c(27, 28, 30, 27, 29)))
+    return("Keep the first line as it is: scores <- c(27, 28, 30, 27, 29).")
+  if (!code_has(code, "median(scores)"))
+    return("Change mean to median in the second line.")
+  if (!same(value, env$scores))
+    return("Good, the median is 28. Now add a last line with just the name scores, so R prints the five values.")
+  right("median(scores) is 28, and the name alone prints the stored vector.")
+}
 ```
 
 Three rules that prevent most beginner errors:
@@ -210,12 +267,12 @@ mean(my_scores)
 ```
 
 ```{r own-vector-check}
-function(value, env) {
+function(value, env, code) {
   if (!exists("my_scores", envir = env) || length(env$my_scores) != 5)
     return("my_scores should hold exactly five numbers.")
   if (identical(env$my_scores, c(10, 20, 30, 40, 50)))
     return("Those are our numbers. Replace them with five of your own.")
-  if (isTRUE(all.equal(value, mean(env$my_scores)))) TRUE
+  if (same(value, mean(env$my_scores))) TRUE
   else "The last line should be mean(my_scores)."
 }
 ```
@@ -231,7 +288,8 @@ mcq("After running scores <- c(27, 28, 30), what does R print?",
 ### Break it on purpose
 
 Errors are information, not punishment. This window contains a deliberate
-misspelling. Run it, read the **last line** of the red message, then repair the name.
+misspelling. Run it, read the **last line** of the red message, then repair the
+name and **Submit Answer**.
 
 ```{r repair-name, exercise=TRUE}
 scores <- c(27, 28, 30)
@@ -246,6 +304,16 @@ mean(score)
 ```{r repair-name-solution}
 scores <- c(27, 28, 30)
 mean(scores)
+```
+
+```{r repair-name-check}
+function(value, env, code) {
+  if (!code_has(code, "mean(scores)"))
+    return("The object is called scores. Change mean(score) to mean(scores).")
+  if (same(value, mean(c(27, 28, 30))))
+    return(right("The name matches again and the mean is 28.3. That was the most common error of the day; you have already fixed it once."))
+  "Keep scores <- c(27, 28, 30) as the first line and mean(scores) as the last."
+}
 ```
 
 ```{r q-error, results="asis"}
@@ -275,7 +343,32 @@ mcq("The Console shows a + prompt and nothing you type seems to work. What now?"
 
 ## Mission 2 · Open the evidence
 
-**About 20 minutes.** Goal: import a table, look inside it, and say what one row means.
+**Goal:** import a table, look inside it, and say what one row means.
+
+### The ideas behind this mission
+
+Almost every dataset in biology can be written as a rectangular table: one
+**row per observation** and one **column per variable**. A plate reader export
+has one row per well; a patient registry has one row per patient (or per
+visit); a microscopy summary has one row per cell. R calls such a table a
+**data frame**. Getting the data into this shape, and knowing what a row is,
+is half the analysis. The other half is the statistics, and it depends on the
+first half more than most people realise.
+
+Ask, for every table you meet: **what does one row represent?** This is the
+**observation unit**. It decides how many independent pieces of evidence you
+really have. Twenty rows can be twenty people, or two people measured ten times
+each, and every test you run later assumes you know which. No amount of R can
+recover that information from the numbers alone; it comes from how the data
+were collected.
+
+Columns come in kinds. Some hold measurements with meaningful distances
+(**continuous**: age, volume, concentration). Some hold ordered categories where
+the spacing between levels is not fixed (**ordinal**: mild < moderate < severe).
+Some hold plain labels with no order (**nominal**: sex, treatment, cell type).
+R stores whatever the file says, usually numbers or text, and cannot tell a
+severity score from a temperature. You have to, because the kind of variable
+decides which summaries and tests make sense.
 
 ### The case file: a small MMSE table
 
@@ -290,7 +383,8 @@ column is a variable and each row is an observation. The path `data/mmse_small.c
 starts inside this project folder.
 
 Run the import and the four inspection commands. Match each output to the table
-you can imagine: how many rows, how many columns, which types?
+you can imagine: how many rows, how many columns, which types? Then add
+`summary(mmse)` as a fifth command and **Submit Answer**.
 
 ```{r import-table, exercise=TRUE}
 mmse <- read.csv("data/mmse_small.csv")
@@ -314,6 +408,18 @@ str(mmse)
 summary(mmse)
 ```
 
+```{r import-table-check}
+function(value, env, code) {
+  if (!code_has(code, 'read.csv("data/mmse_small.csv")'))
+    return("Keep the read.csv line: it creates the mmse table that the other commands inspect.")
+  if (!code_has(code, "summary(mmse)"))
+    return("Add summary(mmse) as the last line.")
+  if (inherits(value, "table") && any(grepl("Min.", value)))
+    return(right("summary() gives min, quartiles, mean and max for each numeric column, and only the length and type for a text column such as group. The table has 20 rows and 3 columns."))
+  "Make summary(mmse) the last line of the window."
+}
+```
+
 ```{r q-dim, results="asis"}
 mcq("dim(mmse) printed 20 3. What does it mean?",
     c("20 columns and 3 rows",
@@ -325,7 +431,8 @@ mcq("dim(mmse) printed 20 3. What does it mean?",
 ### One column at a time
 
 `$` picks one column out of a data frame and gives you a vector. Run this, then
-change `range` to `summary`, and then to `table` on the `group` column.
+change `range` to `summary`, and then to `table` on the `group` column. Submit
+when the window ends with the group counts.
 
 ```{r select-column, exercise=TRUE}
 range(mmse$MMSE)
@@ -344,8 +451,22 @@ summary(mmse$MMSE)
 table(mmse$group)
 ```
 
+```{r select-column-check}
+function(value, env, code) {
+  if (inherits(value, "table") && same(as.vector(value), c(10, 10)))
+    return(right("table() counts the rows in each group: 10 Control and 10 AD."))
+  if (code_has(code, "range(mmse$MMSE)"))
+    return("That is still range(). Change range to summary, run it, then try table(mmse$group).")
+  if (code_has(code, "summary(mmse$MMSE)"))
+    return("summary() works: min, quartiles, mean, max. Now count the groups with table(mmse$group) on the last line.")
+  "Try summary(mmse$MMSE), then table(mmse$group). The check reads the last line."
+}
+```
+
 To keep one group only, ask R for the rows where `group` equals `"AD"`. Note the
 double `==` (a question: "is it equal?") versus the single `=` (an argument).
+Run it, then add the same three lines for the control group, stored as
+`control`, and **Submit Answer**.
 
 ```{r select-group, exercise=TRUE}
 ad <- mmse$MMSE[mmse$group == "AD"]
@@ -364,6 +485,17 @@ ad
 control
 length(ad)
 length(control)
+```
+
+```{r select-group-check}
+function(value, env, code) {
+  if (!code_has(code, 'control <- mmse$MMSE[mmse$group == "Control"]') &&
+      !code_has(code, 'control = mmse$MMSE[mmse$group == "Control"]'))
+    return('Add a line that builds the other group the same way: control <- mmse$MMSE[mmse$group == "Control"]. Check the capital C and the double ==.')
+  if (!code_has(code, "length(control)"))
+    return("control exists. Now print it and its length, as you did for ad.")
+  right("Two vectors of 10 scores each. From here on ad and control are prepared in every window.")
+}
 ```
 
 From here on, the vectors `ad` and `control` (and the data frame `mmse`) are
@@ -403,7 +535,34 @@ type; only you know the scientific meaning.
 
 ## Mission 3 · What is typical, and how variable?
 
-**About 20 minutes.** Goal: explain mean versus median, SD versus uncertainty, and the IQR.
+**Goal:** explain mean versus median, SD versus uncertainty, and the IQR.
+
+### The ideas behind this mission
+
+Suppose you measured neurite length in twenty cultures. Nobody wants to read
+twenty numbers, so you summarise: a **typical value** (the centre) and a
+**measure of how much the cultures differ** (the spread). These are
+**descriptive statistics**. They describe the sample you have in hand; they do
+not yet claim anything about cultures you did not measure. Every summary throws
+information away on purpose, and the skill is to choose a summary that keeps
+what matters for your question.
+
+There are two families. The **mean** and **standard deviation (SD)** use every
+value and its exact size, which makes them efficient when the data are roughly
+symmetric but easily dragged around by one extreme value (a contaminated well,
+a mislabelled patient). The **median** and **quartiles** use only the order of
+the values, so a wild value moves them very little. When a distribution is
+skewed or has outliers, the median tells you more honestly where the typical
+observation sits. Reporting both, and looking at the raw points, is never wrong.
+
+One idea sits underneath everything that follows today. Your twenty cultures,
+or twenty people, are a **sample** from a much larger **population** you
+actually care about: all cultures grown this way, all patients with this
+diagnosis. Repeat the experiment and you get a different sample with a slightly
+different mean. The SD describes how much individual observations vary. The
+uncertainty of the *mean itself* is a different, smaller quantity, and Mission
+6 puts a number on it. Keep the two apart: "how variable are the observations?"
+and "how sure am I about the average?" are different questions.
 
 ### Centre and spread in one breath
 
@@ -420,7 +579,8 @@ Every summary throws information away. The art is choosing which to keep.
 ### The outlier detective
 
 **Predict first:** if the last value of this invented assay vector becomes 100,
-which changes more, the mean or the median? Run, then change `12` to `100`.
+which changes more, the mean or the median? Run, then change `12` to `100` and
+**Submit Answer**.
 
 ```{r outlier-detective, exercise=TRUE}
 signal <- c(8, 9, 10, 11, 12)
@@ -438,6 +598,17 @@ signal <- c(8, 9, 10, 11, 100)
 mean(signal)
 median(signal)
 sd(signal)
+```
+
+```{r outlier-detective-check}
+function(value, env, code) {
+  if (!exists("signal", envir = env)) return("Keep the line that creates signal.")
+  if (same(env$signal, c(8, 9, 10, 11, 12)))
+    return("The vector is unchanged. Replace the last number, 12, with 100 and run again.")
+  if (!same(env$signal, c(8, 9, 10, 11, 100)))
+    return("signal should be exactly 8, 9, 10, 11, 100: change only the last number.")
+  right("The mean jumped from 10 to 27.6 and the SD from 1.6 to 40.5, while the median stayed at 10. One value moved two of the three summaries.")
+}
 ```
 
 ```{r q-outlier, results="asis"}
@@ -477,7 +648,7 @@ numq("What is the IQR of the control MMSE scores (in points)?", 1.75, tolerance 
 
 Now the same summaries for both groups at once. `tapply()` applies a function to
 each group separately: read it as "apply `mean` to `MMSE` split by `group`".
-Change `mean` to `sd`, then to `median`.
+Change `mean` to `sd`, then to `median`, and **Submit Answer**.
 
 ```{r by-group, exercise=TRUE}
 tapply(mmse$MMSE, mmse$group, mean)
@@ -493,11 +664,23 @@ tapply(mmse$MMSE, mmse$group, sd)
 tapply(mmse$MMSE, mmse$group, median)
 ```
 
+```{r by-group-check}
+function(value, env, code) {
+  if (code_has(code, "tapply(mmse$MMSE, mmse$group, median)") && same(sort(as.vector(value)), c(9.5, 28)))
+    return(right("Medians 28 (Control) and 9.5 (AD); the SDs were 1.2 and 2.4. The AD group is lower and more variable."))
+  if (code_has(code, "tapply(mmse$MMSE, mmse$group, sd)"))
+    return("sd works. Now change sd to median on the last line.")
+  if (code_has(code, "tapply(mmse$MMSE, mmse$group, mean)"))
+    return("That is still mean. Change mean to sd, run, then change it to median.")
+  "Use the pattern tapply(mmse$MMSE, mmse$group, FUNCTION) and finish with median."
+}
+```
+
 ### Missing values are unknown, not zero
 
 R writes a missing value as `NA`. This separate demonstration vector has one.
 Run it: the mean is `NA` because R refuses to guess. Then add `na.rm = TRUE`
-inside `mean()`. How many measurements contributed?
+inside `mean()` and **Submit Answer**. How many measurements contributed?
 
 ```{r missing-value, exercise=TRUE}
 signal_missing <- c(8, 9, NA, 11, 12)
@@ -516,6 +699,18 @@ signal_missing <- c(8, 9, NA, 11, 12)
 mean(signal_missing, na.rm = TRUE)
 sum(is.na(signal_missing))
 sum(!is.na(signal_missing))
+```
+
+```{r missing-value-check}
+function(value, env, code) {
+  if (!exists("signal_missing", envir = env) || !same(env$signal_missing, c(8, 9, NA, 11, 12)))
+    return("Keep the vector as it is, including the NA: the point is to handle it, not to delete it.")
+  if (code_has(code, "mean(signal_missing, na.rm = TRUE)") || code_has(code, "mean(signal_missing, na.rm = T)"))
+    return(right("The mean of the four known values is 10; one value was missing, four contributed. Both facts belong in a report."))
+  if (code_has(code, "mean(signal_missing)"))
+    return("The mean is still NA. Inside the brackets add the argument na.rm = TRUE, separated by a comma.")
+  "Keep mean(signal_missing, na.rm = TRUE) in the window."
+}
 ```
 
 ```{r q-missing, results="asis"}
@@ -555,11 +750,39 @@ reflect("For the outlier example, which centre and spread would you report, and 
         "For a skewed sample, median and IQR describe the typical observation; still show all points and mention the extreme value. SD describes the spread of observations; a confidence interval (later) describes uncertainty about an estimate. They are different things.")
 ```
 
-**Break · 15 minutes.** Your brain is part of the analysis pipeline.
+**Break.** Your brain is part of the analysis pipeline.
 
 ## Mission 4 · Let the observations speak
 
-**About 20 minutes.** Goal: read a histogram, a boxplot with points and a violin; know what a bar chart hides.
+**Goal:** read a histogram, a boxplot with points and a violin; know what a bar chart hides.
+
+### The ideas behind this mission
+
+Plot before you test. A table of summaries can look identical for datasets
+that are completely different: the same mean and SD can come from a neat bell
+shape, from two separate clusters, or from nineteen similar values and one
+extreme one. A picture of the individual observations shows the **shape** of a
+distribution, and that shape decides which summaries and which tests are
+sensible. Skipping the plot is how most wrong analyses start.
+
+Shape has a small vocabulary worth learning. A **symmetric** distribution has
+a mirror-image left and right; the mean and median agree. A **skewed** one has
+a long tail on one side (reaction times, cell counts, concentrations often tail
+to the right), and the tail pulls the mean away from the median. A **bimodal**
+distribution has two humps, which usually means two kinds of thing were mixed
+together. A **ceiling** or **floor** effect appears when a measurement cannot
+go above or below a limit, so values pile up at that limit; a 30-point test
+score is a classic case. Ties (many identical values) and outliers (values far
+from the rest) are also part of the description.
+
+Different plots show different things. A **histogram** shows the shape of one
+variable but depends on how wide you make the bins. A **boxplot** compresses a
+distribution into five numbers (median, quartiles, whiskers) and is good for
+comparing groups side by side, but it hides sample size and any structure inside
+the box. A **strip chart** draws every observation, which is why today we put
+the points on top of every box. A **bar chart of means** shows one number per
+group and nothing else; it is the most common plot in biology papers and the
+least informative.
 
 Our question: **How do the MMSE distributions differ between the two groups?**
 
@@ -567,7 +790,8 @@ Our question: **How do the MMSE distributions differ between the two groups?**
 
 A histogram cuts the axis into bins and counts observations in each. The picture
 depends on the bins. Run the two histograms (same bins, same axes), then change
-both `by = 3` to `by = 5`. Did the observations change? Did the picture?
+both `by = 3` to `by = 5` and **Submit Answer**. Did the observations change?
+Did the picture?
 
 ```{r histogram, exercise=TRUE}
 par(mfrow = c(1, 2))   # two plots side by side
@@ -587,6 +811,19 @@ hist(control, breaks = seq(0, 30, by = 5), xlim = c(0, 30), ylim = c(0, 10),
      main = "Control", xlab = "MMSE (points)", col = "#9bd5db")
 hist(ad, breaks = seq(0, 30, by = 5), xlim = c(0, 30), ylim = c(0, 10),
      main = "AD", xlab = "MMSE (points)", col = "#f4bb8b")
+```
+
+```{r histogram-check}
+function(value, env, code) {
+  n5 <- lengths(regmatches(code, gregexpr("by=5", code, fixed = TRUE)))
+  if (code_has(code, "by = 3") && n5 == 0)
+    return("Both histograms still use by = 3. Change both to by = 5 and run again.")
+  if (code_has(code, "by = 3"))
+    return("One histogram is changed. Change the other by = 3 to by = 5 as well, so the two panels stay comparable.")
+  if (n5 >= 2)
+    return(right("Same 20 scores, wider bins, a different picture. The ceiling of the controls near 30 is visible in both versions."))
+  "Use breaks = seq(0, 30, by = 5) in both hist() calls."
+}
 ```
 
 ```{r q-hist, results="asis"}
@@ -697,7 +934,38 @@ reflect("Write a two-sentence figure caption for the boxplot: one observed patte
 
 ## Mission 5 · Is it normal? Assumptions are evidence, not a traffic light
 
-**About 30 minutes.** Goal: inspect each group, interpret Shapiro–Wilk with care, and write an assumption assessment *before* seeing any group-test p-value.
+**Goal:** inspect each group, interpret Shapiro–Wilk with care, and write an assumption assessment *before* seeing any group-test p-value.
+
+### The ideas behind this mission
+
+Every statistical test is built on a **model**: a simplified story about how
+the data came to be. A t-test's story is "each group's values scatter around
+its own mean in a roughly bell-shaped way, and every observation is independent
+of every other". The p-values and confidence intervals a test prints are only
+as trustworthy as that story. This is exactly like a calibration curve: the
+concentrations you read off it are only right if the assay really is linear
+over that range. Checking assumptions is checking whether the story is close
+enough to reality for the numbers to mean what they claim.
+
+The assumption that matters most is **independence**: that each observation
+carries its own new piece of information. Ten cells from one dish, or three
+visits of the same patient, are not independent, and no test can detect this
+from the numbers. It comes from the design, so you have to know what one row
+is (Mission 2). The **normality** assumption is about the shape of values
+within each group, and it matters less than students fear: with reasonably
+sized, roughly symmetric samples the t-test is robust, meaning it still gives
+sensible answers when the shape is not perfectly bell-shaped. It matters more
+with small, skewed samples or heavy outliers.
+
+You will see two ways to look at shape. Plots (histogram, **Q–Q plot**) show
+you *how* the data depart from normal: skew, ceiling, ties, one stray value.
+A **normality test** such as Shapiro–Wilk gives a single p-value that says
+how surprising the sample shape would be if the population were normal. Small
+samples rarely produce a small p-value even when the shape is odd; huge samples
+produce small p-values for trivial departures. Treat the test as one piece of
+evidence next to the plots, never as a traffic light that decides the test for
+you. The decision is yours, and it should be written down before you see any
+result.
 
 ### First the question, then the shape
 
@@ -842,11 +1110,43 @@ reflect("Fill in: I inspected ___; I observed ___; I would lead with ___ because
         "Example: I inspected within-group histograms, Q-Q plots and Shapiro-Wilk. Controls are compressed at the ceiling (p = 0.03), AD scores look roughly symmetric. With n = 10 per group I would report Welch's t-test for the mean difference and Wilcoxon as a rank-based check; independence is an assumption of the teaching scenario, not something the data can verify.")
 ```
 
-**Break · 10 minutes.** Do not run the comparison before the break; let the assessment settle.
+**Break.** Do not run the comparison before the break; let the assessment settle.
 
 ## Mission 6 · A difference, an uncertainty, a conclusion
 
-**About 60 minutes**, including 15 minutes comparing two methods and 8 minutes on the overlap challenge.
+**Goal:** estimate the difference between two groups, put an uncertainty on it,
+compare two methods that ask different questions, and write a result sentence.
+
+### The ideas behind this mission
+
+Two groups have different sample means. They always do: even two flasks from
+the same culture give different averages, because every sample is a different
+draw from the population. The question is not "are the means different?" but
+"is this difference larger than the differences that sampling alone would
+produce?" A **hypothesis test** answers it by imagining a world where the two
+populations have the same mean (the **null hypothesis**) and asking how often
+that world would produce a difference at least as large as the one you found.
+That frequency is the **p-value**. A small p-value means the observed
+difference would be rare under the null; it does not measure how big or how
+important the difference is, and it is not the probability that the null
+hypothesis is true.
+
+The **t-statistic** behind the test is a signal-to-noise ratio: the difference
+between the means divided by the **standard error**, which is how much that
+difference would wobble from sample to sample. Larger differences, smaller
+scatter and larger samples all make t bigger and p smaller. This is why a
+tiny, biologically irrelevant difference becomes "significant" with enough
+observations, and a large one can stay "not significant" with three per group.
+The p-value therefore needs company.
+
+That company is the **estimate with its uncertainty**: the observed difference
+in the original units, and a **95% confidence interval** around it. The
+interval is the range of true differences that are compatible with the data.
+If you repeated the study many times, about 95% of such intervals would contain
+the true difference. It tells the reader the direction, the size and the
+precision of the effect in one line, which is more than any p-value can. The
+result sentence you write at the end of this mission has all three: the
+estimate, the interval, and the method that produced them.
 
 ### Welch's t-test
 
@@ -967,7 +1267,7 @@ reflect("Write the result sentence. Include n per group, direction, size of the 
         "In this teaching sample (n = 10 per group), the estimated AD minus Control difference in mean MMSE was -19.1 points (95% CI -21.0 to -17.2, Welch's t-test, p < 0.001). This supports lower average scores in the AD group under the assumption of 20 independent people; it does not show what caused the difference, nor how these people were selected. Use point differences for MMSE: a fold change would claim a ratio scale the score does not have.")
 ```
 
-### The overlap challenge · 8 minutes
+### The overlap challenge
 
 MMSE was a dramatic case: no overlap at all. Real data usually overlap. Here are
 two groups from the synthetic **neurite outgrowth** data
@@ -1017,7 +1317,39 @@ reflect("Contrast this plot with the MMSE case. Why can a group mean not tell yo
 
 ## Mission 7 · Many questions, many chances
 
-**About 15 minutes.** Goal: explain what a Bonferroni-adjusted p-value means and why the number of questions you asked matters.
+**Goal:** explain what a Bonferroni-adjusted p-value means and why the number of questions you asked matters.
+
+### The ideas behind this mission
+
+A p-value threshold of 0.05 means: when nothing is going on, one test in
+twenty will still come out "significant" by chance. That is the price of the
+method, and it is acceptable for one pre-planned question. The trouble starts
+when you ask many questions. With 20 independent tests and no real effects,
+the chance that *at least one* is significant is 1 − 0.95^20 ≈ 64%. With 100
+tests it is over 99%. Screening every protein on a panel, every gene in an
+RNA-seq experiment or every variable in a patient table against the outcome
+guarantees "findings", most of them noise. This is the **multiple testing
+problem**, and it is one of the main reasons published results fail to
+replicate.
+
+The fix has two parts. First, be honest about the **family**: the set of tests
+that together support one claim. "At least one of these proteins differs" is
+a claim about the whole family, so the error rate has to be controlled for the
+whole family. Second, adjust. **Bonferroni** is the simplest correction:
+multiply each p-value by the number of tests (or, equivalently, compare each
+against 0.05 divided by that number). It keeps the chance of any false positive
+in the family at about 5%. It is deliberately strict and can hide real effects
+when the family is large; methods such as Holm or the **false discovery rate**
+(Benjamini–Hochberg, standard in omics) are less conservative, but the logic is
+the same: more questions, higher bar.
+
+The deeper distinction is between **confirmatory** and **exploratory**
+analysis. A confirmatory test answers a question you wrote down before looking
+at the data; its p-value means what it says. An exploratory analysis looks
+around to generate ideas; its p-values are hints, not evidence, and the honest
+report says so. Both are legitimate science. What is not legitimate is
+exploring twenty variables, reporting the one that "worked" as if it had been
+the plan, and letting the reader believe a single test was run.
 
 ### The jelly bean problem
 
@@ -1061,12 +1393,14 @@ data.frame(raw_p, adjusted_p = p.adjust(raw_p, method = "bonferroni"))
 ```
 
 ```{r bonferroni-check}
-function(value, env) {
+function(value, env, code) {
   if (!is.data.frame(value) || nrow(value) != 4)
     return("Add a fourth test so that the table has four rows.")
-  if (!isTRUE(all.equal(value[[2]], pmin(4 * value[[1]], 1))))
+  if (!same(value[[2]], pmin(4 * value[[1]], 1)))
     return("Each adjusted value should be min(4 x raw p, 1).")
-  TRUE
+  if (!same(sort(value[[1]]), c(0.01, 0.03, 0.04, 0.20)))
+    return("Keep the three original p-values and add one of 0.04.")
+  right("With four tests every adjusted p is 4 x raw: 0.04, 0.12, 0.80 and 0.16. Protein A still passes, and the new test changed the others without touching their data.")
 }
 ```
 
@@ -1124,7 +1458,40 @@ reflect("Tomorrow you will run one group comparison and one correlation. Do they
 
 ## Mission 8 · Association detective
 
-**About 15 minutes.** Goal: read one scatterplot, choose a correlation target, and avoid causal overstatement.
+**Goal:** read one scatterplot, choose a correlation target, and avoid causal overstatement.
+
+### The ideas behind this mission
+
+So far each person contributed one number and a group label. Often each unit
+contributes **two measurements**, and the question is whether they move
+together: does brain volume decrease with age, does a biomarker rise with
+disease severity, does assay A predict assay B? This is an **association**,
+and the first tool is not a test but a **scatterplot**, one point per unit.
+Look for direction (up or down), form (a straight line, a curve, a threshold),
+clusters (two groups hiding in one cloud) and single points far from the rest,
+which can create or destroy an apparent relationship on their own.
+
+A **correlation coefficient** compresses the plot into one number between −1
+and +1. **Pearson's r** measures how close the points lie to a straight line:
++1 is a perfect rising line, −1 a perfect falling line, 0 no *linear* trend.
+**Spearman's rho** does the same with ranks, so it captures any consistently
+rising or falling relationship, straight or curved, and is less disturbed by
+extreme values. Neither says anything about the slope (how much B changes per
+unit of A), and a value of 0 does not mean "no relationship": a U-shaped
+relationship has r near zero. The coefficient comes with its own p-value and
+confidence interval, because a sample of 30 units estimates the population
+correlation with uncertainty, exactly as a sample mean estimates a population
+mean.
+
+The sentence every biologist has heard, and still needs, is **correlation is
+not causation**. Two variables can move together because one drives the other,
+because a third variable drives both (a **confounder**: older patients have
+both more disease and smaller brains), because the units were selected in a
+particular way, or by chance. Observational data can show an association and
+suggest a hypothesis; only an experiment in which you control the cause, or
+careful design and adjustment, can support a causal claim. Write "was
+associated with", and reserve "caused" or "led to" for what the design can
+actually show.
 
 ### Two measurements per unit
 
@@ -1136,7 +1503,7 @@ association, not "no relationship at all".
 
 The data here are a seeded simulation of 30 independent teaching units with two
 arbitrary assay signals. Predict the direction, run, then change `"pearson"` to
-`"spearman"`.
+`"spearman"` and **Submit Answer**.
 
 ```{r association, exercise=TRUE}
 plot(assay$signal_a, assay$signal_b, pch = 16,
@@ -1154,6 +1521,17 @@ plot(assay$signal_a, assay$signal_b, pch = 16,
      xlab = "Assay A (arbitrary units)", ylab = "Assay B (arbitrary units)")
 cor.test(assay$signal_a, assay$signal_b, method = "pearson")
 cor.test(assay$signal_a, assay$signal_b, method = "spearman", exact = FALSE)
+```
+
+```{r association-check}
+function(value, env, code) {
+  if (!inherits(value, "htest") || !grepl("correlation", value$method))
+    return("Finish with the cor.test() line so that the window ends with a correlation result.")
+  if (grepl("Spearman", value$method))
+    return(right(sprintf("Spearman's rho = %.2f against Pearson's r = %.2f. Similar here because the relationship is roughly linear with no extreme points.",
+                         unname(value$estimate), cor(env$assay$signal_a, env$assay$signal_b))))
+  'That is still Pearson. Change method = "pearson" to method = "spearman".'
+}
 ```
 
 ```{r q-corr-read, results="asis"}
@@ -1178,8 +1556,6 @@ reflect("Describe the direction and form of the scatterplot, report the coeffici
 ```
 
 ## Finish · What you can do now
-
-**About 10 minutes.**
 
 Close the tutorial for a moment and rebuild today's workflow with your partner,
 from memory: **question → what one row is → plot → assumptions → method →

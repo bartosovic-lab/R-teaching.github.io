@@ -91,10 +91,31 @@ reflect <- function(prompt, guide) {
 }
 
 # ---- Exercise checker --------------------------------------------------------
-# Used by "Submit Answer". Compares the last value of the student's code with the
-# last value of the *-solution chunk. Plots cannot be compared, so plotting
-# exercises have no check chunk. The optional *-check chunk may contain a string
-# literal that is shown when the answer does not match.
+# Used by "Submit Answer". An exercise gets the Submit button only when it has a
+# *-check chunk. That chunk holds one of:
+#   * a function(value, env, code): returns TRUE or right("message") when the
+#     task was done, or a string telling the student what to change next.
+#       value  the last value of the student's code
+#       env    the environment after the student's code ran (env$scores, ...)
+#       code   the student's code normalised by normalise_code(): comments and
+#              whitespace removed, so code_has(code, "median(scores)") works
+#   * a string: the last value is compared with the last value of the *-solution
+#     chunk and the string is shown when they differ.
+# Plots cannot be compared, so plotting exercises check the code text instead.
+same <- function(a, b, tolerance = 1e-6) {
+  isTRUE(all.equal(a, b, tolerance = tolerance, check.attributes = FALSE))
+}
+right <- function(message) structure(message, class = "check_right")
+normalise_code <- function(code) {
+  code <- paste(code, collapse = "\n")
+  exprs <- tryCatch(base::parse(text = code, keep.source = FALSE), error = function(e) NULL)
+  if (!is.null(exprs)) {
+    code <- paste(vapply(exprs, function(e) paste(deparse(e), collapse = ""), ""), collapse = "\n")
+  }
+  gsub("[[:space:]]+", "", code)
+}
+code_has <- function(code, text) grepl(gsub("[[:space:]]+", "", text), code, fixed = TRUE)
+
 workshop_checker <- function(label, user_code, solution_code, check_code,
                              envir_result, evaluate_result, envir_prep,
                              last_value, stage, ...) {
@@ -102,18 +123,20 @@ workshop_checker <- function(label, user_code, solution_code, check_code,
   feedback <- function(message, correct) {
     list(message = message, correct = correct, location = "append")
   }
-  if (is.null(solution_code)) {
-    return(feedback("This exercise has no automatic check. Compare with the Solution.", TRUE))
-  }
-  # The *-check chunk may hold a string (extra hint) or a function(value, env)
-  # returning TRUE, or a message explaining what is wrong.
   spec <- tryCatch(base::eval(base::parse(text = check_code)), error = function(e) NULL)
   if (is.function(spec)) {
-    verdict <- tryCatch(spec(last_value, envir_result), error = function(e) "The check could not run.")
+    verdict <- tryCatch(spec(last_value, envir_result, normalise_code(user_code)),
+                        error = function(e) "The check could not run.")
     if (isTRUE(verdict)) {
       return(feedback("Correct. Now explain it to your partner.", TRUE))
     }
+    if (inherits(verdict, "check_right")) {
+      return(feedback(paste("Correct.", as.character(verdict)[1]), TRUE))
+    }
     return(feedback(if (is.character(verdict)) verdict[1] else "Not there yet; read the task again.", FALSE))
+  }
+  if (is.null(solution_code)) {
+    return(feedback("This exercise has no automatic check. Compare with the Solution.", TRUE))
   }
   extra <- if (is.character(spec)) paste0(" ", spec[1]) else ""
 

@@ -75,4 +75,33 @@ for (i in seq_along(chunks)) {
   } else n_ok <- n_ok + 1
 }
 cat(sprintf("Chunks checked: %d OK, %d failed\n", n_ok, length(failures)))
+
+# ---- Check functions: the solution must pass, the untouched starter must not --
+# (mimics "Submit Answer": run the code, then hand value, environment and
+# normalised code to the *-check function).
+run_check <- function(check, ch) {
+  env <- new.env(parent = globalenv())
+  for (obj in ls(base)) assign(obj, get(obj, base), env)
+  value <- try(suppressWarnings(invisible(capture.output(
+    res <- eval(parse(text = ch$code), envir = env)))), silent = TRUE)
+  if (inherits(value, "try-error")) return("(code errored; learnr would show the error)")
+  check(res, env, normalise_code(ch$code))
+}
+passed <- function(v) isTRUE(v) || inherits(v, "check_right")
+n_checks <- 0
+for (i in which(grepl("-check$", labels))) {
+  spec <- try(eval(parse(text = chunks[[i]]$code)), silent = TRUE)
+  if (!is.function(spec)) next
+  n_checks <- n_checks + 1
+  ex <- sub("-check$", "", labels[i])
+  starter <- chunks[[which(labels == ex)]]
+  solution <- chunks[[which(labels == paste0(ex, "-solution"))]]
+  v <- run_check(spec, solution)
+  if (!passed(v)) failures <- c(failures, paste0(ex, "-check rejects the solution: ", v))
+  if (!identical(trimws(starter$code), trimws(solution$code))) {
+    v <- run_check(spec, starter)
+    if (passed(v)) failures <- c(failures, paste0(ex, "-check accepts the unmodified starter"))
+  }
+}
+cat(sprintf("Check functions tested: %d\n", n_checks))
 if (length(failures)) { cat(failures, sep = "\n"); quit(status = 1) }

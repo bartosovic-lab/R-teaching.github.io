@@ -41,7 +41,7 @@ is the static, read-only version for the website.
 
 ## Structure of the tutorial
 
-Core route (about 215 minutes of activity plus breaks): Welcome (incl. LLM policy)
+Core route (untimed for students; the facilitator schedule is in `instructor/day1_guide.md`): Welcome (incl. LLM policy)
 → Mission 1 first commands → Mission 2 import a table → Mission 3 centre and spread
 → Mission 4 plots → Mission 5 assumptions → Mission 6 two-group comparison and the
 overlap challenge → Mission 7 multiple testing and Bonferroni → Mission 8
