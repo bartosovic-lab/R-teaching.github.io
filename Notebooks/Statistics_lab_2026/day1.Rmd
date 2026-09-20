@@ -31,7 +31,7 @@ source("helpers.R", local = TRUE)
 
 ## Welcome · You are the data detectives
 
-Two groups of people took a short memory test. Somebody claims one group scored
+Two groups of people took a short memory test (MMSE test). Somebody claims one group scored
 lower. **Your mission today:** decide whether the data support that claim, make a
 figure that shows it, and explain the result in your own words. Along the way you
 will meet R, the free tool that professional biologists use for exactly this job.
@@ -108,14 +108,6 @@ The most common question of the day. Here is the map.
 Your attempts are remembered by this browser on this computer, and at the end you
 can **download everything you typed** as one HTML file (Finish section).
 
-```{r q-recipe, results="asis"}
-mcq("You typed a command in the Console and it made a beautiful plot. Next week you need the same plot. Where should the command live?",
-    c("Nowhere; R remembers the Console history forever",
-      "In a saved script or notebook file, so the recipe can be run again",
-      "In the Plots pane"),
-    2, "A saved file is a recipe; the Console is a scratchpad. Reproducible analysis means the recipe, not the picture, is what you keep.")
-```
-
 ## Mission 1 · Make R do something
 
 **Goal:** run, change, break, repair.
@@ -150,7 +142,7 @@ RStudio is the desk you sit at while doing all this. In this tutorial, click
 
 ### R is a calculator
 
-**Predict → run → change.** What will this print? Run it, then change `4` to `10`
+**Predict → run → change.** What will this print? Run it then add line 2 + 10.
 and click **Submit Answer**.
 
 ```{r first-command, exercise=TRUE}
@@ -208,7 +200,7 @@ function(value, env, code) {
 **combines** values into a **vector** (a list of values of the same kind). A
 function such as `mean()` takes an input and returns a result.
 
-Run these lines. Then change `mean` to `median`. Finally, ask R what `scores`
+Run these lines. Then calculate median of the scores. Finally, ask R what `scores`
 contains by writing `scores` alone on a new line, and **Submit Answer**.
 
 ```{r first-vector, exercise=TRUE}
@@ -217,7 +209,7 @@ mean(scores)
 ```
 
 ```{r first-vector-hint-1}
-# Keep the first line. In the second line replace only the function name.
+# Keep the first two line. In the third line add median(scores). Print content of scores by typing `scores`
 ```
 
 ```{r first-vector-hint-2}
@@ -243,11 +235,10 @@ function(value, env, code) {
 }
 ```
 
-Three rules that prevent most beginner errors:
+Rules that prevent most beginner errors:
 
 - Text needs quotation marks: `"AD"`. Names of objects do not: `scores`.
 - R distinguishes capitals: `Scores` and `scores` are different objects.
-- Arguments inside a function are given with `=`: `round(3.14159, digits = 2)`.
 
 Now make your own vector called `my_scores` with five numbers of your choice and
 compute its mean. Click **Submit Answer** when your last line is the mean.
@@ -411,11 +402,47 @@ mcq("dim(mmse) printed 20 3. What does it mean?",
     2, "R always reports rows first, then columns.")
 ```
 
+### Nested functions/instructions - order matters
+
+R reads nested instructions **from the inside out**: the innermost result becomes
+the input to the function around it. Everything today is built from this one habit,
+so it is worth doing slowly once.
+
+Below is the same calculation written twice: first in named steps, then nested.
+Run it and confirm the two answers agree.
+
+```{r nesting-order, exercise=TRUE}
+sqrt(sum(c(9, 16)))    # square-root of the sum
+sum(sqrt(c(9, 16)))    # sum of the square-roots
+```
+
+```{r nesting-order-hint}
+# Inside out: the first line adds 9 + 16 = 25, then takes the root.
+# The second takes roots first (3 and 4), then adds them.
+```
+
+```{r nesting-order-solution}
+sqrt(sum(c(9, 16)))
+sum(sqrt(c(9, 16)))
+```
+
+```{r q-nesting-order, results="asis"}
+mcq("Why do sqrt(sum(c(9, 16))) and sum(sqrt(c(9, 16))) give 5 and 7?",
+    c("R evaluates left to right, so the first function wins",
+      "R evaluates the innermost call first, so the two lines do the operations in opposite order",
+      "One of them is a mistake"),
+    2, "Inside out, every time. The brackets, not the reading order of the words, decide what happens first.")
+```
+
+
 ### One column at a time
+
+
 
 `$` picks one column out of a data frame and gives you a vector. Run this, then
 change `range` to `summary`, and then to `table` on the `group` column. Submit
 when the window ends with the group counts.
+
 
 ```{r select-column, exercise=TRUE}
 range(mmse$MMSE)
