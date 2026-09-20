@@ -2888,32 +2888,32 @@ keep.</p>
 </div>
 <div id="section-the-outlier-detective" class="section level3">
 <h3>The outlier detective</h3>
-<p>Four measurements sat close together: 9.4, 11.2, 8.6 and 10.3. The
-fifth is yours to move. <strong>Predict first:</strong> as you drag it
-upwards, which line follows it, and which stays put?</p>
+<p>Four measurements: 23.2, 14.8, 31.7 and 19.3. The fifth is yours to
+move. <strong>Predict first:</strong> as you drag it upwards, which line
+follows it, and which stays put?</p>
 <p>Two positions worth visiting. At <strong>100</strong> the mean climbs
-to 27.9 while the median sits at 10.3: the red line has left the data
-entirely, and no measurement is anywhere near it. At <strong>0</strong>
-the mean falls to 7.9 and the median only to 9.4.</p>
-<p>Across the whole slider, from 0 to 100, the median travels less than
-one point. The mean travels twenty. One measurement out of five cannot
-drag the median anywhere, because the median only cares about the
+to 37.8 while the median sits at 23.2: the red line is above every one
+of the four original measurements. At <strong>0</strong> the mean falls
+to 17.8 and the median only to 19.3.</p>
+<p>Across the whole slider, from 0 to 100, the median travels about four
+points. The mean travels twenty. One measurement out of five cannot drag
+the median anywhere, because the median only cares about the
 <em>order</em> of the values, not how extreme the extremes are.</p>
-<p><strong>Number check:</strong> Drag the point somewhere above 10
+<p><strong>Number check:</strong> Drag the point somewhere above 25
 until the red and blue lines lie exactly on top of each other. What is
 the fifth measurement there?</p>
 <details>
 <summary>
 Discuss with your partner, then reveal
 </summary>
-<ol start="12" style="list-style-type: decimal">
-<li>At 12 the values are balanced around 10.3, so mean and median agree
+<ol start="27" style="list-style-type: decimal">
+<li>At 27 the values are balanced around 23.2, so mean and median agree
 there. Roughly symmetric data are the case where the choice of centre
-does not matter; the further you drag from 12, the more it matters.</li>
+does not matter; the further you drag from 27, the more it matters.</li>
 </ol>
 </details>
-<p><strong>Quiz:</strong> One extreme value dragged the mean from 10.3
-to 27.9 while the median stayed at 10.3. A real dataset has such a
+<p><strong>Quiz:</strong> One extreme value dragged the mean from 23.2
+to 37.8 while the median stayed at 23.2. A real dataset has such a
 value. What do you do?</p>
 <ul>
 <li>Delete it until the result looks nice</li>
@@ -5462,7 +5462,7 @@ learnr:::store_exercise_cache(structure(list(label = "select-group", global_setu
 
 <script type="application/shiny-prerendered" data-context="server">
 output$outlier_plot <- shiny::renderPlot({
-  signal <- c(9.4, 11.2, 8.6, 10.3, input$outlier_value)
+  signal <- c(23.2, 14.8, 31.7, 19.3, input$outlier_value)
   m  <- mean(signal)
   md <- median(signal)
 

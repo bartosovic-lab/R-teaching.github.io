@@ -589,20 +589,20 @@ Every summary throws information away. The art is choosing which to keep.
 
 ### The outlier detective
 
-Four measurements sat close together: 9.4, 11.2, 8.6 and 10.3. The fifth is yours to move.
+Four measurements: 23.2, 14.8, 31.7 and 19.3. The fifth is yours to move.
 **Predict first:** as you drag it upwards, which line follows it, and which stays put?
 
 ```{r outlier-slider-ui, echo=FALSE, eval=!isTRUE(getOption("workshop.preview"))}
 shiny::div(
   shiny::sliderInput("outlier_value", "The fifth measurement:",
-                     min = 0, max = 100, value = 12, step = 1, width = "100%"),
+                     min = 0, max = 100, value = 27, step = 1, width = "100%"),
   shiny::plotOutput("outlier_plot", height = "400px")
 )
 ```
 
 ```{r outlier-slider-server, context="server"}
 output$outlier_plot <- shiny::renderPlot({
-  signal <- c(9.4, 11.2, 8.6, 10.3, input$outlier_value)
+  signal <- c(23.2, 14.8, 31.7, 19.3, input$outlier_value)
   m  <- mean(signal)
   md <- median(signal)
 
@@ -624,22 +624,22 @@ output$outlier_plot <- shiny::renderPlot({
 })
 ```
 
-Two positions worth visiting. At **100** the mean climbs to 27.9 while the median
-sits at 10.3: the red line has left the data entirely, and no measurement is
-anywhere near it. At **0** the mean falls to 7.9 and the median only to 9.4.
+Two positions worth visiting. At **100** the mean climbs to 37.8 while the median
+sits at 23.2: the red line is above every one of the four original measurements.
+At **0** the mean falls to 17.8 and the median only to 19.3.
 
-Across the whole slider, from 0 to 100, the median travels less than one point.
+Across the whole slider, from 0 to 100, the median travels about four points.
 The mean travels twenty. One measurement out of five cannot drag the median
 anywhere, because the median only cares about the *order* of the values, not how
 extreme the extremes are.
 
 ```{r q-outlier-meet, results="asis"}
-numq("Drag the point somewhere above 10 until the red and blue lines lie exactly on top of each other. What is the fifth measurement there?", 12, tolerance = 0.01,
-     "At 12 the values are balanced around 10.3, so mean and median agree there. Roughly symmetric data are the case where the choice of centre does not matter; the further you drag from 12, the more it matters.")
+numq("Drag the point somewhere above 25 until the red and blue lines lie exactly on top of each other. What is the fifth measurement there?", 27, tolerance = 0.01,
+     "At 27 the values are balanced around 23.2, so mean and median agree there. Roughly symmetric data are the case where the choice of centre does not matter; the further you drag from 27, the more it matters.")
 ```
 
 ```{r q-outlier, results="asis"}
-mcq("One extreme value dragged the mean from 10.3 to 27.9 while the median stayed at 10.3. A real dataset has such a value. What do you do?",
+mcq("One extreme value dragged the mean from 23.2 to 37.8 while the median stayed at 23.2. A real dataset has such a value. What do you do?",
     c("Delete it until the result looks nice",
       "Check the measurement and its context; document any exclusion and the reason",
       "Replace it with the median so nobody notices"),
