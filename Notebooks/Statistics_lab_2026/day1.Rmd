@@ -525,7 +525,7 @@ already prepared in every code window, so you do not need to repeat the import.
 ### What is a row, and what kind of variable is that?
 
 ```{r q-unit, results="asis"}
-mcq("What does one row of mmse represent in our teaching scenario?",
+mcq("What does one row of mmse represent in our dataset?",
     c("A group average",
       "One person, with a group label and a score",
       "One question of the MMSE questionnaire"),
@@ -847,7 +847,7 @@ describe the group difference *and* the variation inside each group.
 
 ```{r show-points, exercise=TRUE}
 boxplot(MMSE ~ group, data = mmse, ylim = c(0, 30),
-        xlab = "Teaching group", ylab = "MMSE (points)", col = c("#9bd5db", "#f4bb8b"))
+        xlab = "group", ylab = "MMSE (points)", col = c("#9bd5db", "#f4bb8b"))
 set.seed(1)
 stripchart(MMSE ~ group, data = mmse, vertical = TRUE,
            method = "jitter", add = TRUE, pch = 16)
@@ -859,7 +859,7 @@ stripchart(MMSE ~ group, data = mmse, vertical = TRUE,
 
 ```{r show-points-solution}
 boxplot(MMSE ~ group, data = mmse, ylim = c(0, 30),
-        xlab = "Teaching group", ylab = "MMSE (points)", col = c("#9bd5db", "#f4bb8b"))
+        xlab = "group", ylab = "MMSE (points)", col = c("#9bd5db", "#f4bb8b"))
 set.seed(1)
 stripchart(MMSE ~ group, data = mmse, vertical = TRUE,
            method = "jitter", add = TRUE, pch = 16)
@@ -912,7 +912,7 @@ ggplot(mmse, aes(group, MMSE, fill = group)) +
   geom_boxplot(width = 0.15, outlier.shape = NA) +
   geom_point(position = position_jitter(width = 0.07, height = 0, seed = 1)) +
   coord_cartesian(ylim = c(0, 30)) +
-  labs(x = "Teaching group", y = "MMSE (points)") +
+  labs(x = "group", y = "MMSE (points)") +
   theme_minimal() + guides(fill = "none")
 ```
 
@@ -1302,8 +1302,8 @@ reflect("Compare Welch and Wilcoxon for our question: target, assumptions, resul
 ```
 
 ```{r r-result, results="asis"}
-reflect("Write the result sentence. Include n per group, direction, size of the difference in points, the CI, the method and one limitation. Template: 'In this teaching sample (n = ... per group), the estimated AD minus Control difference in mean MMSE was ... points (95% CI ... to ..., Welch's t-test, p ...). This supports ... under the assumption that ...; it does not show ....'",
-        "In this teaching sample (n = 10 per group), the estimated AD minus Control difference in mean MMSE was -19.1 points (95% CI -21.0 to -17.2, Welch's t-test, p < 0.001). This supports lower average scores in the AD group under the assumption of 20 independent people; it does not show what caused the difference, nor how these people were selected and the data collected.")
+reflect("Write the result sentence. Include n per group, direction, size of the difference in points, the CI, the method and one limitation. Template: 'In this exercise (n = ... per group), the estimated AD minus Control difference in mean MMSE was ... points (95% CI ... to ..., Welch's t-test, p ...). This supports ... under the assumption that ...; it does not show ....'",
+        "In this analysis (n = 10 per group), the estimated AD minus Control difference in mean MMSE was -19.1 points (95% CI -21.0 to -17.2, Welch's t-test, p < 0.001). This supports lower average scores in the AD group under the assumption of 20 independent people; it does not show what caused the difference, nor how these people were selected and the data collected.")
 ```
 
 ### The overlap challenge
