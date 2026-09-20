@@ -76,14 +76,17 @@ reflect <- function(prompt, guide) {
     return(preview_block("Your explanation", prompt, NULL,
                          paste0("\n", guide)))
   }
-  recorded <- if (nzchar(trimws(guide))) paste("Recorded.\n", guide) else "Recorded.\n"
+  # Feedback is shown as HTML: "Recorded." on its own line, the guide below it.
+  recorded <- if (nzchar(trimws(guide))) {
+    paste0("<b>Recorded.</b><br>", htmltools::htmlEscape(guide))
+  } else "<b>Recorded.</b>"
   # learnr stores answer_fn() functions as text and re-parses them later, so the
   # closure is lost: the guide must be inlined as a literal, not referenced.
   check <- eval(bquote(function(value) {
     if (!nzchar(trimws(value))) {
       return(learnr::incorrect("Write a thought first; a question is welcome too."))
     }
-    learnr::correct(.(recorded))
+    learnr::correct(htmltools::HTML(.(recorded)))
   }))
   learnr::question_text(prompt,
     learnr::answer_fn(check, label = "Open reflection"),
