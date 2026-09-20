@@ -142,25 +142,26 @@ RStudio is the desk you sit at while doing all this. In this tutorial, click
 
 ### R is a calculator
 
-**Predict → run → change.** What will this print? Run it then add line 2 + 10.
-and click **Submit Answer**.
+**Predict → run → change.** What will this print? Run it, then add a second
+line `2 + 10` and click **Submit Answer**.
 
 ```{r first-command, exercise=TRUE}
 2 + 4
 ```
 
 ```{r first-command-hint}
-# Change only the number on the right, then click Run Code again.
+# Keep the first line. On a new line below it, type 2 + 10, then click Run Code again.
 ```
 
 ```{r first-command-solution}
+2 + 4
 2 + 10
 ```
 
 ```{r first-command-check}
 function(value, env, code) {
-  if (same(value, 6)) return("That is still 2 + 4. Change the 4 to 10, then submit again.")
-  if (same(value, 12)) return(right("2 + 10 is 12. You have edited and re-run your first R command."))
+  if (same(value, 6)) return("That is still only 2 + 4. Add a second line with 2 + 10, then submit again.")
+  if (same(value, 12)) return(right("2 + 10 is 12. You have edited and re-run your first R command; each line prints its own result."))
   "The last line should be 2 + 10, which gives 12."
 }
 ```
@@ -200,8 +201,9 @@ function(value, env, code) {
 **combines** values into a **vector** (a list of values of the same kind). A
 function such as `mean()` takes an input and returns a result.
 
-Run these lines. Then calculate median of the scores. Finally, ask R what `scores`
-contains by writing `scores` alone on a new line, and **Submit Answer**.
+Run these lines. Then add a line that calculates the median of the scores.
+Finally, ask R what `scores` contains by writing `scores` alone on a new line,
+and **Submit Answer**.
 
 ```{r first-vector, exercise=TRUE}
 scores <- c(27, 28, 30, 27, 29)
@@ -209,7 +211,7 @@ mean(scores)
 ```
 
 ```{r first-vector-hint-1}
-# Keep the first two line. In the third line add median(scores). Print content of scores by typing `scores`
+# Keep the first two lines. On a third line add median(scores).
 ```
 
 ```{r first-vector-hint-2}
@@ -219,6 +221,7 @@ mean(scores)
 
 ```{r first-vector-solution}
 scores <- c(27, 28, 30, 27, 29)
+mean(scores)
 median(scores)
 scores
 ```
@@ -228,7 +231,7 @@ function(value, env, code) {
   if (!exists("scores", envir = env) || !same(env$scores, c(27, 28, 30, 27, 29)))
     return("Keep the first line as it is: scores <- c(27, 28, 30, 27, 29).")
   if (!code_has(code, "median(scores)"))
-    return("Change mean to median in the second line.")
+    return("Add a line median(scores): the same pattern as mean(scores), with a different function name.")
   if (!same(value, env$scores))
     return("Good, the median is 28. Now add a last line with just the name scores, so R prints the five values.")
   right("median(scores) is 28, and the name alone prints the stored vector.")
@@ -402,14 +405,14 @@ mcq("dim(mmse) printed 20 3. What does it mean?",
     2, "R always reports rows first, then columns.")
 ```
 
-### Nested functions/instructions - order matters
+### Nested functions: order matters
 
 R reads nested instructions **from the inside out**: the innermost result becomes
 the input to the function around it. Everything today is built from this one habit,
 so it is worth doing slowly once.
 
-Below is the same calculation written twice: first in named steps, then nested.
-Run it and confirm the two answers agree.
+Below are the same two functions, `sqrt()` and `sum()`, nested in the two
+possible orders. Predict both answers, then run it. Do they agree?
 
 ```{r nesting-order, exercise=TRUE}
 sqrt(sum(c(9, 16)))    # square-root of the sum
@@ -434,15 +437,11 @@ mcq("Why do sqrt(sum(c(9, 16))) and sum(sqrt(c(9, 16))) give 5 and 7?",
     2, "Inside out, every time. The brackets, not the reading order of the words, decide what happens first.")
 ```
 
-
 ### One column at a time
-
-
 
 `$` picks one column out of a data frame and gives you a vector. Run this, then
 change `range` to `summary`, and then to `table` on the `group` column. Submit
 when the window ends with the group counts.
-
 
 ```{r select-column, exercise=TRUE}
 range(mmse$MMSE)

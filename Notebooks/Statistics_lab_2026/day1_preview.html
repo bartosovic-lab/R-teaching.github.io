@@ -2227,11 +2227,11 @@ story</h1>
 
 <div id="section-welcome-you-are-the-data-detectives" class="section level2">
 <h2>Welcome · You are the data detectives</h2>
-<p>Two groups of people took a short memory test. Somebody claims one
-group scored lower. <strong>Your mission today:</strong> decide whether
-the data support that claim, make a figure that shows it, and explain
-the result in your own words. Along the way you will meet R, the free
-tool that professional biologists use for exactly this job.</p>
+<p>Two groups of people took a short memory test (MMSE test). Somebody
+claims one group scored lower. <strong>Your mission today:</strong>
+decide whether the data support that claim, make a figure that shows it,
+and explain the result in your own words. Along the way you will meet R,
+the free tool that professional biologists use for exactly this job.</p>
 <p>You do <strong>not</strong> need to write code from memory. Every
 code window comes filled in. You run it, change one thing, and explain
 what happened.</p>
@@ -2406,23 +2406,6 @@ pairs and for Day 2.</p>
 <p>Your attempts are remembered by this browser on this computer, and at
 the end you can <strong>download everything you typed</strong> as one
 HTML file (Finish section).</p>
-<p><strong>Quiz:</strong> You typed a command in the Console and it made
-a beautiful plot. Next week you need the same plot. Where should the
-command live?</p>
-<ul>
-<li>Nowhere; R remembers the Console history forever</li>
-<li>In a saved script or notebook file, so the recipe can be run
-again</li>
-<li>In the Plots pane</li>
-</ul>
-<details>
-<summary>
-Discuss with your partner, then reveal
-</summary>
-<p>In a saved script or notebook file, so the recipe can be run again. A
-saved file is a recipe; the Console is a scratchpad. Reproducible
-analysis means the recipe, not the picture, is what you keep.</p>
-</details>
 </div>
 </div>
 <div id="section-mission-1-make-r-do-something" class="section level2">
@@ -2461,17 +2444,18 @@ Code</strong> under each window.</p>
 <div id="section-r-is-a-calculator" class="section level3">
 <h3>R is a calculator</h3>
 <p><strong>Predict → run → change.</strong> What will this print? Run
-it, then change <code>4</code> to <code>10</code> and click
-<strong>Submit Answer</strong>.</p>
+it, then add a second line <code>2 + 10</code> and click <strong>Submit
+Answer</strong>.</p>
 <div class="tutorial-exercise" data-label="first-command" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0" data-pipe="|&gt;">
 <pre class="text"><code>2 + 4</code></pre>
 <script type="application/json" data-ui-opts="1">{"engine":"r","has_checker":true,"caption":"<span data-i18n=\"text.enginecap\" data-i18n-opts=\"{&quot;engine&quot;:&quot;R&quot;}\">R Code<\/span>"}</script>
 </div>
 <div class="tutorial-exercise-support" data-label="first-command-hint" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0" data-pipe="|&gt;">
-<pre class="text"><code># Change only the number on the right, then click Run Code again.</code></pre>
+<pre class="text"><code># Keep the first line. On a new line below it, type 2 + 10, then click Run Code again.</code></pre>
 </div>
 <div class="tutorial-exercise-support" data-label="first-command-solution" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0" data-pipe="|&gt;">
-<pre class="text"><code>2 + 10</code></pre>
+<pre class="text"><code>2 + 4
+2 + 10</code></pre>
 </div>
 <p>Try a few more. R has hundreds of built-in functions; a function is a
 verb with round brackets. Run these, then add a line that computes the
@@ -2498,9 +2482,9 @@ sqrt(144)</code></pre>
 on the left”. <code>c()</code> <strong>combines</strong> values into a
 <strong>vector</strong> (a list of values of the same kind). A function
 such as <code>mean()</code> takes an input and returns a result.</p>
-<p>Run these lines. Then change <code>mean</code> to
-<code>median</code>. Finally, ask R what <code>scores</code> contains by
-writing <code>scores</code> alone on a new line, and <strong>Submit
+<p>Run these lines. Then add a line that calculates the median of the
+scores. Finally, ask R what <code>scores</code> contains by writing
+<code>scores</code> alone on a new line, and <strong>Submit
 Answer</strong>.</p>
 <div class="tutorial-exercise" data-label="first-vector" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0" data-pipe="|&gt;">
 <pre class="text"><code>scores &lt;- c(27, 28, 30, 27, 29)
@@ -2508,7 +2492,7 @@ mean(scores)</code></pre>
 <script type="application/json" data-ui-opts="1">{"engine":"r","has_checker":true,"caption":"<span data-i18n=\"text.enginecap\" data-i18n-opts=\"{&quot;engine&quot;:&quot;R&quot;}\">R Code<\/span>"}</script>
 </div>
 <div class="tutorial-exercise-support" data-label="first-vector-hint-1" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0" data-pipe="|&gt;">
-<pre class="text"><code># Keep the first line. In the second line replace only the function name.</code></pre>
+<pre class="text"><code># Keep the first two lines. On a third line add median(scores).</code></pre>
 </div>
 <div class="tutorial-exercise-support" data-label="first-vector-hint-2" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0" data-pipe="|&gt;">
 <pre class="text"><code># A name alone on a line prints the object:
@@ -2516,17 +2500,16 @@ mean(scores)</code></pre>
 </div>
 <div class="tutorial-exercise-support" data-label="first-vector-solution" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0" data-pipe="|&gt;">
 <pre class="text"><code>scores &lt;- c(27, 28, 30, 27, 29)
+mean(scores)
 median(scores)
 scores</code></pre>
 </div>
-<p>Three rules that prevent most beginner errors:</p>
+<p>Rules that prevent most beginner errors:</p>
 <ul>
 <li>Text needs quotation marks: <code>&quot;AD&quot;</code>. Names of objects do
 not: <code>scores</code>.</li>
 <li>R distinguishes capitals: <code>Scores</code> and
 <code>scores</code> are different objects.</li>
-<li>Arguments inside a function are given with <code>=</code>:
-<code>round(3.14159, digits = 2)</code>.</li>
 </ul>
 <p>Now make your own vector called <code>my_scores</code> with five
 numbers of your choice and compute its mean. Click <strong>Submit
@@ -2674,6 +2657,45 @@ Discuss with your partner, then reveal
 </summary>
 <p>20 rows (observations) and 3 columns (variables). R always reports
 rows first, then columns.</p>
+</details>
+</div>
+<div id="section-nested-functions-order-matters" class="section level3">
+<h3>Nested functions: order matters</h3>
+<p>R reads nested instructions <strong>from the inside out</strong>: the
+innermost result becomes the input to the function around it. Everything
+today is built from this one habit, so it is worth doing slowly
+once.</p>
+<p>Below are the same two functions, <code>sqrt()</code> and
+<code>sum()</code>, nested in the two possible orders. Predict both
+answers, then run it. Do they agree?</p>
+<div class="tutorial-exercise" data-label="nesting-order" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0" data-pipe="|&gt;">
+<pre class="text"><code>sqrt(sum(c(9, 16)))    # square-root of the sum
+sum(sqrt(c(9, 16)))    # sum of the square-roots</code></pre>
+<script type="application/json" data-ui-opts="1">{"engine":"r","has_checker":false,"caption":"<span data-i18n=\"text.enginecap\" data-i18n-opts=\"{&quot;engine&quot;:&quot;R&quot;}\">R Code<\/span>"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="nesting-order-hint" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0" data-pipe="|&gt;">
+<pre class="text"><code># Inside out: the first line adds 9 + 16 = 25, then takes the root.
+# The second takes roots first (3 and 4), then adds them.</code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="nesting-order-solution" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0" data-pipe="|&gt;">
+<pre class="text"><code>sqrt(sum(c(9, 16)))
+sum(sqrt(c(9, 16)))</code></pre>
+</div>
+<p><strong>Quiz:</strong> Why do sqrt(sum(c(9, 16))) and sum(sqrt(c(9,
+16))) give 5 and 7?</p>
+<ul>
+<li>R evaluates left to right, so the first function wins</li>
+<li>R evaluates the innermost call first, so the two lines do the
+operations in opposite order</li>
+<li>One of them is a mistake</li>
+</ul>
+<details>
+<summary>
+Discuss with your partner, then reveal
+</summary>
+<p>R evaluates the innermost call first, so the two lines do the
+operations in opposite order. Inside out, every time. The brackets, not
+the reading order of the words, decide what happens first.</p>
 </details>
 </div>
 <div id="section-one-column-at-a-time" class="section level3">
@@ -4987,22 +5009,22 @@ learnr:::store_exercise_cache(structure(list(label = "first-command", global_set
     list(label = "first-command", code = "2 + 4", opts = list(
         label = "\"first-command\"", exercise = "TRUE"), engine = "r")), 
     code_check = NULL, error_check = NULL, check = structure(c("function(value, env, code) {", 
-    "  if (same(value, 6)) return(\"That is still 2 + 4. Change the 4 to 10, then submit again.\")", 
-    "  if (same(value, 12)) return(right(\"2 + 10 is 12. You have edited and re-run your first R command.\"))", 
+    "  if (same(value, 6)) return(\"That is still only 2 + 4. Add a second line with 2 + 10, then submit again.\")", 
+    "  if (same(value, 12)) return(right(\"2 + 10 is 12. You have edited and re-run your first R command; each line prints its own result.\"))", 
     "  \"The last line should be 2 + 10, which gives 12.\"", 
     "}"), chunk_opts = list(label = "first-command-check")), 
-    solution = structure("2 + 10", chunk_opts = list(label = "first-command-solution")), 
-    tests = NULL, options = list(eval = FALSE, echo = TRUE, results = "markup", 
-        tidy = FALSE, tidy.opts = NULL, collapse = FALSE, prompt = FALSE, 
-        comment = NA, highlight = FALSE, size = "normalsize", 
-        background = "#F7F7F7", strip.white = TRUE, cache = 0, 
-        cache.path = "day1_cache/html/", cache.vars = NULL, cache.lazy = TRUE, 
-        dependson = NULL, autodep = FALSE, cache.rebuild = FALSE, 
-        fig.keep = "high", fig.show = "asis", fig.align = "default", 
-        fig.path = "day1_preview_files/figure-html/", dev = "png", 
-        dev.args = NULL, dpi = 192, fig.ext = "png", fig.width = 7, 
-        fig.height = 4.5, fig.env = "figure", fig.cap = NULL, 
-        fig.scap = NULL, fig.lp = "fig:", fig.subcap = NULL, 
+    solution = structure(c("2 + 4", "2 + 10"), chunk_opts = list(
+        label = "first-command-solution")), tests = NULL, options = list(
+        eval = FALSE, echo = TRUE, results = "markup", tidy = FALSE, 
+        tidy.opts = NULL, collapse = FALSE, prompt = FALSE, comment = NA, 
+        highlight = FALSE, size = "normalsize", background = "#F7F7F7", 
+        strip.white = TRUE, cache = 0, cache.path = "day1_cache/html/", 
+        cache.vars = NULL, cache.lazy = TRUE, dependson = NULL, 
+        autodep = FALSE, cache.rebuild = FALSE, fig.keep = "high", 
+        fig.show = "asis", fig.align = "default", fig.path = "day1_preview_files/figure-html/", 
+        dev = "png", dev.args = NULL, dpi = 192, fig.ext = "png", 
+        fig.width = 7, fig.height = 4.5, fig.env = "figure", 
+        fig.cap = NULL, fig.scap = NULL, fig.lp = "fig:", fig.subcap = NULL, 
         fig.pos = "", out.width = 672, out.height = NULL, out.extra = NULL, 
         fig.retina = 2, external = TRUE, sanitize = FALSE, interval = 1, 
         aniopts = "controls,loop", warning = TRUE, error = FALSE, 
@@ -5082,22 +5104,22 @@ learnr:::store_exercise_cache(structure(list(label = "first-vector", global_setu
         engine = "r")), code_check = NULL, error_check = NULL, 
     check = structure(c("function(value, env, code) {", "  if (!exists(\"scores\", envir = env) || !same(env$scores, c(27, 28, 30, 27, 29)))", 
     "    return(\"Keep the first line as it is: scores <- c(27, 28, 30, 27, 29).\")", 
-    "  if (!code_has(code, \"median(scores)\"))", "    return(\"Change mean to median in the second line.\")", 
+    "  if (!code_has(code, \"median(scores)\"))", "    return(\"Add a line median(scores): the same pattern as mean(scores), with a different function name.\")", 
     "  if (!same(value, env$scores))", "    return(\"Good, the median is 28. Now add a last line with just the name scores, so R prints the five values.\")", 
     "  right(\"median(scores) is 28, and the name alone prints the stored vector.\")", 
     "}"), chunk_opts = list(label = "first-vector-check")), solution = structure(c("scores <- c(27, 28, 30, 27, 29)", 
-    "median(scores)", "scores"), chunk_opts = list(label = "first-vector-solution")), 
-    tests = NULL, options = list(eval = FALSE, echo = TRUE, results = "markup", 
-        tidy = FALSE, tidy.opts = NULL, collapse = FALSE, prompt = FALSE, 
-        comment = NA, highlight = FALSE, size = "normalsize", 
-        background = "#F7F7F7", strip.white = TRUE, cache = 0, 
-        cache.path = "day1_cache/html/", cache.vars = NULL, cache.lazy = TRUE, 
-        dependson = NULL, autodep = FALSE, cache.rebuild = FALSE, 
-        fig.keep = "high", fig.show = "asis", fig.align = "default", 
-        fig.path = "day1_preview_files/figure-html/", dev = "png", 
-        dev.args = NULL, dpi = 192, fig.ext = "png", fig.width = 7, 
-        fig.height = 4.5, fig.env = "figure", fig.cap = NULL, 
-        fig.scap = NULL, fig.lp = "fig:", fig.subcap = NULL, 
+    "mean(scores)", "median(scores)", "scores"), chunk_opts = list(
+        label = "first-vector-solution")), tests = NULL, options = list(
+        eval = FALSE, echo = TRUE, results = "markup", tidy = FALSE, 
+        tidy.opts = NULL, collapse = FALSE, prompt = FALSE, comment = NA, 
+        highlight = FALSE, size = "normalsize", background = "#F7F7F7", 
+        strip.white = TRUE, cache = 0, cache.path = "day1_cache/html/", 
+        cache.vars = NULL, cache.lazy = TRUE, dependson = NULL, 
+        autodep = FALSE, cache.rebuild = FALSE, fig.keep = "high", 
+        fig.show = "asis", fig.align = "default", fig.path = "day1_preview_files/figure-html/", 
+        dev = "png", dev.args = NULL, dpi = 192, fig.ext = "png", 
+        fig.width = 7, fig.height = 4.5, fig.env = "figure", 
+        fig.cap = NULL, fig.scap = NULL, fig.lp = "fig:", fig.subcap = NULL, 
         fig.pos = "", out.width = 672, out.height = NULL, out.extra = NULL, 
         fig.retina = 2, external = TRUE, sanitize = FALSE, interval = 1, 
         aniopts = "controls,loop", warning = TRUE, error = FALSE, 
@@ -5256,6 +5278,50 @@ learnr:::store_exercise_cache(structure(list(label = "import-table", global_setu
         label = "import-table", exercise = TRUE, code = c("mmse <- read.csv(\"data/mmse_small.csv\")", 
         "head(mmse)", "dim(mmse)", "names(mmse)", "str(mmse)"
         ), out.width.px = 672, out.height.px = 432, params.src = "import-table, exercise=TRUE", 
+        fig.num = 0, exercise.df_print = "default"), engine = "r", 
+    version = "4"), class = c("r", "tutorial_exercise")))
+</script>
+
+
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-nesting-order-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-nesting-order-code-editor`)), session)
+output$`tutorial-exercise-nesting-order-output` <- renderUI({
+  `tutorial-exercise-nesting-order-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::store_exercise_cache(structure(list(label = "nesting-order", global_setup = structure(c("library(learnr)", 
+"source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
+"knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = TRUE,", 
+"                      fig.width = 7, fig.height = 4.5)", "tutorial_options(exercise.timelimit = 20,", 
+"                 exercise.checker = workshop_checker)"), chunk_opts = list(
+    label = "setup", include = FALSE)), setup = NULL, chunks = list(
+    list(label = "nesting-order", code = "sqrt(sum(c(9, 16)))    # square-root of the sum\nsum(sqrt(c(9, 16)))    # sum of the square-roots", 
+        opts = list(label = "\"nesting-order\"", exercise = "TRUE"), 
+        engine = "r")), code_check = NULL, error_check = NULL, 
+    check = NULL, solution = structure(c("sqrt(sum(c(9, 16)))", 
+    "sum(sqrt(c(9, 16)))"), chunk_opts = list(label = "nesting-order-solution")), 
+    tests = NULL, options = list(eval = FALSE, echo = TRUE, results = "markup", 
+        tidy = FALSE, tidy.opts = NULL, collapse = FALSE, prompt = FALSE, 
+        comment = NA, highlight = FALSE, size = "normalsize", 
+        background = "#F7F7F7", strip.white = TRUE, cache = 0, 
+        cache.path = "day1_cache/html/", cache.vars = NULL, cache.lazy = TRUE, 
+        dependson = NULL, autodep = FALSE, cache.rebuild = FALSE, 
+        fig.keep = "high", fig.show = "asis", fig.align = "default", 
+        fig.path = "day1_preview_files/figure-html/", dev = "png", 
+        dev.args = NULL, dpi = 192, fig.ext = "png", fig.width = 7, 
+        fig.height = 4.5, fig.env = "figure", fig.cap = NULL, 
+        fig.scap = NULL, fig.lp = "fig:", fig.subcap = NULL, 
+        fig.pos = "", out.width = 672, out.height = NULL, out.extra = NULL, 
+        fig.retina = 2, external = TRUE, sanitize = FALSE, interval = 1, 
+        aniopts = "controls,loop", warning = TRUE, error = FALSE, 
+        message = FALSE, render = NULL, ref.label = NULL, child = NULL, 
+        engine = "r", split = FALSE, include = TRUE, purl = TRUE, 
+        exercise.timelimit = 20, exercise.checker = "function (label, user_code, solution_code, check_code, envir_result, \n    evaluate_result, envir_prep, last_value, stage, ...) \n{\n    if (!identical(stage, \"check\")) \n        return(NULL)\n    feedback <- function(message, correct) {\n        list(message = message, correct = correct, location = \"append\")\n    }\n    spec <- tryCatch(base::eval(base::parse(text = check_code)), \n        error = function(e) NULL)\n    if (is.function(spec)) {\n        verdict <- tryCatch(spec(last_value, envir_result, normalise_code(user_code)), \n            error = function(e) \"The check could not run.\")\n        if (isTRUE(verdict)) {\n            return(feedback(\"Correct. Now explain it to your partner.\", \n                TRUE))\n        }\n        if (inherits(verdict, \"check_right\")) {\n            return(feedback(paste(\"Correct.\", as.character(verdict)[1]), \n                TRUE))\n        }\n        return(feedback(if (is.character(verdict)) verdict[1] else \"Not there yet; read the task again.\", \n            FALSE))\n    }\n    if (is.null(solution_code)) {\n        return(feedback(\"This exercise has no automatic check. Compare with the Solution.\", \n            TRUE))\n    }\n    extra <- if (is.character(spec)) \n        paste0(\" \", spec[1])\n    else \"\"\n    expected <- tryCatch({\n        grDevices::pdf(NULL)\n        on.exit(grDevices::dev.off(), add = TRUE)\n        env <- new.env(parent = envir_prep)\n        for (obj in base::ls(envir_prep, all.names = TRUE)) {\n            base::assign(obj, base::get(obj, envir = envir_prep), \n                envir = env)\n        }\n        base::eval(base::parse(text = solution_code), envir = env)\n    }, error = function(e) structure(list(), class = \"checker_failed\"))\n    if (inherits(expected, \"checker_failed\")) {\n        return(feedback(\"The reference solution could not be evaluated here; compare with the Solution by eye.\", \n            TRUE))\n    }\n    if (is.null(expected) || inherits(expected, \"ggplot\")) {\n        return(feedback(\"R ran your code. This check cannot read a figure, so compare yours with the Solution.\", \n            TRUE))\n    }\n    same <- if (inherits(expected, \"htest\") && inherits(last_value, \n        \"htest\")) {\n        isTRUE(all.equal(unname(expected$statistic), unname(last_value$statistic), \n            tolerance = 1e-06)) && isTRUE(all.equal(expected$p.value, \n            last_value$p.value, tolerance = 1e-06))\n    }\n    else {\n        isTRUE(all.equal(expected, last_value, tolerance = 1e-06, \n            check.attributes = FALSE))\n    }\n    if (same) {\n        feedback(\"Correct: your result matches the reference solution. Now explain it to your partner.\", \n            TRUE)\n    }\n    else {\n        feedback(paste0(\"Your last result does not match the reference yet.\", \n            extra, \" Remember: the check looks at the final line of your code.\"), \n            FALSE)\n    }\n}", 
+        label = "nesting-order", exercise = TRUE, code = c("sqrt(sum(c(9, 16)))    # square-root of the sum", 
+        "sum(sqrt(c(9, 16)))    # sum of the square-roots"), 
+        out.width.px = 672, out.height.px = 432, params.src = "nesting-order, exercise=TRUE", 
         fig.num = 0, exercise.df_print = "default"), engine = "r", 
     version = "4"), class = c("r", "tutorial_exercise")))
 </script>
