@@ -37,7 +37,7 @@ figure that shows it, and explain the result in your own words. Along the way yo
 will meet R, the free tool that professional biologists use for exactly this job.
 
 You do **not** need to write code from memory. Every code window comes filled in.
-You run it, change one thing, and explain what happened.
+You run it, add a line that changes one thing, and explain what happened.
 
 **Work in pairs.** One person drives the keyboard, the other predicts and explains.
 Swap roles at every new section. Quizzes are practice, not marks.
@@ -675,7 +675,8 @@ numq("What is the IQR of the control MMSE scores (in points)?", 1.75, tolerance 
 
 Now the same summaries for both groups at once. `tapply()` applies a function to
 each group separately: read it as "apply `mean` to `MMSE` split by `group`".
-Change `mean` to `sd`, then to `median`, and **Submit Answer**.
+Add a second line with `sd` instead of `mean`, then a third with `median`, and
+**Submit Answer**.
 
 ```{r by-group, exercise=TRUE}
 tapply(mmse$MMSE, mmse$group, mean)
@@ -696,9 +697,9 @@ function(value, env, code) {
   if (code_has(code, "tapply(mmse$MMSE, mmse$group, median)") && same(sort(as.vector(value)), c(9.5, 28)))
     return(right("Medians 28 (Control) and 9.5 (AD); the SDs were 1.2 and 2.4. The AD group is lower and more variable."))
   if (code_has(code, "tapply(mmse$MMSE, mmse$group, sd)"))
-    return("sd works. Now change sd to median on the last line.")
+    return("sd works. Now add a third line with median.")
   if (code_has(code, "tapply(mmse$MMSE, mmse$group, mean)"))
-    return("That is still mean. Change mean to sd, run, then change it to median.")
+    return("Only the mean so far. Add a new line with sd in place of mean, run, then add one with median.")
   "Use the pattern tapply(mmse$MMSE, mmse$group, FUNCTION) and finish with median."
 }
 ```
@@ -706,8 +707,9 @@ function(value, env, code) {
 ### Missing values are unknown, not zero
 
 R writes a missing value as `NA`. This separate demonstration vector has one.
-Run it: the mean is `NA` because R refuses to guess. Then add `na.rm = TRUE`
-inside `mean()` and **Submit Answer**. How many measurements contributed?
+Run it: the mean is `NA` because R refuses to guess. Then add a new line
+`mean(signal_missing, na.rm = TRUE)` and **Submit Answer**. How many
+measurements contributed?
 
 ```{r missing-value, exercise=TRUE}
 signal_missing <- c(8, 9, NA, 11, 12)
@@ -723,6 +725,7 @@ sum(!is.na(signal_missing))
 
 ```{r missing-value-solution}
 signal_missing <- c(8, 9, NA, 11, 12)
+mean(signal_missing)
 mean(signal_missing, na.rm = TRUE)
 sum(is.na(signal_missing))
 sum(!is.na(signal_missing))
@@ -735,7 +738,7 @@ function(value, env, code) {
   if (code_has(code, "mean(signal_missing, na.rm = TRUE)") || code_has(code, "mean(signal_missing, na.rm = T)"))
     return(right("The mean of the four known values is 10; one value was missing, four contributed. Both facts belong in a report."))
   if (code_has(code, "mean(signal_missing)"))
-    return("The mean is still NA. Inside the brackets add the argument na.rm = TRUE, separated by a comma.")
+    return("The mean is still NA. Add a new line: mean(signal_missing, na.rm = TRUE), with the argument after a comma.")
   "Keep mean(signal_missing, na.rm = TRUE) in the window."
 }
 ```
@@ -787,9 +790,10 @@ Our question: **How do the MMSE distributions differ between the two groups?**
 ### Histogram: the shape of a distribution
 
 A histogram cuts the axis into bins and counts observations in each. The picture
-depends on the bins. Run the two histograms (same bins, same axes), then change
-both `by = 3` to `by = 5` and **Submit Answer**. Did the observations change?
-Did the picture?
+depends on the bins. Run the two histograms (same bins, same axes). Then copy the
+two `hist()` commands below them and in the copies use `by = 5`, so you get a
+second pair of panels. **Submit Answer**. Did the observations change? Did the
+picture?
 
 ```{r histogram, exercise=TRUE}
 par(mfrow = c(1, 2))   # two plots side by side
@@ -801,10 +805,15 @@ hist(ad, breaks = seq(0, 30, by = 3), xlim = c(0, 30), ylim = c(0, 10),
 
 ```{r histogram-hint}
 # Keep identical breaks and axis limits for both groups so they are comparable.
+# The copies differ from the originals only in by = 5.
 ```
 
 ```{r histogram-solution}
 par(mfrow = c(1, 2))
+hist(control, breaks = seq(0, 30, by = 3), xlim = c(0, 30), ylim = c(0, 10),
+     main = "Control", xlab = "MMSE (points)", col = "#9bd5db")
+hist(ad, breaks = seq(0, 30, by = 3), xlim = c(0, 30), ylim = c(0, 10),
+     main = "AD", xlab = "MMSE (points)", col = "#f4bb8b")
 hist(control, breaks = seq(0, 30, by = 5), xlim = c(0, 30), ylim = c(0, 10),
      main = "Control", xlab = "MMSE (points)", col = "#9bd5db")
 hist(ad, breaks = seq(0, 30, by = 5), xlim = c(0, 30), ylim = c(0, 10),
@@ -814,13 +823,11 @@ hist(ad, breaks = seq(0, 30, by = 5), xlim = c(0, 30), ylim = c(0, 10),
 ```{r histogram-check}
 function(value, env, code) {
   n5 <- lengths(regmatches(code, gregexpr("by=5", code, fixed = TRUE)))
-  if (code_has(code, "by = 3") && n5 == 0)
-    return("Both histograms still use by = 3. Change both to by = 5 and run again.")
-  if (code_has(code, "by = 3"))
-    return("One histogram is changed. Change the other by = 3 to by = 5 as well, so the two panels stay comparable.")
-  if (n5 >= 2)
-    return(right("Same 20 scores, wider bins, a different picture. The ceiling of the controls near 30 is visible in both versions."))
-  "Use breaks = seq(0, 30, by = 5) in both hist() calls."
+  if (n5 == 0)
+    return("No histogram with by = 5 yet. Copy the two hist() commands and use by = 5 in the copies.")
+  if (n5 == 1)
+    return("One copy done. Add the second hist() with by = 5 as well, so the new pair stays comparable.")
+  right("Same 20 scores, wider bins, a different picture. The ceiling of the controls near 30 is visible in both versions.")
 }
 ```
 
@@ -1363,6 +1370,7 @@ You do not need to write this code today — read it and watch what comes out.
 set.seed(42)
 
 d <- rnorm(n = 1000, mean = 10, sd = 2)   # one population, no groups in it
+hist(d, breaks = 40, main = "The one population", xlab = "Measurement (arbitrary units)")
 
 p_values <- numeric(2000)
 draws <- matrix(NA_integer_, nrow = 2000, ncol = 40)
@@ -1433,7 +1441,7 @@ assumption was wrong — the number is conditional on exactly the thing it is be
 asked to judge.
 
 - What the p-value is: P(data at least this extreme **given** no effect)
-- What people say it is: P(no effect **given** this data)
+- What people may wrongly say it is: P(no effect **given** this data)
 
 Those are different quantities, and the gap between them depends on something the
 p-value has no access to: how plausible your hypotheses were before you tested
@@ -1509,7 +1517,8 @@ the data nor the estimated effects.
 ### A worked family of three
 
 Three invented p-values for three proteins tested in the same experiment. Run
-the code, then **add a fourth protein with raw p = 0.04** and Submit. What
+the code. Then add two new lines: one that extends `raw_p` with a fourth protein,
+`protein_D = 0.04`, and one that prints the table again. **Submit Answer**. What
 happens to all four adjusted values?
 
 ```{r bonferroni, exercise=TRUE}
@@ -1518,7 +1527,8 @@ data.frame(raw_p, adjusted_p = p.adjust(raw_p, method = "bonferroni"))
 ```
 
 ```{r bonferroni-hint-1}
-# Add a fourth element inside c( ): protein_D = 0.04
+# c() can extend an existing vector:  raw_p <- c(raw_p, protein_D = 0.04)
+# Then repeat the data.frame( ... ) line.
 ```
 
 ```{r bonferroni-hint-2}
@@ -1526,14 +1536,16 @@ data.frame(raw_p, adjusted_p = p.adjust(raw_p, method = "bonferroni"))
 ```
 
 ```{r bonferroni-solution}
-raw_p <- c(protein_A = 0.01, protein_B = 0.03, protein_C = 0.20, protein_D = 0.04)
+raw_p <- c(protein_A = 0.01, protein_B = 0.03, protein_C = 0.20)
+data.frame(raw_p, adjusted_p = p.adjust(raw_p, method = "bonferroni"))
+raw_p <- c(raw_p, protein_D = 0.04)
 data.frame(raw_p, adjusted_p = p.adjust(raw_p, method = "bonferroni"))
 ```
 
 ```{r bonferroni-check}
 function(value, env, code) {
   if (!is.data.frame(value) || nrow(value) != 4)
-    return("Add a fourth test so that the table has four rows.")
+    return("The last table should have four rows: extend raw_p with protein_D = 0.04 and print the table again.")
   if (!same(value[[2]], pmin(4 * value[[1]], 1)))
     return("Each adjusted value should be min(4 x raw p, 1).")
   if (!same(sort(value[[1]]), c(0.01, 0.03, 0.04, 0.20)))
@@ -1639,9 +1651,9 @@ direction (up or down), form (line or curve), clusters and influential points.
 association using ranks. Both run from −1 to 1; 0 means no linear (or monotonic)
 association, not "no relationship at all".
 
-The data here are a seeded simulation of 30 independent teaching units with two
-arbitrary assay signals. Predict the direction, run, then change `"pearson"` to
-`"spearman"` and **Submit Answer**.
+The data here are a seeded simulation of 30 independent values with two arbitrary
+assay signals. Predict the direction, run, then add a new `cor.test()` line with
+`method = "spearman"` and **Submit Answer**.
 
 ```{r association, exercise=TRUE}
 plot(assay$signal_a, assay$signal_b, pch = 16,
@@ -1668,7 +1680,7 @@ function(value, env, code) {
   if (grepl("Spearman", value$method))
     return(right(sprintf("Spearman's rho = %.2f against Pearson's r = %.2f. Similar here because the relationship is roughly linear with no extreme points.",
                          unname(value$estimate), cor(env$assay$signal_a, env$assay$signal_b))))
-  'That is still Pearson. Change method = "pearson" to method = "spearman".'
+  'That is still Pearson. Add a new cor.test() line with method = "spearman" as the last line.'
 }
 ```
 
@@ -1704,8 +1716,8 @@ Your scientific story is your own, even when you shared code with a partner.
 Tomorrow each of you writes your own explanation of an analysis.
 
 ```{r r-exit, results="asis"}
-reflect("Exit ticket: What can you now do in R? Which decision still needs help? Give one example of code that runs perfectly but answers the wrong statistical question.",
-        "Examples: treating repeated visits as independent people; correlating unmatched rows; choosing a test by its p-value; running a t-test on an ordinal rating. Successful execution is the first check, never the last.")
+reflect("What can you now do in R? Which decision still needs help? What did you not understand?",
+        "")
 ```
 
 ### Download my work
