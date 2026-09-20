@@ -976,7 +976,7 @@ result.
 
 Before asking "is it normal?", important things to know:
 
-**1. What is the question?** Do AD and Control differ in mean MMSE, and by how
+**1. What is the question:** Do AD and Control differ in mean MMSE, and by how
 many points?
 
 **2. What is independent?** Mission 2 told us: one row is one person, tested

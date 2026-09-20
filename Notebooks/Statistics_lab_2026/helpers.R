@@ -76,7 +76,7 @@ reflect <- function(prompt, guide) {
     return(preview_block("Your explanation", prompt, NULL,
                          paste0("\n", guide)))
   }
-  recorded <- if (nzchar(trimws(guide))) paste("Recorded. Discussion guide:", guide) else "Recorded."
+  recorded <- if (nzchar(trimws(guide))) paste("Recorded.\n", guide) else "Recorded.\n"
   # learnr stores answer_fn() functions as text and re-parses them later, so the
   # closure is lost: the guide must be inlined as a literal, not referenced.
   check <- eval(bquote(function(value) {
