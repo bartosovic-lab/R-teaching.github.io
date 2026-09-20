@@ -2613,10 +2613,50 @@ sense.</p>
 <h3>The case file: a small MMSE table</h3>
 <p>The <strong>MMSE</strong> (Mini-Mental State Examination) is a
 30-point questionnaire used in clinics to screen for cognitive
-impairment. Scores are whole numbers from 0 to 30; higher is better. Our
-teaching file holds 20 scores: 10 labelled <em>Control</em> and 10
-labelled <em>AD</em> (Alzheimer’s disease). This is a teaching example;
-for today, <strong>assume each row is a different person</strong>.</p>
+impairment: orientation, recall, attention, language and copying a
+simple drawing. Scores are whole numbers from 0 to 30 and higher is
+better. Roughly, 24–30 is the usual range for unimpaired adults, and
+lower scores indicate more impairment — but a score alone is not a
+diagnosis.</p>
+<p><code>data/mmse_small.csv</code> holds <strong>20 rows and 3
+columns</strong>:</p>
+<table>
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>Type</th>
+<th>What it holds</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>teaching_id</code></td>
+<td>text</td>
+<td>A label for the row (<code>Control_01</code>, <code>AD_03</code>,
+…). It is an identifier, not a measurement</td>
+</tr>
+<tr class="even">
+<td><code>group</code></td>
+<td>text</td>
+<td><code>Control</code> or <code>AD</code> (Alzheimer’s disease), 10
+rows each</td>
+</tr>
+<tr class="odd">
+<td><code>MMSE</code></td>
+<td>number</td>
+<td>The test score, 0–30</td>
+</tr>
+</tbody>
+</table>
+<p><strong>One row is one person, tested once.</strong> Each row is an
+independent measurement: no one appears twice, and no score depends on
+any other score. That is the single most important fact about this
+table, because every test you run today assumes it.</p>
 <p><code>read.csv()</code> reads a comma-separated file into a
 <strong>data frame</strong>: a table where each column is a variable and
 each row is an observation. The path <code>data/mmse_small.csv</code>
@@ -2701,10 +2741,10 @@ the reading order of the words, decide what happens first.</p>
 <div id="section-one-column-at-a-time" class="section level3">
 <h3>One column at a time</h3>
 <p><code>$</code> picks one column out of a data frame and gives you a
-vector. Run this, then change <code>range</code> to
-<code>summary</code>, and then to <code>table</code> on the
-<code>group</code> column. Submit when the window ends with the group
-counts.</p>
+vector. Run this, then add an additional line with <code>summary</code>
+of the MMSE column. Finally use a nested function, apply
+<code>table</code> on the <code>group</code> column. Submit when the
+window ends with the group counts.</p>
 <div class="tutorial-exercise" data-label="select-column" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0" data-pipe="|&gt;">
 <pre class="text"><code>range(mmse$MMSE)</code></pre>
 <script type="application/json" data-ui-opts="1">{"engine":"r","has_checker":true,"caption":"<span data-i18n=\"text.enginecap\" data-i18n-opts=\"{&quot;engine&quot;:&quot;R&quot;}\">R Code<\/span>"}</script>
@@ -2721,9 +2761,10 @@ table(mmse$group)</code></pre>
 </div>
 <p>To keep one group only, ask R for the rows where <code>group</code>
 equals <code>&quot;AD&quot;</code>. Note the double <code>==</code> (a question:
-“is it equal?”) versus the single <code>=</code> (an argument). Run it,
-then add the same three lines for the control group, stored as
-<code>control</code>, and <strong>Submit Answer</strong>.</p>
+“is it equal?”) versus the single <code>=</code> (usually used for a
+function argument). Run it, then add the same three lines for the
+control group, stored as <code>control</code>, and <strong>Submit
+Answer</strong>.</p>
 <div class="tutorial-exercise" data-label="select-group" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0" data-pipe="|&gt;">
 <pre class="text"><code>ad &lt;- mmse$MMSE[mmse$group == &quot;AD&quot;]
 ad
@@ -2813,10 +2854,9 @@ uncertainty, and the IQR.</p>
 to read twenty numbers, so you summarise: a <strong>typical
 value</strong> (the centre) and a <strong>measure of how much the
 cultures differ</strong> (the spread). These are <strong>descriptive
-statistics</strong>. They describe the sample you have in hand; they do
-not yet claim anything about cultures you did not measure. Every summary
-throws information away on purpose, and the skill is to choose a summary
-that keeps what matters for your question.</p>
+statistics</strong>. They describe the sample you have in hand. Every
+summary throws information away on purpose, and the skill is to choose a
+summary that keeps what matters for your question.</p>
 <p>There are two families. The <strong>mean</strong> and
 <strong>standard deviation (SD)</strong> use every value and its exact
 size, which makes them efficient when the data are roughly symmetric but
@@ -2827,16 +2867,6 @@ value moves them very little. When a distribution is skewed or has
 outliers, the median tells you more honestly where the typical
 observation sits. Reporting both, and looking at the raw points, is
 never wrong.</p>
-<p>One idea sits underneath everything that follows today. Your twenty
-cultures, or twenty people, are a <strong>sample</strong> from a much
-larger <strong>population</strong> you actually care about: all cultures
-grown this way, all patients with this diagnosis. Repeat the experiment
-and you get a different sample with a slightly different mean. The SD
-describes how much individual observations vary. The uncertainty of the
-<em>mean itself</em> is a different, smaller quantity, and Mission 6
-puts a number on it. Keep the two apart: “how variable are the
-observations?” and “how sure am I about the average?” are different
-questions.</p>
 </div>
 <div id="section-centre-and-spread-in-one-breath" class="section level3">
 <h3>Centre and spread in one breath</h3>
@@ -2858,26 +2888,30 @@ keep.</p>
 </div>
 <div id="section-the-outlier-detective" class="section level3">
 <h3>The outlier detective</h3>
-<p><strong>Predict first:</strong> if the last value of this invented
-assay vector becomes 100, which changes more, the mean or the median?
-Run, then change <code>12</code> to <code>100</code> and <strong>Submit
-Answer</strong>.</p>
-<div class="tutorial-exercise" data-label="outlier-detective" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0" data-pipe="|&gt;">
-<pre class="text"><code>signal &lt;- c(8, 9, 10, 11, 12)
-mean(signal)
-median(signal)
-sd(signal)</code></pre>
-<script type="application/json" data-ui-opts="1">{"engine":"r","has_checker":true,"caption":"<span data-i18n=\"text.enginecap\" data-i18n-opts=\"{&quot;engine&quot;:&quot;R&quot;}\">R Code<\/span>"}</script>
-</div>
-<div class="tutorial-exercise-support" data-label="outlier-detective-hint" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0" data-pipe="|&gt;">
-<pre class="text"><code># Change only the last number to 100. Compare all three outputs with the first run.</code></pre>
-</div>
-<div class="tutorial-exercise-support" data-label="outlier-detective-solution" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0" data-pipe="|&gt;">
-<pre class="text"><code>signal &lt;- c(8, 9, 10, 11, 100)
-mean(signal)
-median(signal)
-sd(signal)</code></pre>
-</div>
+<p>Four measurements sat close together: 8, 9, 10, 11. The fifth is
+yours to move. <strong>Predict first:</strong> as you drag it upwards,
+which line follows it, and which stays put?</p>
+<p>Two positions worth visiting. At <strong>100</strong> the mean climbs
+to 27.6 while the median sits at 10: the red line has left the data
+entirely, and no measurement is anywhere near it. At <strong>0</strong>
+the mean falls to 7.6 and the median only to 9.</p>
+<p>Across the whole slider, from 0 to 100, the median travels one single
+point. The mean travels twenty. One measurement out of five cannot drag
+the median anywhere, because the median only cares about the
+<em>order</em> of the values, not how extreme the extremes are.</p>
+<p><strong>Number check:</strong> Drag the point somewhere above 10
+until the red and blue lines lie exactly on top of each other. What is
+the fifth measurement there?</p>
+<details>
+<summary>
+Discuss with your partner, then reveal
+</summary>
+<ol start="12" style="list-style-type: decimal">
+<li>At 12 the five values are evenly spaced, so mean and median agree at
+10. Symmetric data are the case where the choice of centre does not
+matter; the further you drag from 12, the more it matters.</li>
+</ol>
+</details>
 <p><strong>Quiz:</strong> One extreme value dragged the mean from 10 to
 27.6 while the median stayed at 10. A real dataset has such a value.
 What do you do?</p>
@@ -5346,9 +5380,9 @@ learnr:::store_exercise_cache(structure(list(label = "select-column", global_set
         engine = "r")), code_check = NULL, error_check = NULL, 
     check = structure(c("function(value, env, code) {", "  if (inherits(value, \"table\") && same(as.vector(value), c(10, 10)))", 
     "    return(right(\"table() counts the rows in each group: 10 Control and 10 AD.\"))", 
-    "  if (code_has(code, \"range(mmse$MMSE)\"))", "    return(\"That is still range(). Change range to summary, run it, then try table(mmse$group).\")", 
     "  if (code_has(code, \"summary(mmse$MMSE)\"))", "    return(\"summary() works: min, quartiles, mean, max. Now count the groups with table(mmse$group) on the last line.\")", 
-    "  \"Try summary(mmse$MMSE), then table(mmse$group). The check reads the last line.\"", 
+    "  if (code_has(code, \"range(mmse$MMSE)\"))", "    return(\"range() gives the lowest and highest score. Add a line summary(mmse$MMSE), run it, then add table(mmse$group).\")", 
+    "  \"Add summary(mmse$MMSE), then table(mmse$group). The check reads the last line.\"", 
     "}"), chunk_opts = list(label = "select-column-check")), 
     solution = structure(c("summary(mmse$MMSE)", "table(mmse$group)"
     ), chunk_opts = list(label = "select-column-solution")), 
@@ -5427,62 +5461,37 @@ learnr:::store_exercise_cache(structure(list(label = "select-group", global_setu
 
 
 <script type="application/shiny-prerendered" data-context="server">
-`tutorial-exercise-outlier-detective-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-outlier-detective-code-editor`)), session)
-output$`tutorial-exercise-outlier-detective-output` <- renderUI({
-  `tutorial-exercise-outlier-detective-result`()
+output$outlier_plot <- shiny::renderPlot({
+  signal <- c(8, 9, 10, 11, input$outlier_value)
+  m  <- mean(signal)
+  md <- median(signal)
+
+  par(mar = c(4.5, 4.5, 3.5, 1))
+  plot(seq_along(signal), signal,
+       pch = 16, cex = 2.2,
+       col = c(rep("grey35", 4), "#e67e22"),
+       xlim = c(0.5, 5.5), ylim = c(0, 100), xaxt = "n",
+       xlab = "Measurement number", ylab = "Signal (arbitrary units)",
+       main = sprintf("mean = %.1f          median = %.1f          SD = %.1f",
+                      m, md, sd(signal)))
+  axis(1, at = 1:5)
+  abline(h = m,  col = "red",  lwd = 2)
+  abline(h = md, col = "blue", lwd = 2, lty = 2)
+  legend("topleft", bty = "n", inset = 0.01,
+         legend = c("mean", "median", "the point you are moving"),
+         col = c("red", "blue", "#e67e22"),
+         lty = c(1, 2, NA), lwd = c(2, 2, NA), pch = c(NA, NA, 16))
 })
 </script>
  
-<script type="application/shiny-prerendered" data-context="server">
-learnr:::store_exercise_cache(structure(list(label = "outlier-detective", global_setup = structure(c("library(learnr)", 
-"source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
-"knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = TRUE,", 
-"                      fig.width = 7, fig.height = 4.5)", "tutorial_options(exercise.timelimit = 20,", 
-"                 exercise.checker = workshop_checker)"), chunk_opts = list(
-    label = "setup", include = FALSE)), setup = NULL, chunks = list(
-    list(label = "outlier-detective", code = "signal <- c(8, 9, 10, 11, 12)\nmean(signal)\nmedian(signal)\nsd(signal)", 
-        opts = list(label = "\"outlier-detective\"", exercise = "TRUE"), 
-        engine = "r")), code_check = NULL, error_check = NULL, 
-    check = structure(c("function(value, env, code) {", "  if (!exists(\"signal\", envir = env)) return(\"Keep the line that creates signal.\")", 
-    "  if (same(env$signal, c(8, 9, 10, 11, 12)))", "    return(\"The vector is unchanged. Replace the last number, 12, with 100 and run again.\")", 
-    "  if (!same(env$signal, c(8, 9, 10, 11, 100)))", "    return(\"signal should be exactly 8, 9, 10, 11, 100: change only the last number.\")", 
-    "  right(\"The mean jumped from 10 to 27.6 and the SD from 1.6 to 40.5, while the median stayed at 10. One value moved two of the three summaries.\")", 
-    "}"), chunk_opts = list(label = "outlier-detective-check")), 
-    solution = structure(c("signal <- c(8, 9, 10, 11, 100)", 
-    "mean(signal)", "median(signal)", "sd(signal)"), chunk_opts = list(
-        label = "outlier-detective-solution")), tests = NULL, 
-    options = list(eval = FALSE, echo = TRUE, results = "markup", 
-        tidy = FALSE, tidy.opts = NULL, collapse = FALSE, prompt = FALSE, 
-        comment = NA, highlight = FALSE, size = "normalsize", 
-        background = "#F7F7F7", strip.white = TRUE, cache = 0, 
-        cache.path = "day1_cache/html/", cache.vars = NULL, cache.lazy = TRUE, 
-        dependson = NULL, autodep = FALSE, cache.rebuild = FALSE, 
-        fig.keep = "high", fig.show = "asis", fig.align = "default", 
-        fig.path = "day1_preview_files/figure-html/", dev = "png", 
-        dev.args = NULL, dpi = 192, fig.ext = "png", fig.width = 7, 
-        fig.height = 4.5, fig.env = "figure", fig.cap = NULL, 
-        fig.scap = NULL, fig.lp = "fig:", fig.subcap = NULL, 
-        fig.pos = "", out.width = 672, out.height = NULL, out.extra = NULL, 
-        fig.retina = 2, external = TRUE, sanitize = FALSE, interval = 1, 
-        aniopts = "controls,loop", warning = TRUE, error = FALSE, 
-        message = FALSE, render = NULL, ref.label = NULL, child = NULL, 
-        engine = "r", split = FALSE, include = TRUE, purl = TRUE, 
-        exercise.timelimit = 20, exercise.checker = "function (label, user_code, solution_code, check_code, envir_result, \n    evaluate_result, envir_prep, last_value, stage, ...) \n{\n    if (!identical(stage, \"check\")) \n        return(NULL)\n    feedback <- function(message, correct) {\n        list(message = message, correct = correct, location = \"append\")\n    }\n    spec <- tryCatch(base::eval(base::parse(text = check_code)), \n        error = function(e) NULL)\n    if (is.function(spec)) {\n        verdict <- tryCatch(spec(last_value, envir_result, normalise_code(user_code)), \n            error = function(e) \"The check could not run.\")\n        if (isTRUE(verdict)) {\n            return(feedback(\"Correct. Now explain it to your partner.\", \n                TRUE))\n        }\n        if (inherits(verdict, \"check_right\")) {\n            return(feedback(paste(\"Correct.\", as.character(verdict)[1]), \n                TRUE))\n        }\n        return(feedback(if (is.character(verdict)) verdict[1] else \"Not there yet; read the task again.\", \n            FALSE))\n    }\n    if (is.null(solution_code)) {\n        return(feedback(\"This exercise has no automatic check. Compare with the Solution.\", \n            TRUE))\n    }\n    extra <- if (is.character(spec)) \n        paste0(\" \", spec[1])\n    else \"\"\n    expected <- tryCatch({\n        grDevices::pdf(NULL)\n        on.exit(grDevices::dev.off(), add = TRUE)\n        env <- new.env(parent = envir_prep)\n        for (obj in base::ls(envir_prep, all.names = TRUE)) {\n            base::assign(obj, base::get(obj, envir = envir_prep), \n                envir = env)\n        }\n        base::eval(base::parse(text = solution_code), envir = env)\n    }, error = function(e) structure(list(), class = \"checker_failed\"))\n    if (inherits(expected, \"checker_failed\")) {\n        return(feedback(\"The reference solution could not be evaluated here; compare with the Solution by eye.\", \n            TRUE))\n    }\n    if (is.null(expected) || inherits(expected, \"ggplot\")) {\n        return(feedback(\"R ran your code. This check cannot read a figure, so compare yours with the Solution.\", \n            TRUE))\n    }\n    same <- if (inherits(expected, \"htest\") && inherits(last_value, \n        \"htest\")) {\n        isTRUE(all.equal(unname(expected$statistic), unname(last_value$statistic), \n            tolerance = 1e-06)) && isTRUE(all.equal(expected$p.value, \n            last_value$p.value, tolerance = 1e-06))\n    }\n    else {\n        isTRUE(all.equal(expected, last_value, tolerance = 1e-06, \n            check.attributes = FALSE))\n    }\n    if (same) {\n        feedback(\"Correct: your result matches the reference solution. Now explain it to your partner.\", \n            TRUE)\n    }\n    else {\n        feedback(paste0(\"Your last result does not match the reference yet.\", \n            extra, \" Remember: the check looks at the final line of your code.\"), \n            FALSE)\n    }\n}", 
-        label = "outlier-detective", exercise = TRUE, code = c("signal <- c(8, 9, 10, 11, 12)", 
-        "mean(signal)", "median(signal)", "sd(signal)"), out.width.px = 672, 
-        out.height.px = 432, params.src = "outlier-detective, exercise=TRUE", 
-        fig.num = 0, exercise.df_print = "default"), engine = "r", 
-    version = "4"), class = c("r", "tutorial_exercise")))
-</script>
-
-
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-quartiles-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-quartiles-code-editor`)), session)
 output$`tutorial-exercise-quartiles-output` <- renderUI({
   `tutorial-exercise-quartiles-result`()
 })
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "quartiles", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -5519,15 +5528,15 @@ learnr:::store_exercise_cache(structure(list(label = "quartiles", global_setup =
         exercise.df_print = "default"), engine = "r", version = "4"), class = c("r", 
 "tutorial_exercise")))
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-by-group-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-by-group-code-editor`)), session)
 output$`tutorial-exercise-by-group-output` <- renderUI({
   `tutorial-exercise-by-group-result`()
 })
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "by-group", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -5570,15 +5579,15 @@ learnr:::store_exercise_cache(structure(list(label = "by-group", global_setup = 
         fig.num = 0, exercise.df_print = "default"), engine = "r", 
     version = "4"), class = c("r", "tutorial_exercise")))
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-missing-value-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-missing-value-code-editor`)), session)
 output$`tutorial-exercise-missing-value-output` <- renderUI({
   `tutorial-exercise-missing-value-result`()
 })
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "missing-value", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -5623,15 +5632,15 @@ learnr:::store_exercise_cache(structure(list(label = "missing-value", global_set
         exercise.df_print = "default"), engine = "r", version = "4"), class = c("r", 
 "tutorial_exercise")))
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-zscore-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-zscore-code-editor`)), session)
 output$`tutorial-exercise-zscore-output` <- renderUI({
   `tutorial-exercise-zscore-result`()
 })
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "zscore", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -5667,15 +5676,15 @@ learnr:::store_exercise_cache(structure(list(label = "zscore", global_setup = st
         fig.num = 0, exercise.df_print = "default"), engine = "r", 
     version = "4"), class = c("r", "tutorial_exercise")))
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-histogram-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-histogram-code-editor`)), session)
 output$`tutorial-exercise-histogram-output` <- renderUI({
   `tutorial-exercise-histogram-result`()
 })
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "histogram", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -5723,15 +5732,15 @@ learnr:::store_exercise_cache(structure(list(label = "histogram", global_setup =
         fig.num = 0, exercise.df_print = "default"), engine = "r", 
     version = "4"), class = c("r", "tutorial_exercise")))
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-show-points-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-show-points-code-editor`)), session)
 output$`tutorial-exercise-show-points-output` <- renderUI({
   `tutorial-exercise-show-points-result`()
 })
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "show-points", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -5771,15 +5780,15 @@ learnr:::store_exercise_cache(structure(list(label = "show-points", global_setup
         fig.num = 0, exercise.df_print = "default"), engine = "r", 
     version = "4"), class = c("r", "tutorial_exercise")))
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-qq-investigation-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-qq-investigation-code-editor`)), session)
 output$`tutorial-exercise-qq-investigation-output` <- renderUI({
   `tutorial-exercise-qq-investigation-result`()
 })
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "qq-investigation", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -5818,15 +5827,15 @@ learnr:::store_exercise_cache(structure(list(label = "qq-investigation", global_
         fig.num = 0, exercise.df_print = "default"), engine = "r", 
     version = "4"), class = c("r", "tutorial_exercise")))
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-shapiro-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-shapiro-code-editor`)), session)
 output$`tutorial-exercise-shapiro-output` <- renderUI({
   `tutorial-exercise-shapiro-result`()
 })
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "shapiro", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -5862,15 +5871,15 @@ learnr:::store_exercise_cache(structure(list(label = "shapiro", global_setup = s
     engine = "r", version = "4"), class = c("r", "tutorial_exercise"
 )))
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-pooled-shapiro-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-pooled-shapiro-code-editor`)), session)
 output$`tutorial-exercise-pooled-shapiro-output` <- renderUI({
   `tutorial-exercise-pooled-shapiro-result`()
 })
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "pooled-shapiro", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -5904,15 +5913,15 @@ learnr:::store_exercise_cache(structure(list(label = "pooled-shapiro", global_se
         fig.num = 0, exercise.df_print = "default"), engine = "r", 
     version = "4"), class = c("r", "tutorial_exercise")))
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-welch-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-welch-code-editor`)), session)
 output$`tutorial-exercise-welch-output` <- renderUI({
   `tutorial-exercise-welch-result`()
 })
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "welch", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -5949,15 +5958,15 @@ learnr:::store_exercise_cache(structure(list(label = "welch", global_setup = str
         fig.num = 0, exercise.df_print = "default"), engine = "r", 
     version = "4"), class = c("r", "tutorial_exercise")))
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-wilcoxon-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-wilcoxon-code-editor`)), session)
 output$`tutorial-exercise-wilcoxon-output` <- renderUI({
   `tutorial-exercise-wilcoxon-result`()
 })
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "wilcoxon", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -5993,15 +6002,15 @@ learnr:::store_exercise_cache(structure(list(label = "wilcoxon", global_setup = 
         fig.num = 0, exercise.df_print = "default"), engine = "r", 
     version = "4"), class = c("r", "tutorial_exercise")))
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-overlap-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-overlap-code-editor`)), session)
 output$`tutorial-exercise-overlap-output` <- renderUI({
   `tutorial-exercise-overlap-result`()
 })
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "overlap", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -6045,15 +6054,15 @@ learnr:::store_exercise_cache(structure(list(label = "overlap", global_setup = s
         fig.num = 0, exercise.df_print = "default"), engine = "r", 
     version = "4"), class = c("r", "tutorial_exercise")))
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-bonferroni-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-bonferroni-code-editor`)), session)
 output$`tutorial-exercise-bonferroni-output` <- renderUI({
   `tutorial-exercise-bonferroni-result`()
 })
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "bonferroni", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -6096,15 +6105,15 @@ learnr:::store_exercise_cache(structure(list(label = "bonferroni", global_setup 
         fig.num = 0, exercise.df_print = "default"), engine = "r", 
     version = "4"), class = c("r", "tutorial_exercise")))
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-association-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-association-code-editor`)), session)
 output$`tutorial-exercise-association-output` <- renderUI({
   `tutorial-exercise-association-result`()
 })
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "association", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -6149,8 +6158,7 @@ learnr:::store_exercise_cache(structure(list(label = "association", global_setup
         fig.num = 0, exercise.df_print = "default"), engine = "r", 
     version = "4"), class = c("r", "tutorial_exercise")))
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 output$export_work <- shiny::downloadHandler(
   filename = function() {
@@ -6164,15 +6172,15 @@ output$export_work <- shiny::downloadHandler(
   }
 )
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-vector-types-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-vector-types-code-editor`)), session)
 output$`tutorial-exercise-vector-types-output` <- renderUI({
   `tutorial-exercise-vector-types-result`()
 })
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "vector-types", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -6214,15 +6222,15 @@ learnr:::store_exercise_cache(structure(list(label = "vector-types", global_setu
         exercise.df_print = "default"), engine = "r", version = "4"), class = c("r", 
 "tutorial_exercise")))
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-vectorised-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-vectorised-code-editor`)), session)
 output$`tutorial-exercise-vectorised-output` <- renderUI({
   `tutorial-exercise-vectorised-result`()
 })
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "vectorised", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -6261,15 +6269,15 @@ learnr:::store_exercise_cache(structure(list(label = "vectorised", global_setup 
         fig.num = 0, exercise.df_print = "default"), engine = "r", 
     version = "4"), class = c("r", "tutorial_exercise")))
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-ex-growth-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-ex-growth-code-editor`)), session)
 output$`tutorial-exercise-ex-growth-output` <- renderUI({
   `tutorial-exercise-ex-growth-result`()
 })
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "ex-growth", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -6305,15 +6313,15 @@ learnr:::store_exercise_cache(structure(list(label = "ex-growth", global_setup =
         fig.num = 0, exercise.df_print = "default"), engine = "r", 
     version = "4"), class = c("r", "tutorial_exercise")))
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-ex-calibrate-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-ex-calibrate-code-editor`)), session)
 output$`tutorial-exercise-ex-calibrate-output` <- renderUI({
   `tutorial-exercise-ex-calibrate-result`()
 })
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "ex-calibrate", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -6349,15 +6357,15 @@ learnr:::store_exercise_cache(structure(list(label = "ex-calibrate", global_setu
         fig.num = 0, exercise.df_print = "default"), engine = "r", 
     version = "4"), class = c("r", "tutorial_exercise")))
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-ex-which-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-ex-which-code-editor`)), session)
 output$`tutorial-exercise-ex-which-output` <- renderUI({
   `tutorial-exercise-ex-which-result`()
 })
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "ex-which", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -6395,15 +6403,15 @@ learnr:::store_exercise_cache(structure(list(label = "ex-which", global_setup = 
         fig.num = 0, exercise.df_print = "default"), engine = "r", 
     version = "4"), class = c("r", "tutorial_exercise")))
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-ex-z-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-ex-z-code-editor`)), session)
 output$`tutorial-exercise-ex-z-output` <- renderUI({
   `tutorial-exercise-ex-z-result`()
 })
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "ex-z", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -6438,15 +6446,15 @@ learnr:::store_exercise_cache(structure(list(label = "ex-z", global_setup = stru
         fig.num = 0, exercise.df_print = "default"), engine = "r", 
     version = "4"), class = c("r", "tutorial_exercise")))
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-df-demo-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-df-demo-code-editor`)), session)
 output$`tutorial-exercise-df-demo-output` <- renderUI({
   `tutorial-exercise-df-demo-result`()
 })
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "df-demo", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -6487,15 +6495,15 @@ learnr:::store_exercise_cache(structure(list(label = "df-demo", global_setup = s
     engine = "r", version = "4"), class = c("r", "tutorial_exercise"
 )))
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-neurites-import-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-neurites-import-code-editor`)), session)
 output$`tutorial-exercise-neurites-import-output` <- renderUI({
   `tutorial-exercise-neurites-import-result`()
 })
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "neurites-import", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -6532,15 +6540,15 @@ learnr:::store_exercise_cache(structure(list(label = "neurites-import", global_s
         fig.num = 0, exercise.df_print = "default"), engine = "r", 
     version = "4"), class = c("r", "tutorial_exercise")))
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-slicing-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-slicing-code-editor`)), session)
 output$`tutorial-exercise-slicing-output` <- renderUI({
   `tutorial-exercise-slicing-result`()
 })
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "slicing", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -6577,15 +6585,15 @@ learnr:::store_exercise_cache(structure(list(label = "slicing", global_setup = s
         fig.num = 0, exercise.df_print = "default"), engine = "r", 
     version = "4"), class = c("r", "tutorial_exercise")))
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-filters-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-filters-code-editor`)), session)
 output$`tutorial-exercise-filters-output` <- renderUI({
   `tutorial-exercise-filters-result`()
 })
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "filters", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -6620,15 +6628,15 @@ learnr:::store_exercise_cache(structure(list(label = "filters", global_setup = s
         fig.num = 0, exercise.df_print = "default"), engine = "r", 
     version = "4"), class = c("r", "tutorial_exercise")))
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-ex-filter-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-ex-filter-code-editor`)), session)
 output$`tutorial-exercise-ex-filter-output` <- renderUI({
   `tutorial-exercise-ex-filter-result`()
 })
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "ex-filter", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -6662,15 +6670,15 @@ learnr:::store_exercise_cache(structure(list(label = "ex-filter", global_setup =
         fig.num = 0L, exercise.df_print = "default"), engine = "r", 
     version = "4"), class = c("r", "tutorial_exercise")))
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-new-column-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-new-column-code-editor`)), session)
 output$`tutorial-exercise-new-column-output` <- renderUI({
   `tutorial-exercise-new-column-result`()
 })
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "new-column", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -6706,15 +6714,15 @@ learnr:::store_exercise_cache(structure(list(label = "new-column", global_setup 
         exercise.df_print = "default"), engine = "r", version = "4"), class = c("r", 
 "tutorial_exercise")))
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-ex-sapply-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-ex-sapply-code-editor`)), session)
 output$`tutorial-exercise-ex-sapply-output` <- renderUI({
   `tutorial-exercise-ex-sapply-result`()
 })
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "ex-sapply", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -6750,15 +6758,15 @@ learnr:::store_exercise_cache(structure(list(label = "ex-sapply", global_setup =
         fig.num = 0, exercise.df_print = "default"), engine = "r", 
     version = "4"), class = c("r", "tutorial_exercise")))
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-ex-describe-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-ex-describe-code-editor`)), session)
 output$`tutorial-exercise-ex-describe-output` <- renderUI({
   `tutorial-exercise-ex-describe-result`()
 })
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "ex-describe", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -6796,15 +6804,15 @@ learnr:::store_exercise_cache(structure(list(label = "ex-describe", global_setup
         fig.num = 0, exercise.df_print = "default"), engine = "r", 
     version = "4"), class = c("r", "tutorial_exercise")))
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-ex-best2-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-ex-best2-code-editor`)), session)
 output$`tutorial-exercise-ex-best2-output` <- renderUI({
   `tutorial-exercise-ex-best2-result`()
 })
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "ex-best2", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -6842,15 +6850,15 @@ learnr:::store_exercise_cache(structure(list(label = "ex-best2", global_setup = 
         exercise.df_print = "default"), engine = "r", version = "4"), class = c("r", 
 "tutorial_exercise")))
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-gallery-bar-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-gallery-bar-code-editor`)), session)
 output$`tutorial-exercise-gallery-bar-output` <- renderUI({
   `tutorial-exercise-gallery-bar-result`()
 })
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "gallery-bar", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -6894,15 +6902,15 @@ learnr:::store_exercise_cache(structure(list(label = "gallery-bar", global_setup
         fig.num = 0, exercise.df_print = "default"), engine = "r", 
     version = "4"), class = c("r", "tutorial_exercise")))
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-gallery-box-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-gallery-box-code-editor`)), session)
 output$`tutorial-exercise-gallery-box-output` <- renderUI({
   `tutorial-exercise-gallery-box-result`()
 })
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "gallery-box", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -6941,15 +6949,15 @@ learnr:::store_exercise_cache(structure(list(label = "gallery-box", global_setup
         fig.num = 0, exercise.df_print = "default"), engine = "r", 
     version = "4"), class = c("r", "tutorial_exercise")))
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-gallery-hist-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-gallery-hist-code-editor`)), session)
 output$`tutorial-exercise-gallery-hist-output` <- renderUI({
   `tutorial-exercise-gallery-hist-result`()
 })
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "gallery-hist", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -6988,15 +6996,15 @@ learnr:::store_exercise_cache(structure(list(label = "gallery-hist", global_setu
         fig.num = 0, exercise.df_print = "default"), engine = "r", 
     version = "4"), class = c("r", "tutorial_exercise")))
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-gallery-pdf-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-gallery-pdf-code-editor`)), session)
 output$`tutorial-exercise-gallery-pdf-output` <- renderUI({
   `tutorial-exercise-gallery-pdf-result`()
 })
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "gallery-pdf", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -7034,15 +7042,15 @@ learnr:::store_exercise_cache(structure(list(label = "gallery-pdf", global_setup
         fig.num = 0, exercise.df_print = "default"), engine = "r", 
     version = "4"), class = c("r", "tutorial_exercise")))
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-gg-bar-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-gg-bar-code-editor`)), session)
 output$`tutorial-exercise-gg-bar-output` <- renderUI({
   `tutorial-exercise-gg-bar-result`()
 })
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "gg-bar", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -7083,15 +7091,15 @@ learnr:::store_exercise_cache(structure(list(label = "gg-bar", global_setup = st
         fig.num = 0, exercise.df_print = "default"), engine = "r", 
     version = "4"), class = c("r", "tutorial_exercise")))
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-gg-hist-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-gg-hist-code-editor`)), session)
 output$`tutorial-exercise-gg-hist-output` <- renderUI({
   `tutorial-exercise-gg-hist-result`()
 })
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "gg-hist", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -7134,15 +7142,15 @@ learnr:::store_exercise_cache(structure(list(label = "gg-hist", global_setup = s
         fig.num = 0, exercise.df_print = "default"), engine = "r", 
     version = "4"), class = c("r", "tutorial_exercise")))
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-gg-box-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-gg-box-code-editor`)), session)
 output$`tutorial-exercise-gg-box-output` <- renderUI({
   `tutorial-exercise-gg-box-result`()
 })
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "gg-box", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -7186,15 +7194,15 @@ learnr:::store_exercise_cache(structure(list(label = "gg-box", global_setup = st
         fig.num = 0, exercise.df_print = "default"), engine = "r", 
     version = "4"), class = c("r", "tutorial_exercise")))
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-ftest-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-ftest-code-editor`)), session)
 output$`tutorial-exercise-ftest-output` <- renderUI({
   `tutorial-exercise-ftest-result`()
 })
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "ftest", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -7232,15 +7240,15 @@ learnr:::store_exercise_cache(structure(list(label = "ftest", global_setup = str
         fig.num = 0, exercise.df_print = "default"), engine = "r", 
     version = "4"), class = c("r", "tutorial_exercise")))
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-ex-ttest2-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-ex-ttest2-code-editor`)), session)
 output$`tutorial-exercise-ex-ttest2-output` <- renderUI({
   `tutorial-exercise-ex-ttest2-result`()
 })
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "ex-ttest2", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -7275,15 +7283,15 @@ learnr:::store_exercise_cache(structure(list(label = "ex-ttest2", global_setup =
         fig.num = 0L, exercise.df_print = "default"), engine = "r", 
     version = "4"), class = c("r", "tutorial_exercise")))
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-fold-change-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-fold-change-code-editor`)), session)
 output$`tutorial-exercise-fold-change-output` <- renderUI({
   `tutorial-exercise-fold-change-result`()
 })
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "fold-change", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -7322,15 +7330,15 @@ learnr:::store_exercise_cache(structure(list(label = "fold-change", global_setup
         fig.num = 0, exercise.df_print = "default"), engine = "r", 
     version = "4"), class = c("r", "tutorial_exercise")))
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-three-groups-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-three-groups-code-editor`)), session)
 output$`tutorial-exercise-three-groups-output` <- renderUI({
   `tutorial-exercise-three-groups-result`()
 })
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "three-groups", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -7368,15 +7376,15 @@ learnr:::store_exercise_cache(structure(list(label = "three-groups", global_setu
         fig.num = 0, exercise.df_print = "default"), engine = "r", 
     version = "4"), class = c("r", "tutorial_exercise")))
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-three-comparisons-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-three-comparisons-code-editor`)), session)
 output$`tutorial-exercise-three-comparisons-output` <- renderUI({
   `tutorial-exercise-three-comparisons-result`()
 })
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "three-comparisons", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -7418,15 +7426,15 @@ learnr:::store_exercise_cache(structure(list(label = "three-comparisons", global
         fig.num = 0, exercise.df_print = "default"), engine = "r", 
     version = "4"), class = c("r", "tutorial_exercise")))
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-chisq-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-chisq-code-editor`)), session)
 output$`tutorial-exercise-chisq-output` <- renderUI({
   `tutorial-exercise-chisq-result`()
 })
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "chisq", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 
@@ -7466,15 +7474,15 @@ learnr:::store_exercise_cache(structure(list(label = "chisq", global_setup = str
         fig.num = 0, exercise.df_print = "default"), engine = "r", 
     version = "4"), class = c("r", "tutorial_exercise")))
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-paired-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-paired-code-editor`)), session)
 output$`tutorial-exercise-paired-output` <- renderUI({
   `tutorial-exercise-paired-result`()
 })
 </script>
-
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache(structure(list(label = "paired", global_setup = structure(c("library(learnr)", 
 "source(\"helpers.R\", local = TRUE)", "list2env(load_workshop_data(), envir = environment())", 

@@ -350,10 +350,22 @@ decides which summaries and tests make sense.
 ### The case file: a small MMSE table
 
 The **MMSE** (Mini-Mental State Examination) is a 30-point questionnaire used in
-clinics to screen for cognitive impairment. Scores are whole numbers from 0 to 30;
-higher is better. Our teaching file holds 20 scores: 10 labelled *Control* and 10
-labelled *AD* (Alzheimer's disease). This is a teaching example; for today, **assume each row is a different
-person**.
+clinics to screen for cognitive impairment: orientation, recall, attention,
+language and copying a simple drawing. Scores are whole numbers from 0 to 30 and
+higher is better. Roughly, 24–30 is the usual range for unimpaired adults, and
+lower scores indicate more impairment — but a score alone is not a diagnosis.
+
+`data/mmse_small.csv` holds **20 rows and 3 columns**:
+
+| Column | Type | What it holds |
+|---|---|---|
+| `teaching_id` | text | A label for the row (`Control_01`, `AD_03`, …). It is an identifier, not a measurement |
+| `group` | text | `Control` or `AD` (Alzheimer's disease), 10 rows each |
+| `MMSE` | number | The test score, 0–30 |
+
+**One row is one person, tested once.** Each row is an independent measurement:
+no one appears twice, and no score depends on any other score. That is the single
+most important fact about this table, because every test you run today assumes it.
 
 `read.csv()` reads a comma-separated file into a **data frame**: a table where each
 column is a variable and each row is an observation. The path `data/mmse_small.csv`
@@ -440,8 +452,8 @@ mcq("Why do sqrt(sum(c(9, 16))) and sum(sqrt(c(9, 16))) give 5 and 7?",
 ### One column at a time
 
 `$` picks one column out of a data frame and gives you a vector. Run this, then
-change `range` to `summary`, and then to `table` on the `group` column. Submit
-when the window ends with the group counts.
+add an additional line with `summary` of the MMSE column. Finally use a nested function,
+apply `table` on the `group` column. Submit when the window ends with the group counts.
 
 ```{r select-column, exercise=TRUE}
 range(mmse$MMSE)
@@ -464,17 +476,17 @@ table(mmse$group)
 function(value, env, code) {
   if (inherits(value, "table") && same(as.vector(value), c(10, 10)))
     return(right("table() counts the rows in each group: 10 Control and 10 AD."))
-  if (code_has(code, "range(mmse$MMSE)"))
-    return("That is still range(). Change range to summary, run it, then try table(mmse$group).")
   if (code_has(code, "summary(mmse$MMSE)"))
     return("summary() works: min, quartiles, mean, max. Now count the groups with table(mmse$group) on the last line.")
-  "Try summary(mmse$MMSE), then table(mmse$group). The check reads the last line."
+  if (code_has(code, "range(mmse$MMSE)"))
+    return("range() gives the lowest and highest score. Add a line summary(mmse$MMSE), run it, then add table(mmse$group).")
+  "Add summary(mmse$MMSE), then table(mmse$group). The check reads the last line."
 }
 ```
 
 To keep one group only, ask R for the rows where `group` equals `"AD"`. Note the
-double `==` (a question: "is it equal?") versus the single `=` (an argument).
-Run it, then add the same three lines for the control group, stored as
+double `==` (a question: "is it equal?") versus the single `=` (usually used for a function
+argument). Run it, then add the same three lines for the control group, stored as
 `control`, and **Submit Answer**.
 
 ```{r select-group, exercise=TRUE}
@@ -551,10 +563,9 @@ type; only you know the scientific meaning.
 Suppose you measured neurite length in twenty cultures. Nobody wants to read
 twenty numbers, so you summarise: a **typical value** (the centre) and a
 **measure of how much the cultures differ** (the spread). These are
-**descriptive statistics**. They describe the sample you have in hand; they do
-not yet claim anything about cultures you did not measure. Every summary throws
-information away on purpose, and the skill is to choose a summary that keeps
-what matters for your question.
+**descriptive statistics**. They describe the sample you have in hand. Every
+summary throws information away on purpose, and the skill is to choose a summary
+that keeps what matters for your question.
 
 There are two families. The **mean** and **standard deviation (SD)** use every
 value and its exact size, which makes them efficient when the data are roughly
@@ -563,15 +574,6 @@ a mislabelled patient). The **median** and **quartiles** use only the order of
 the values, so a wild value moves them very little. When a distribution is
 skewed or has outliers, the median tells you more honestly where the typical
 observation sits. Reporting both, and looking at the raw points, is never wrong.
-
-One idea sits underneath everything that follows today. Your twenty cultures,
-or twenty people, are a **sample** from a much larger **population** you
-actually care about: all cultures grown this way, all patients with this
-diagnosis. Repeat the experiment and you get a different sample with a slightly
-different mean. The SD describes how much individual observations vary. The
-uncertainty of the *mean itself* is a different, smaller quantity, and Mission
-6 puts a number on it. Keep the two apart: "how variable are the observations?"
-and "how sure am I about the average?" are different questions.
 
 ### Centre and spread in one breath
 
@@ -587,37 +589,53 @@ Every summary throws information away. The art is choosing which to keep.
 
 ### The outlier detective
 
-**Predict first:** if the last value of this invented assay vector becomes 100,
-which changes more, the mean or the median? Run, then change `12` to `100` and
-**Submit Answer**.
+Four measurements sat close together: 8, 9, 10, 11. The fifth is yours to move.
+**Predict first:** as you drag it upwards, which line follows it, and which stays put?
 
-```{r outlier-detective, exercise=TRUE}
-signal <- c(8, 9, 10, 11, 12)
-mean(signal)
-median(signal)
-sd(signal)
+```{r outlier-slider-ui, echo=FALSE, eval=!isTRUE(getOption("workshop.preview"))}
+shiny::div(
+  shiny::sliderInput("outlier_value", "The fifth measurement:",
+                     min = 0, max = 100, value = 12, step = 1, width = "100%"),
+  shiny::plotOutput("outlier_plot", height = "400px")
+)
 ```
 
-```{r outlier-detective-hint}
-# Change only the last number to 100. Compare all three outputs with the first run.
+```{r outlier-slider-server, context="server"}
+output$outlier_plot <- shiny::renderPlot({
+  signal <- c(8, 9, 10, 11, input$outlier_value)
+  m  <- mean(signal)
+  md <- median(signal)
+
+  par(mar = c(4.5, 4.5, 3.5, 1))
+  plot(seq_along(signal), signal,
+       pch = 16, cex = 2.2,
+       col = c(rep("grey35", 4), "#e67e22"),
+       xlim = c(0.5, 5.5), ylim = c(0, 100), xaxt = "n",
+       xlab = "Measurement number", ylab = "Signal (arbitrary units)",
+       main = sprintf("mean = %.1f          median = %.1f          SD = %.1f",
+                      m, md, sd(signal)))
+  axis(1, at = 1:5)
+  abline(h = m,  col = "red",  lwd = 2)
+  abline(h = md, col = "blue", lwd = 2, lty = 2)
+  legend("topleft", bty = "n", inset = 0.01,
+         legend = c("mean", "median", "the point you are moving"),
+         col = c("red", "blue", "#e67e22"),
+         lty = c(1, 2, NA), lwd = c(2, 2, NA), pch = c(NA, NA, 16))
+})
 ```
 
-```{r outlier-detective-solution}
-signal <- c(8, 9, 10, 11, 100)
-mean(signal)
-median(signal)
-sd(signal)
-```
+Two positions worth visiting. At **100** the mean climbs to 27.6 while the median
+sits at 10: the red line has left the data entirely, and no measurement is
+anywhere near it. At **0** the mean falls to 7.6 and the median only to 9.
 
-```{r outlier-detective-check}
-function(value, env, code) {
-  if (!exists("signal", envir = env)) return("Keep the line that creates signal.")
-  if (same(env$signal, c(8, 9, 10, 11, 12)))
-    return("The vector is unchanged. Replace the last number, 12, with 100 and run again.")
-  if (!same(env$signal, c(8, 9, 10, 11, 100)))
-    return("signal should be exactly 8, 9, 10, 11, 100: change only the last number.")
-  right("The mean jumped from 10 to 27.6 and the SD from 1.6 to 40.5, while the median stayed at 10. One value moved two of the three summaries.")
-}
+Across the whole slider, from 0 to 100, the median travels one single point.
+The mean travels twenty. One measurement out of five cannot drag the median
+anywhere, because the median only cares about the *order* of the values, not how
+extreme the extremes are.
+
+```{r q-outlier-meet, results="asis"}
+numq("Drag the point somewhere above 10 until the red and blue lines lie exactly on top of each other. What is the fifth measurement there?", 12, tolerance = 0.01,
+     "At 12 the five values are evenly spaced, so mean and median agree at 10. Symmetric data are the case where the choice of centre does not matter; the further you drag from 12, the more it matters.")
 ```
 
 ```{r q-outlier, results="asis"}
