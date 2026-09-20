@@ -74,7 +74,7 @@ numq <- function(prompt, value, tolerance = 0.01, explanation = "") {
 reflect <- function(prompt, guide) {
   if (preview_mode()) {
     return(preview_block("Your explanation", prompt, NULL,
-                         paste0("*Discussion guide:* ", guide)))
+                         paste0("\n", guide)))
   }
   # learnr stores answer_fn() functions as text and re-parses them later, so the
   # closure is lost: the guide must be inlined as a literal, not referenced.

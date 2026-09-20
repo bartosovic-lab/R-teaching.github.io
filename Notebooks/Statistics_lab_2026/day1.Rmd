@@ -1290,13 +1290,13 @@ mcq("Your Welch p-value is 0.04 and Wilcoxon is 0.08. A colleague says: report t
 ```
 
 ```{r r-methods, results="asis"}
-reflect("Compare Welch and Wilcoxon for our question: target, assumptions, result and one limitation. Which would you lead with, and why?",
-        "Welch estimates AD minus Control in score points (about -19, CI -21 to -17); Wilcoxon shows complete rank separation (W = 0). Both assume independent people. A defensible lead is Welch because the question is about average scores, with Wilcoxon as a rank-based check given the ceiling effect and ties. Neither test can verify the design or the provenance of these 20 scores.")
+reflect("Compare Welch and Wilcoxon for our question: target, assumptions, result. Which would you lead with, and why?",
+        "Welch estimates AD minus Control in score points (about -19, CI -21 to -17); Wilcoxon shows complete rank separation (W = 0). Both assume independent people. A defensible lead is Welch because the question is about average scores, with Wilcoxon as a rank-based check given the ceiling effect and ties.")
 ```
 
 ```{r r-result, results="asis"}
 reflect("Write the result sentence. Include n per group, direction, size of the difference in points, the CI, the method and one limitation. Template: 'In this teaching sample (n = ... per group), the estimated AD minus Control difference in mean MMSE was ... points (95% CI ... to ..., Welch's t-test, p ...). This supports ... under the assumption that ...; it does not show ....'",
-        "In this teaching sample (n = 10 per group), the estimated AD minus Control difference in mean MMSE was -19.1 points (95% CI -21.0 to -17.2, Welch's t-test, p < 0.001). This supports lower average scores in the AD group under the assumption of 20 independent people; it does not show what caused the difference, nor how these people were selected. Use point differences for MMSE: a fold change would claim a ratio scale the score does not have.")
+        "In this teaching sample (n = 10 per group), the estimated AD minus Control difference in mean MMSE was -19.1 points (95% CI -21.0 to -17.2, Welch's t-test, p < 0.001). This supports lower average scores in the AD group under the assumption of 20 independent people; it does not show what caused the difference, nor how these people were selected and the data collected.")
 ```
 
 ### The overlap challenge
@@ -1344,8 +1344,114 @@ mcq("The two groups overlap a lot, yet the CI for the mean difference (about 0.2
 
 ```{r r-overlap, results="asis"}
 reflect("Contrast this plot with the MMSE case. Why can a group mean not tell you which group one new culture came from?",
-        "The neurite ranges overlap (about 0.06-1.0 versus 0.41-1.41), so a single value near 0.7 is compatible with both groups. The estimated mean difference (0.43) is about the groups, not about individuals. Do not compare 0.43 with the 19-point MMSE difference: different scales, different units.")
+        "The neurite ranges overlap (about 0.06-1.0 versus 0.41-1.41), so a single value near 0.7 could come from either of the groups. The estimated mean difference (0.43) is about the groups, not about individual measurements.")
 ```
+
+### Twenty colours of nothing
+
+A p-value is a probability, not certainty.
+
+Below there is one population and nothing else. Every value comes from the same
+normal distribution, mean 10. I then pick 40 individuals at random, split them
+into two groups of 20 by coin flip, and t-test the groups against each other.
+There is no treatment, no disease, no difference of any kind to find. I do this
+2000 times.
+
+You do not need to write this code today — read it and watch what comes out.
+
+```{r null-simulation, echo=TRUE, fig.width=8, fig.height=4.5}
+set.seed(42)
+
+d <- rnorm(n = 1000, mean = 10, sd = 2)   # one population, no groups in it
+
+p_values <- numeric(2000)
+draws <- matrix(NA_integer_, nrow = 2000, ncol = 40)
+
+for (i in 1:2000) {
+  idx <- sample(1000, size = 40)          # 40 individuals
+  draws[i, ] <- idx
+  p_values[i] <- t.test(d[idx[1:20]], d[idx[21:40]])$p.value   # split 20 / 20
+}
+
+sum(p_values < 0.05)               # how many "significant" results from nothing
+100 * sum(p_values < 0.05) / 2000  # as a percentage
+min(p_values)                      # the most convincing result I never had
+
+# Pick out one ordinary draw and the single most extreme one
+ordinary <- which.min(abs(p_values - 0.5))
+extreme  <- which.min(p_values)
+
+show_draw <- function(run, label) {
+  g <- list(A = d[draws[run, 1:20]], B = d[draws[run, 21:40]])
+  boxplot(g, ylim = range(d[draws[c(ordinary, extreme), ]]),
+          col = c("#9bd5db", "#f4bb8b"),
+          xlab = "Arbitrary group", ylab = "Measurement (arbitrary units)",
+          main = paste0(label, "   p = ", signif(p_values[run], 2)))
+  stripchart(g, vertical = TRUE, method = "jitter", add = TRUE, pch = 16)
+  abline(h = mean(d), col = "grey50", lty = 3)   # the one true mean
+}
+
+set.seed(1)
+par(mfrow = c(1, 2))
+show_draw(ordinary, "An ordinary draw:")
+show_draw(extreme,  "The luckiest of 2000:")
+```
+
+The dotted grey line is the truth: both groups were drawn from the same
+population, and that is its mean. Every point on both panels came out of the same
+jar.
+
+The left panel is what "nothing is happening" usually looks like. Two boxes
+sitting on top of each other, p somewhere in the middle of its range, nobody
+writes a paper.
+
+The right panel is the best of 2000 attempts. Look at it properly. The boxes
+barely overlap, the medians are clearly separated, and the p-value in the title
+would survive any threshold. If I had run this experiment once, on a Tuesday,
+and this is what came back, I would have believed it. I would have put that figure
+in a manuscript. There is nothing there. Both groups are twenty people picked at
+random out of the same thousand.
+
+That is the whole point. A p-value is a statement about how often data like yours
+turn up when nothing is happening — and "not often" is not the same as "never".
+Run the experiment enough times and the rare outcome arrives on schedule: roughly
+one draw in twenty below 0.05, printed above as a count out of 2000.
+
+```{r q-null-certainty, results="asis"}
+mcq("Tomorrow you run one real experiment and get p = 0.0001. Which statement is honest?",
+    c("Chance has been ruled out: the difference is real",
+      "Data like these are rare when nothing is happening, so I will act as though the effect is real - accepting that I might be just somebody's lucky draw",
+      "There is a 0.01% probability that I am wrong"),
+    2, "The right-hand panel above had a p-value like that, and both groups came out of the same jar. No p-value can tell you whether this particular result is the real thing or the rare accident, because both produce the same number. What it tells you is how often you are willing to be fooled in the long run. That is a probability you accept, not a certainty you obtain.")
+```
+
+<details><summary>🔍 Deeper: why "p = 0.0001" is not "a 0.01% chance I am wrong"</summary>
+
+The p-value is computed **in a world where the null is true**. That assumption is
+the input. You cannot then read the answer back out as the probability that the
+assumption was wrong — the number is conditional on exactly the thing it is being
+asked to judge.
+
+- What the p-value is: P(data at least this extreme **given** no effect)
+- What people say it is: P(no effect **given** this data)
+
+Those are different quantities, and the gap between them depends on something the
+p-value has no access to: how plausible your hypotheses were before you tested
+them.
+
+Count it out. Screen 1000 candidate compounds at the usual 0.05 threshold, with
+enough power to catch 80% of the real ones.
+
+| Of 1000 screened | Really work | Come out significant | Wrong hits |
+|---|---|---|---|
+| 10% of them work | 100 | 80 real + 45 false = 125 | **36%** |
+| 90% of them work | 900 | 720 real + 5 false = 725 | **0.7%** |
+
+Same threshold, same p-values, same statistics. In the first screen more than a
+third of your hits are rubbish; in the second, almost none. The difference is
+entirely in what you chose to test.
+
+</details>
 
 ## Mission 7 · Many questions, many chances
 
