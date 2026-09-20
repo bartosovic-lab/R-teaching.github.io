@@ -359,7 +359,7 @@ lower scores indicate more impairment — but a score alone is not a diagnosis.
 
 | Column | Type | What it holds |
 |---|---|---|
-| `teaching_id` | text | A label for the row (`Control_01`, `AD_03`, …). It is an identifier, not a measurement |
+| `id` | text | A label for the row (`Control_01`, `AD_03`, …). It is an identifier, not a measurement |
 | `group` | text | `Control` or `AD` (Alzheimer's disease), 10 rows each |
 | `MMSE` | number | The test score, 0–30 |
 

@@ -2,7 +2,7 @@
 
 `mmse_small.csv` transcribes the existing `../../../data/excel_data.xlsx`, sheet
 “Mini Mental State exam”, cells A8:A17 (Healthy, relabelled Control) and B8:B17 (AD).
-All 20 score values and their within-column order are preserved. `teaching_id`
+All 20 score values and their within-column order are preserved. `id`
 contains newly created labels, not recovered patient identifiers. The workbook
 labels these as patient scores but does not establish provenance, sampling,
 clinical criteria or pairing. Treat this as an educational example, not evidence
@@ -10,7 +10,7 @@ about a clinical population. For the exercises only, assume 20 separate people.
 
 | Variable | Meaning |
 |---|---|
-| teaching_id | Unique artificial row label; nominal |
+| id | Unique artificial row label; nominal |
 | group | Control or AD; nominal teaching group |
 | MMSE | Bounded integer score, 0–30; score points, not a ratio of cognitive ability |
 
