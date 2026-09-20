@@ -8,7 +8,7 @@ source("helpers.R", local = TRUE)
 base <- new.env()
 invisible(list2env(load_workshop_data(), envir = base))
 
-expected_errors <- c("repair-name", "zscore", "ex-best2")   # contain typos or ___ blanks
+expected_errors <- c("repair-name", "ex-best2")   # contain typos or ___ blanks
 
 lines <- readLines("day1.Rmd")
 starts <- grep("^```\\{r", lines)

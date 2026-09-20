@@ -748,35 +748,6 @@ mcq("What does na.rm = TRUE do?",
     2, "Four values contributed. Why a value is missing may itself matter (a broken well, a patient who left).")
 ```
 
-### Standardise: the z-score
-
-A **z-score** says how many standard deviations a value sits from the mean:
-z = (x − mean) / SD. Because R is vectorised, one line standardises the whole
-vector. Complete the formula and **Submit Answer**.
-
-```{r zscore, exercise=TRUE}
-z <- (control - mean(control)) / ___
-z
-```
-
-```{r zscore-hint}
-# Divide by the standard deviation: sd(control)
-```
-
-```{r zscore-solution}
-z <- (control - mean(control)) / sd(control)
-z
-```
-
-```{r zscore-check}
-"The last line should print the vector z."
-```
-
-```{r r-summary, results="asis"}
-reflect("For the outlier example, which centre and spread would you report, and why? What would a mean alone hide?",
-        "For a skewed sample, median and IQR describe the typical observation; still show all points and mention the extreme value. SD describes the spread of observations; a confidence interval (later) describes uncertainty about an estimate. They are different things.")
-```
-
 **Break.** Your brain is part of the analysis pipeline.
 
 ## Mission 4 · Let the observations speak
@@ -919,7 +890,7 @@ mcq("What does a mean-only bar chart hide that the point plot reveals?",
     1, "Two bars can look identical for n = 3 and n = 300, or for tight and wildly scattered data. Show the points whenever you can.")
 ```
 
-### Instructor demonstration · the violin
+### Violin plot
 
 A **violin plot** draws an estimated density: wider where more observations are
 believed to be. It is a smooth guess, not the data. With ten integer scores per
@@ -956,7 +927,7 @@ mcq("Which plot answers: 'Do individual AD scores overlap with individual contro
 
 ```{r r-plot, results="asis"}
 reflect("Write a two-sentence figure caption for the boxplot: one observed pattern and one limitation.",
-        "Example: 'AD teaching scores (median 9.5) were lower than controls (median 28) with no overlap between groups; scores varied more within the AD group. Ten people per group of undocumented origin limit any generalisation.'")
+        "Example: 'Boxplot of MMSE scores for the Control and AD groups. AD scores (median 9.5) were lower than controls (median 28) with no overlap between groups; scores were more variable within the AD group. Ten people per group of undocumented origin limit any generalisation.'")
 ```
 
 ## Mission 5 · Is it normal? Assumptions are evidence, not a traffic light
@@ -996,28 +967,74 @@ result.
 
 ### First the question, then the shape
 
-Before asking "is it normal?", ask three things:
+Before asking "is it normal?", important things to know:
 
-1. **What is the question?** Comparing average scores? Comparing ranks? An association?
-2. **What is independent?** Twenty separate people, or two visits of ten people?
-3. **What scale?** MMSE is bounded (0–30), whole numbers, many ties, and controls sit near the ceiling.
+**1. What is the question?** Do AD and Control differ in mean MMSE, and by how
+many points?
 
-Only then ask about distribution shape. "Parametric" tests (t-test, ANOVA) model
-the data with parameters such as means and work best when the values are roughly
-bell-shaped within each group. "Non-parametric" tests use ranks. They still have
-assumptions, and they often answer a slightly different question.
+**2. What is independent?** Mission 2 told us: one row is one person, tested
+once, ten per group, nobody appearing twice. Every test in this mission assumes
+this, and **none of them can check it**. Independence is a fact about how the
+data were collected, and it is invisible in the actual test.
 
-<details><summary>🔍 Deeper: the normal distribution</summary>
+**3. What scale is the measurement?** MMSE is a bounded score: whole numbers from
+0 to 30, nothing in between, and our controls are packed into 27–30 against the
+ceiling. A normal distribution is continuous and unbounded. Our control scores cannot
+be exactly normal, and with that pile-up at the ceiling they are not even approximately
+normal. You can predict what a normality test will say about them without running it.
 
-The normal (Gaussian) distribution is the symmetric bell curve described by two
-numbers, mean and SD. About 68% of values lie within 1 SD, 95% within 2 SD and
-99.7% within 3 SD of the mean. Many biological measurements are approximately
-normal because they sum many small influences. Skewed distributions (long tail
-on one side) pull the mean away from the median; bounded scores such as MMSE
-pile up at the ceiling. An exactly normal variable is continuous and unbounded,
-so for MMSE normality is at best an approximation.
+By the time you look at the histogram and Q–Q plot, you already know what you expect
+to see, so the plot confirms or surprises you instead of deciding for you.
 
-</details>
+**Parametric** tests (t-test, ANOVA) describe each group with parameters — a mean
+and an SD — and return an estimate in the original units: "AD scored 19 points
+lower, 95% CI 17 to 21 points". They assume roughly bell-shaped values within
+each group and tolerate moderate departures without much damage.
+
+**Non-parametric** tests (Wilcoxon, Kruskal–Wallis) discard the values and keep
+only their order. No bell shape needed, and extreme values lose their leverage.
+The price is what you get back: you learn that one group tends to rank higher,
+not by how many MMSE points.
+
+### The normal distribution
+
+The **normal (Gaussian) distribution** is the symmetric bell curve described by
+two numbers, the mean and the SD. Many biological measurements are approximately
+normal because they are the sum of many small independent influences (genes,
+diet, measurement noise). The SD is the natural ruler of a bell curve: about
+**68%** of values lie within 1 SD of the mean, **95%** within 2 SD and **99.7%**
+within 3 SD. The histogram below shows 10 000 simulated values with mean 50 and
+SD 10, with those boundaries drawn on top, and the percentages actually observed
+in the simulation.
+
+```{r normal-demo, fig.height=5}
+set.seed(2026)
+x <- rnorm(10000, mean = 50, sd = 10)
+share_within <- function(k) mean(abs(x - 50) < k * 10)   # share of values within k SD
+hist(x, breaks = 60, freq = FALSE, col = "grey92", border = "grey75",
+     xlim = c(10, 90), main = "10 000 simulated values: mean 50, SD 10",
+     xlab = "Measurement (arbitrary units)", ylab = "Density")
+curve(dnorm(x, mean = 50, sd = 10), add = TRUE, lwd = 2)
+abline(v = 50, lwd = 2)
+cols <- c("#2c7fb8", "#e6550d", "#756bb1")
+for (k in 1:3) abline(v = 50 + c(-k, k) * 10, col = cols[k], lwd = 2, lty = 2)
+mtext(c("-3 SD", "-2 SD", "-1 SD", "mean", "+1 SD", "+2 SD", "+3 SD"),
+      side = 3, at = 50 + (-3:3) * 10, line = 0.2, cex = 0.8)
+legend("topright", bty = "n", col = cols, lty = 2, lwd = 2,
+       legend = sprintf("within %d SD: %.1f%% of values", 1:3, 100 * sapply(1:3, share_within)))
+```
+
+Read the picture from the middle outwards: one SD either side of the mean
+already covers two thirds of all values, two SD nearly everything, and a value
+beyond 3 SD is a one-in-three-hundred event. This is why "how many SDs away" is a
+useful description of how unusual a value is, and why a value 4 SD from the mean
+of a bell-shaped sample deserves a second look at the pipette.
+
+Real data depart from the bell in recognisable ways. Skewed distributions (a
+long tail on one side) pull the mean away from the median. Bounded scores such
+as MMSE pile up at the ceiling. An exactly normal variable is continuous and
+unbounded, so for MMSE normality is at best an approximation, and for the
+controls not even that.
 
 ### The Q–Q plot
 
