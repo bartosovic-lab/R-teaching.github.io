@@ -22,7 +22,7 @@ students write and knit their own notebook.
 | `scripts/check_tutorial.R` | Runs every exercise, solution and demo chunk headlessly (`Rscript scripts/check_tutorial.R`) |
 | `scripts/render_preview.R` | Knits a static `day1_preview.html` for the website (learnr itself needs a live R session) |
 | `scripts/build_zip.sh` | Rebuilds `../Statistics_lab_2026.zip`, the student download linked from the course page |
-| `scripts/build_zip_day2.sh` | Builds the Day 2 project `../Statistics_lab_2026_day2/` (notebook derived from `../Statistics_lab/04.mmse_tasks.Rmd`, data, knitted HTML) and its zip |
+| `scripts/build_zip_day2.sh` | Builds the Day 2 project `../Statistics_lab_2026_day2/` (notebook derived from `../Statistics_lab/04.mmse_tasks.Rmd` plus the RStudio intro, data, knitted HTML), its zip, and the tasks web page `Pages/KN7001_day2_tasks.md` |
 
 ## Student instructions (for the setup session)
 

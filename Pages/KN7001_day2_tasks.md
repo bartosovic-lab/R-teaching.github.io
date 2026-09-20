@@ -1,43 +1,11 @@
----
-title: "Day 2 · Investigating cognitive decline and brain volume (MMSE dataset)"
-author: "YOUR NAME"
-date: "`r Sys.Date()`"
-output:
-  html_document:
-    toc: true
-    toc_float: true
-    df_print: paged
----
+# Day 2 · The tasks
 
-<!-- Answer each question below its heading: code in grey chunks (Code > Insert Chunk,
-     or Ctrl/Cmd+Alt+I), your explanation as ordinary text. Knit regularly.
-     At the end of the day, Knit once more and submit the HTML file to Canvas. -->
+[← Back to Day 2](KN7001_day2.md) · [Download the project (zip)](../Notebooks/Statistics_lab_2026_day2.zip)
 
-## Before you start: the notebook and the Console
+Answer every question in `day2_mmse_tasks.Rmd` in RStudio (code in a chunk,
+explanation as text). This page is the same list of questions for reading on a
+phone or a second screen.
 
-Yesterday the tutorial hid RStudio from you. Today you work in RStudio itself.
-This file is a **notebook** (top left pane): text, grey code chunks, and the
-output of each chunk directly below it. Everything in it is saved, and at the end
-you **Knit** it into the HTML report you submit. The **Console** (bottom left,
-the `>` prompt) is a scratchpad: a command typed there runs, shows its result,
-and is forgotten when R restarts.
-
-![Notebook (top left) and Console (bottom left) in RStudio](https://raw.githubusercontent.com/bartosovic-lab/R-teaching.github.io/main/Figures/rstudio_notebook_console.png)
-
-- Use the **Console** for a quick look (`head(mmse)`, `?t.test`) or to try a
-  command before you commit to it.
-- Put everything that is part of your answer in a **chunk** of this notebook:
-  *Code → Insert Chunk* (Ctrl/Cmd+Alt+I), then run it with the green triangle or
-  Ctrl/Cmd+Shift+Enter. Write your explanation as ordinary text below the chunk.
-- Rule of thumb: *if you would want it tomorrow, it goes in the notebook.*
-- Knit regularly (Ctrl/Cmd+Shift+K). Knitting runs the whole file from a clean
-  start, so anything that only ever lived in the Console will fail here, which is
-  what you want to find out early.
-- `object not found`: run the chunks above, from the top. Console shows `+`
-  instead of `>`: press **Esc** and retype the complete command.
-
-More on this, with the common problems and their fixes: the
-[Day 2 page](https://bartosovic-lab.github.io/R-teaching.github.io/Pages/KN7001_day2.html).
 
 
 ## Introduction to Data Analysis: Investigating Cognitive Decline and Brain Volume Using the MMSE Dataset
@@ -56,13 +24,13 @@ Key Variables in the Dataset:
 -   Normalized Whole Brain Volume (nWBV): This variable adjusts for total brain volume relative to intracranial volume and may serve as a marker for brain atrophy.
 -   Atlas Scaling Factor (ASF): A scaling factor used in brain imaging analysis to account for differences in brain sizes among individuals.
 
-The data file is in the `data/` folder of this project; see `data/README.md` for what every column means.
+The data file is in the `data/` folder of this project; see [`data/README.md`](../Notebooks/Statistics_lab_2026_day2/data/README.md) for what every column means.
 
 **One simplification for today:** in the original study some people were scanned more than once, so a row is really one visit. For these exercises, treat every row as an independent observation. Keep in mind that this is a simplification when you write your limitations at the end.
 
 ## Import the dataset
 
-```{r}
+```r
 mmse <- read.csv(file='data/alzheimer_data.csv',header = TRUE,comment.char = '#',row.names = 1)
 mmse
 

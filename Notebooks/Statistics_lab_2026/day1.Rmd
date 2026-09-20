@@ -2444,8 +2444,6 @@ mcq("Eight participants are measured before and after treatment. Which statement
 
 ### Command card
 
-## Command card
-
 Everything you need for today's questions. `d`, `x`, `y` and `g` are placeholders
 for your own objects. Entries marked **(new)** did not appear on the Day 1 card.
 

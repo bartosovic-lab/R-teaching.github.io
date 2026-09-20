@@ -11,7 +11,7 @@
 
 <meta name="author" content="YOUR NAME" />
 
-<meta name="date" content="2026-09-16" />
+<meta name="date" content="2026-09-20" />
 
 <title>Day 2 · Investigating cognitive decline and brain volume (MMSE dataset)</title>
 
@@ -2753,7 +2753,7 @@ border-radius: 0px;
 <h1 class="title toc-ignore">Day 2 · Investigating cognitive decline and
 brain volume (MMSE dataset)</h1>
 <h4 class="author">YOUR NAME</h4>
-<h4 class="date">2026-09-16</h4>
+<h4 class="date">2026-09-20</h4>
 
 </div>
 
@@ -2761,6 +2761,42 @@ brain volume (MMSE dataset)</h1>
 <!-- Answer each question below its heading: code in grey chunks (Code > Insert Chunk,
      or Ctrl/Cmd+Alt+I), your explanation as ordinary text. Knit regularly.
      At the end of the day, Knit once more and submit the HTML file to Canvas. -->
+<div id="before-you-start-the-notebook-and-the-console" class="section level2">
+<h2>Before you start: the notebook and the Console</h2>
+<p>Yesterday the tutorial hid RStudio from you. Today you work in
+RStudio itself. This file is a <strong>notebook</strong> (top left
+pane): text, grey code chunks, and the output of each chunk directly
+below it. Everything in it is saved, and at the end you
+<strong>Knit</strong> it into the HTML report you submit. The
+<strong>Console</strong> (bottom left, the <code>&gt;</code> prompt) is
+a scratchpad: a command typed there runs, shows its result, and is
+forgotten when R restarts.</p>
+<div class="float">
+<img role="img" aria-label="Notebook (top left) and Console (bottom left) in RStudio" src="https://raw.githubusercontent.com/bartosovic-lab/R-teaching.github.io/main/Figures/rstudio_notebook_console.png" alt="Notebook (top left) and Console (bottom left) in RStudio" />
+<div class="figcaption">Notebook (top left) and Console (bottom left) in
+RStudio</div>
+</div>
+<ul>
+<li>Use the <strong>Console</strong> for a quick look
+(<code>head(mmse)</code>, <code>?t.test</code>) or to try a command
+before you commit to it.</li>
+<li>Put everything that is part of your answer in a
+<strong>chunk</strong> of this notebook: <em>Code → Insert Chunk</em>
+(Ctrl/Cmd+Alt+I), then run it with the green triangle or
+Ctrl/Cmd+Shift+Enter. Write your explanation as ordinary text below the
+chunk.</li>
+<li>Rule of thumb: <em>if you would want it tomorrow, it goes in the
+notebook.</em></li>
+<li>Knit regularly (Ctrl/Cmd+Shift+K). Knitting runs the whole file from
+a clean start, so anything that only ever lived in the Console will fail
+here, which is what you want to find out early.</li>
+<li><code>object not found</code>: run the chunks above, from the top.
+Console shows <code>+</code> instead of <code>&gt;</code>: press
+<strong>Esc</strong> and retype the complete command.</li>
+</ul>
+<p>More on this, with the common problems and their fixes: the <a href="https://bartosovic-lab.github.io/R-teaching.github.io/Pages/KN7001_day2.html">Day
+2 page</a>.</p>
+</div>
 <div id="introduction-to-data-analysis-investigating-cognitive-decline-and-brain-volume-using-the-mmse-dataset" class="section level2">
 <h2>Introduction to Data Analysis: Investigating Cognitive Decline and
 Brain Volume Using the MMSE Dataset</h2>
