@@ -3490,19 +3490,45 @@ pairs</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Your explanation:</strong> Fill in: I inspected <strong><em>;
-I observed </em></strong>; I would lead with ___ because <strong><em>;
-an important limitation is </em></strong>.</p>
+<p><strong>Your explanation:</strong> Fill in: In this mission I
+inspected <strong><em>. I observed </em></strong>. I would lead with the
+___ test, because ___.</p>
 <details>
 <summary>
 Discuss with your partner, then reveal
 </summary>
 <p><em>Discussion guide:</em> Example: I inspected within-group
-histograms, Q-Q plots and Shapiro-Wilk. Controls are compressed at the
-ceiling (p = 0.03), AD scores look roughly symmetric. With n = 10 per
-group I would report Welch’s t-test for the mean difference and Wilcoxon
-as a rank-based check; independence is an assumption of the teaching
-scenario, not something the data can verify.</p>
+histograms, Q-Q plots and Shapiro-Wilk. The control scores are
+compressed against the 30-point ceiling with many ties (p = 0.03); the
+AD scores look roughly symmetric (p = 0.58). I would lead with Welch’s
+t-test, even though the controls fail a normality test, because that
+failure is discreteness of MMSE measurements and a ceiling (30) rather
+than skew or heavy tails, because the t-test’s assumption concerns the
+behaviour of the mean rather than of individual scores, and because my
+question is how many MMSE points separate the groups - which only a
+mean-based test answers. I will report Wilcoxon alongside as a
+rank-based check. With n = 10 per group the opposite choice is also
+defensible, as long as it is made now and not after seeing the
+p-values.</p>
+</details>
+<p><strong>Quiz:</strong> Shapiro-Wilk flagged the control group. Does
+that rule out a t-test?</p>
+<ul>
+<li>Yes: a failed normality test forbids parametric methods</li>
+<li>No: it is one piece of evidence. What matters is the kind of
+departure, the sample size, and what question you need answered</li>
+<li>No: normality never matters for a t-test</li>
+</ul>
+<details>
+<summary>
+Discuss with your partner, then reveal
+</summary>
+<p>No: it is one piece of evidence. What matters is the kind of
+departure, the sample size, and what question you need answered. Ties
+and a ceiling damage a normal model much less than skew and heavy tails
+damage a mean. A failed test starts the thinking; it does not end it.
+And the alternative has its own problems here - Wilcoxon needed exact =
+FALSE precisely because of those ties.</p>
 </details>
 <p><strong>Break.</strong> Do not run the comparison before the break;
 let the assessment settle.</p>
@@ -3515,35 +3541,24 @@ put an uncertainty on it, compare two methods that ask different
 questions, and write a result sentence.</p>
 <div id="section-the-ideas-behind-this-mission-5" class="section level3">
 <h3>The ideas behind this mission</h3>
-<p>Two groups have different sample means. They always do: even two
-flasks from the same culture give different averages, because every
-sample is a different draw from the population. The question is not “are
-the means different?” but “is this difference larger than the
-differences that sampling alone would produce?” A <strong>hypothesis
-test</strong> answers it by imagining a world where the two populations
-have the same mean (the <strong>null hypothesis</strong>) and asking how
-often that world would produce a difference at least as large as the one
-you found. That frequency is the <strong>p-value</strong>. A small
-p-value means the observed difference would be rare under the null; it
-does not measure how big or how important the difference is, and it is
-not the probability that the null hypothesis is true.</p>
-<p>The <strong>t-statistic</strong> behind the test is a signal-to-noise
-ratio: the difference between the means divided by the <strong>standard
-error</strong>, which is how much that difference would wobble from
-sample to sample. Larger differences, smaller scatter and larger samples
-all make t bigger and p smaller. This is why a tiny, biologically
-irrelevant difference becomes “significant” with enough observations,
-and a large one can stay “not significant” with three per group. The
-p-value therefore needs company.</p>
-<p>That company is the <strong>estimate with its uncertainty</strong>:
-the observed difference in the original units, and a <strong>95%
-confidence interval</strong> around it. The interval is the range of
-true differences that are compatible with the data. If you repeated the
-study many times, about 95% of such intervals would contain the true
-difference. It tells the reader the direction, the size and the
-precision of the effect in one line, which is more than any p-value can.
-The result sentence you write at the end of this mission has all three:
-the estimate, the interval, and the method that produced them.</p>
+<p>Two things decide how small the p-value comes out: how far apart the
+groups really are, and how many observations you collected. The second
+one causes most of the trouble in the literature. Take a difference too
+small to care about, measure enough people, and the p-value will
+eventually fall below 0.05. Take a large difference, measure three per
+group, and it may well sit at 0.2. “Significant” is not a synonym for
+“big”, and “not significant” is not a synonym for “no effect”. On its
+own the p-value tells you very little.</p>
+<p>What belongs next to it is the <strong>estimate and its
+uncertainty</strong>: how large the difference actually is, in the units
+you measured, and how precisely you know it. That is what a <strong>95%
+confidence interval</strong> gives you — the range of differences
+compatible with your data. An interval of −21 to −17 points says the AD
+group scored lower, by roughly twenty points, and that the data pin that
+down to within a couple of points either way. Direction, size and
+precision in one line. No p-value can do that. The result sentence you
+write at the end of this mission carries all three: the estimate, the
+interval, and the test that produced them.</p>
 </div>
 <div id="section-welchs-t-test" class="section level3">
 <h3>Welch’s t-test</h3>
@@ -3611,10 +3626,10 @@ Control)</td>
 </tr>
 </tbody>
 </table>
-<p>The <strong>standard error</strong> is the SD of the estimate, not of
-the observations. A 95% confidence interval is built so that in the long
-run 95% of such intervals contain the true parameter. It is
-<strong>not</strong> the range of 95% of individual scores.</p>
+<p>A 95% confidence interval is built so that in the long run 95% of
+such intervals contain the value they are estimating — here, the real
+difference between the two population means. It is <strong>not</strong>
+the range in which 95% of individual scores fall.</p>
 <p><strong>Quiz:</strong> A very small p-value tells us…</p>
 <ul>
 <li>The probability that the null hypothesis is true is very small</li>
@@ -3672,64 +3687,13 @@ wilcox.test(ad, control, exact = FALSE)</code></pre>
 <pre class="text"><code>t.test(ad, control)
 wilcox.test(ad, control, exact = FALSE)</code></pre>
 </div>
-<table>
-<colgroup>
-<col width="50%" />
-<col width="50%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>Prompt</th>
-<th>What to explain</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>What question does Welch address?</td>
-<td>Do the population means differ? Estimate the difference in points
-with a CI.</td>
-</tr>
-<tr class="even">
-<td>What question does Wilcoxon address?</td>
-<td>Does one group tend to have higher-ranked values?</td>
-</tr>
-<tr class="odd">
-<td>What do plots and Shapiro contribute?</td>
-<td>Evidence about shape, bounds and ties. They inform, they do not
-decide.</td>
-</tr>
-<tr class="even">
-<td>Both p-values are tiny. What follows?</td>
-<td>Each supports its own question. Agreement is not proof of normality
-or independence.</td>
-</tr>
-<tr class="odd">
-<td>If they disagreed?</td>
-<td>Revisit the question, shapes and influential values; report both.
-Never pick the smaller p-value.</td>
-</tr>
-<tr class="even">
-<td>Which would you lead with?</td>
-<td>State the target, justify the method, say what it does not
-show.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Quiz:</strong> The Wilcoxon output says W = 0. What does it
-mean here?</p>
-<ul>
-<li>The test failed</li>
-<li>No AD score ranked above any control score: complete separation</li>
-<li>The medians are equal</li>
-</ul>
-<details>
-<summary>
-Discuss with your partner, then reveal
-</summary>
-<p>No AD score ranked above any control score: complete separation. W
-counts how often an AD value exceeds a control value across all pairs.
-Zero is the most extreme possible result for ten versus ten.</p>
-</details>
+<p>The two tests are not two ways of doing the same thing. One asks
+whether the population means differ and gives you back an answer in MMSE
+points. The other asks whether AD scores tend to rank below control
+scores, and gives you no points at all.</p>
+<p>Both p-values here are tiny. Decide what that does and does not buy
+you — in particular whether two tests agreeing tells you anything about
+whether the assumptions of either one were met.</p>
 <p><strong>Quiz:</strong> Your Welch p-value is 0.04 and Wilcoxon is
 0.08. A colleague says: report the t-test, it is significant. What do
 you say?</p>
