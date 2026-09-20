@@ -155,6 +155,46 @@ mmse
 
 ![Example answer to Q32](https://raw.githubusercontent.com/bartosovic-lab/R-teaching.github.io/main/Figures/all_in_one.png)
 
+## Command card
+
+Everything you need for today's questions, copied from the Day 1 tutorial. `d`, `x`, `y` and `g` are placeholders
+for your own objects. Entries marked **(new)** did not appear on the Day 1 card.
+
+| Need | Pattern |
+|---|---|
+| Store values | `x <- c(27, 28, 30)` |
+| Import | `d <- read.csv("data/alzheimer_data.csv", header = TRUE)` |
+| First look | `head(d)`; `dim(d)`; `nrow(d)`; `ncol(d)`; `names(d)`; `str(d)`; `summary(d)` |
+| What type is a column? | `class(d$Age)`; `str(d)` |
+| Distinct values of a column | `unique(d$CDR)` **(new)** |
+| One column / one group | `d$MMSE`; `d$MMSE[d$Group == "Demented"]` |
+| Rows and columns | `d[rows, cols]`; `d[d$MMSE < 20, ]`; `d[d$Group == "Demented" & d$sex == "M", ]` |
+| Counts | `table(d$Group)`; `table(d$sex, d$Group)` |
+| Missing values | `sum(is.na(d$SES))`; `colSums(is.na(d))` **(new)**; `mean(x, na.rm = TRUE)`; `x[!is.na(x)]` |
+| Add a column | `d$is_senior <- d$Age > 80` |
+| Summaries | `mean(x)`; `median(x)`; `sd(x)`; `min(x)`; `max(x)`; `range(x)` **(new)**; `quantile(x)`; `IQR(x)` |
+| Round a number | `round(x, digits = 2)` **(new)** |
+| Summaries per group | `tapply(d$Age, d$Group, mean)`; `tapply(d$Age, d$Group, sd)` |
+| Every column at once | `sapply(d, class)`; `sapply(d, mean)` |
+| The row with the highest / lowest value | `d[which.min(d$MMSE), ]`; `d[which.max(d$MMSE), ]` **(new)** |
+| Distribution plots | `hist(x)`; `boxplot(y ~ g, data = d)`; `stripchart(y ~ g, data = d, vertical = TRUE, method = "jitter", add = TRUE, pch = 16)` |
+| Bar chart of group means | `barplot(tapply(d$MMSE, d$Group, mean))` **(new)** |
+| Scatterplot | `plot(d$nWBV, d$MMSE, pch = 16)` |
+| Colour points by group | `col = c("red", "blue")[factor(d$Group)]` **(new)** |
+| Add a legend | `legend("topright", legend = levels(factor(d$Group)), col = c("red", "blue"), pch = 16)` **(new)** |
+| Several plots in one window | `par(mfrow = c(2, 2))` **(new)** |
+| Normality evidence | `qqnorm(x); qqline(x)`; `shapiro.test(x)` |
+| Two groups, two vectors | `t.test(x, y)`; `wilcox.test(x, y, exact = FALSE)` |
+| Two groups, one column + one grouping column | `t.test(MMSE ~ Group, data = d)`; `wilcox.test(MMSE ~ Group, data = d)` **(new)** |
+| Paired | `t.test(after, before, paired = TRUE)` |
+| More than two groups | `oneway.test(y ~ g, data = d)`; `kruskal.test(y ~ g, data = d)` |
+| Association | `cor.test(x, y, method = "pearson")`; `cor.test(x, y, method = "spearman", exact = FALSE)` |
+| Categories | `table(a, b)`; `chisq.test(counts)`; `chisq.test(counts)$expected`; `fisher.test(counts)` |
+| Pull one number out of a test | `t.test(x, y)$p.value`; `$conf.int`; `$estimate` |
+| Multiple testing | `p.adjust(p_values, method = "bonferroni")` |
+| ggplot version | `ggplot(d, aes(nWBV, MMSE, colour = Group)) + geom_point()` |
+
+
 ------------------------------------------------------------------------
 
 ## Submit your work

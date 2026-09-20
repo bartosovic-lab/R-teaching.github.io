@@ -10,6 +10,11 @@ cd "$(dirname "$0")/../.."          # Notebooks/
 SRC=Statistics_lab/04.mmse_tasks.Rmd
 DST=Statistics_lab_2026_day2
 mkdir -p "$DST/data"
+
+# The command card is maintained once, in day1.Rmd; copy it into the Day 2 notebook and page.
+CARD=$(mktemp)
+awk '/^### Command card/{f=1; next} /^### The result sentence/{f=0} f' Statistics_lab_2026/day1.Rmd \
+  | sed -e 's/^Everything you need for today.s questions\./Everything you need for today'"'"'s questions, copied from the Day 1 tutorial./' > "$CARD"
 cp ../data/alzheimer_data.csv "$DST/data/alzheimer_data.csv"
 
 {
@@ -61,6 +66,8 @@ YAML
     | sed -e "s#'\.\./\.\./data/alzheimer_data.csv'#'data/alzheimer_data.csv'#" \
           -e 's#\[Link for data download\](https://github.com/bartosovic-lab/R-teaching.github.io/tree/main/data)#The data file is in the `data/` folder of this project; see `data/README.md` for what every column means.#' \
           -e 's#!\[Example answer to Q32\](\.\./\.\./Figures/all_in_one.png)#![Example answer to Q32](https://raw.githubusercontent.com/bartosovic-lab/R-teaching.github.io/main/Figures/all_in_one.png)#'
+  printf '\n## Command card\n'
+  cat "$CARD"
   cat <<'TAIL'
 
 ------------------------------------------------------------------------
@@ -94,6 +101,17 @@ HEAD
           -e 's/^```{r}$/```r/' \
           -e 's#`data/README.md`#[`data/README.md`](../Notebooks/Statistics_lab_2026_day2/data/README.md)#'
 } > ../Pages/KN7001_day2_tasks.md
+
+# Day 2 page: refresh the command card between its markers
+PAGE=../Pages/KN7001_day2.md
+{
+  sed '/^<!-- command-card:start -->/q' "$PAGE"
+  printf '\n### Command card\n\n'
+  cat "$CARD"
+  printf '\n'
+  sed -n '/^<!-- command-card:end -->/,$p' "$PAGE"
+} > "$PAGE.tmp" && mv "$PAGE.tmp" "$PAGE"
+rm -f "$CARD"
 
 # Knit the tasks notebook for the online view
 if [ -z "$RSTUDIO_PANDOC" ]; then
