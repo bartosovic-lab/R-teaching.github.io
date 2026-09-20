@@ -4974,6 +4974,14 @@ change?’. The design and the IDs establish it.</p>
 <h2>Command card and references</h2>
 <div id="section-command-card" class="section level3">
 <h3>Command card</h3>
+</div>
+</div>
+<div id="section-command-card-1" class="section level2">
+<h2>Command card</h2>
+<p>Everything you need for today’s questions. <code>d</code>,
+<code>x</code>, <code>y</code> and <code>g</code> are placeholders for
+your own objects. Entries marked <strong>(new)</strong> did not appear
+on the Day 1 card.</p>
 <table>
 <colgroup>
 <col width="50%" />
@@ -4988,84 +4996,152 @@ change?’. The design and the IDs establish it.</p>
 <tbody>
 <tr class="odd">
 <td>Store values</td>
-<td><code>scores &lt;- c(27, 28, 30)</code></td>
+<td><code>x &lt;- c(27, 28, 30)</code></td>
 </tr>
 <tr class="even">
 <td>Import</td>
-<td><code>mmse &lt;- read.csv(&quot;data/mmse_small.csv&quot;)</code></td>
+<td><code>d &lt;- read.csv(&quot;data/alzheimer_data.csv&quot;, header = TRUE)</code></td>
 </tr>
 <tr class="odd">
-<td>Inspect</td>
-<td><code>head(mmse)</code>; <code>dim(mmse)</code>;
-<code>names(mmse)</code>; <code>str(mmse)</code>;
-<code>summary(mmse)</code></td>
+<td>First look</td>
+<td><code>head(d)</code>; <code>dim(d)</code>; <code>nrow(d)</code>;
+<code>ncol(d)</code>; <code>names(d)</code>; <code>str(d)</code>;
+<code>summary(d)</code></td>
+</tr>
+<tr class="even">
+<td>What type is a column?</td>
+<td><code>class(d$Age)</code>; <code>str(d)</code></td>
+</tr>
+<tr class="odd">
+<td>Distinct values of a column</td>
+<td><code>unique(d$CDR)</code> <strong>(new)</strong></td>
 </tr>
 <tr class="even">
 <td>One column / one group</td>
-<td><code>mmse$MMSE</code>;
-<code>mmse$MMSE[mmse$group == &quot;AD&quot;]</code></td>
+<td><code>d$MMSE</code>; <code>d$MMSE[d$Group == &quot;Demented&quot;]</code></td>
 </tr>
 <tr class="odd">
 <td>Rows and columns</td>
-<td><code>mmse[rows, columns]</code>;
-<code>mmse[mmse$MMSE &lt; 20, ]</code></td>
+<td><code>d[rows, cols]</code>; <code>d[d$MMSE &lt; 20, ]</code>;
+<code>d[d$Group == &quot;Demented&quot; &amp; d$sex == &quot;M&quot;, ]</code></td>
 </tr>
 <tr class="even">
 <td>Counts</td>
-<td><code>table(mmse$group)</code></td>
+<td><code>table(d$Group)</code>; <code>table(d$sex, d$Group)</code></td>
 </tr>
 <tr class="odd">
-<td>Missingness</td>
-<td><code>sum(is.na(x))</code>; <code>mean(x, na.rm = TRUE)</code></td>
+<td>Missing values</td>
+<td><code>sum(is.na(d$SES))</code>; <code>colSums(is.na(d))</code>
+<strong>(new)</strong>; <code>mean(x, na.rm = TRUE)</code>;
+<code>x[!is.na(x)]</code></td>
 </tr>
 <tr class="even">
-<td>Summaries</td>
-<td><code>mean(x)</code>; <code>median(x)</code>; <code>sd(x)</code>;
-<code>quantile(x)</code>; <code>IQR(x)</code>;
-<code>tapply(y, group, mean)</code></td>
+<td>Add a column</td>
+<td><code>d$is_senior &lt;- d$Age &gt; 80</code></td>
 </tr>
 <tr class="odd">
+<td>Summaries</td>
+<td><code>mean(x)</code>; <code>median(x)</code>; <code>sd(x)</code>;
+<code>min(x)</code>; <code>max(x)</code>; <code>range(x)</code>
+<strong>(new)</strong>; <code>quantile(x)</code>;
+<code>IQR(x)</code></td>
+</tr>
+<tr class="even">
+<td>Round a number</td>
+<td><code>round(x, digits = 2)</code> <strong>(new)</strong></td>
+</tr>
+<tr class="odd">
+<td>Summaries per group</td>
+<td><code>tapply(d$Age, d$Group, mean)</code>;
+<code>tapply(d$Age, d$Group, sd)</code></td>
+</tr>
+<tr class="even">
+<td>Every column at once</td>
+<td><code>sapply(d, class)</code>; <code>sapply(d, mean)</code></td>
+</tr>
+<tr class="odd">
+<td>The row with the highest / lowest value</td>
+<td><code>d[which.min(d$MMSE), ]</code>;
+<code>d[which.max(d$MMSE), ]</code> <strong>(new)</strong></td>
+</tr>
+<tr class="even">
 <td>Distribution plots</td>
-<td><code>hist(x)</code>; <code>boxplot(y ~ group, data = d)</code>;
-<code>stripchart(..., add = TRUE)</code></td>
+<td><code>hist(x)</code>; <code>boxplot(y ~ g, data = d)</code>;
+<code>stripchart(y ~ g, data = d, vertical = TRUE, method = &quot;jitter&quot;, add = TRUE, pch = 16)</code></td>
+</tr>
+<tr class="odd">
+<td>Bar chart of group means</td>
+<td><code>barplot(tapply(d$MMSE, d$Group, mean))</code>
+<strong>(new)</strong></td>
+</tr>
+<tr class="even">
+<td>Scatterplot</td>
+<td><code>plot(d$nWBV, d$MMSE, pch = 16)</code></td>
+</tr>
+<tr class="odd">
+<td>Colour points by group</td>
+<td><code>col = c(&quot;red&quot;, &quot;blue&quot;)[factor(d$Group)]</code>
+<strong>(new)</strong></td>
+</tr>
+<tr class="even">
+<td>Add a legend</td>
+<td><code>legend(&quot;topright&quot;, legend = levels(factor(d$Group)), col = c(&quot;red&quot;, &quot;blue&quot;), pch = 16)</code>
+<strong>(new)</strong></td>
+</tr>
+<tr class="odd">
+<td>Several plots in one window</td>
+<td><code>par(mfrow = c(2, 2))</code> <strong>(new)</strong></td>
 </tr>
 <tr class="even">
 <td>Normality evidence</td>
 <td><code>qqnorm(x); qqline(x)</code>; <code>shapiro.test(x)</code></td>
 </tr>
 <tr class="odd">
-<td>Two groups</td>
+<td>Two groups, two vectors</td>
 <td><code>t.test(x, y)</code>;
 <code>wilcox.test(x, y, exact = FALSE)</code></td>
 </tr>
 <tr class="even">
+<td>Two groups, one column + one grouping column</td>
+<td><code>t.test(MMSE ~ Group, data = d)</code>;
+<code>wilcox.test(MMSE ~ Group, data = d)</code>
+<strong>(new)</strong></td>
+</tr>
+<tr class="odd">
 <td>Paired</td>
 <td><code>t.test(after, before, paired = TRUE)</code></td>
 </tr>
+<tr class="even">
+<td>More than two groups</td>
+<td><code>oneway.test(y ~ g, data = d)</code>;
+<code>kruskal.test(y ~ g, data = d)</code></td>
+</tr>
 <tr class="odd">
-<td>More groups</td>
-<td><code>oneway.test(values ~ ind, data = d)</code>;
-<code>kruskal.test(values ~ ind, data = d)</code></td>
+<td>Association</td>
+<td><code>cor.test(x, y, method = &quot;pearson&quot;)</code>;
+<code>cor.test(x, y, method = &quot;spearman&quot;, exact = FALSE)</code></td>
 </tr>
 <tr class="even">
-<td>Association</td>
-<td><code>plot(x, y)</code>;
-<code>cor.test(x, y, method = &quot;pearson&quot;)</code></td>
+<td>Categories</td>
+<td><code>table(a, b)</code>; <code>chisq.test(counts)</code>;
+<code>chisq.test(counts)$expected</code>;
+<code>fisher.test(counts)</code></td>
 </tr>
 <tr class="odd">
-<td>Counts in categories</td>
-<td><code>table(a, b)</code>; <code>chisq.test(counts)</code>;
-<code>fisher.test(counts)</code></td>
+<td>Pull one number out of a test</td>
+<td><code>t.test(x, y)$p.value</code>; <code>$conf.int</code>;
+<code>$estimate</code></td>
 </tr>
 <tr class="even">
 <td>Multiple testing</td>
 <td><code>p.adjust(p_values, method = &quot;bonferroni&quot;)</code></td>
 </tr>
+<tr class="odd">
+<td>ggplot version</td>
+<td><code>ggplot(d, aes(nWBV, MMSE, colour = Group)) + geom_point()</code></td>
+</tr>
 </tbody>
 </table>
-<p><code>x</code>, <code>y</code>, <code>d</code> and <code>group</code>
-are placeholders for your own objects.</p>
-</div>
 <div id="section-the-result-sentence" class="section level3">
 <h3>The result sentence</h3>
 <p>“In this sample (n = … per group), the estimated … minus … difference
