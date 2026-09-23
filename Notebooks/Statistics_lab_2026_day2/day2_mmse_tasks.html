@@ -11,7 +11,7 @@
 
 <meta name="author" content="YOUR NAME" />
 
-<meta name="date" content="2026-09-20" />
+<meta name="date" content="2026-09-23" />
 
 <title>Day 2 · Investigating cognitive decline and brain volume (MMSE dataset)</title>
 
@@ -2753,7 +2753,7 @@ border-radius: 0px;
 <h1 class="title toc-ignore">Day 2 · Investigating cognitive decline and
 brain volume (MMSE dataset)</h1>
 <h4 class="author">YOUR NAME</h4>
-<h4 class="date">2026-09-20</h4>
+<h4 class="date">2026-09-23</h4>
 
 </div>
 
@@ -2945,23 +2945,18 @@ e.g. <code>mmse[mmse$Group == &quot;Demented&quot;, ]</code>). Why does the
 overall coefficient differ from the within-group values, and which of
 the three numbers answers the question “is brain volume related to
 cognition”?</p>
-<p><strong>Q27:</strong> Conduct a chi-square test to see if there is an
-association between gender and the dementia classification (demented
-vs. non-demented). Use combination of <code>table</code> and
-<code>chisq.test</code> functions. <em>Hint: the Day 1 tutorial, section
-Extras, shows how; check the expected counts as well.</em></p>
+<p><strong>Q27:</strong> Skipped</p>
 <p><strong>Q28:</strong> The Clinical Dementia Rating (CDR) takes the
 values 0, 0.5, 1 and 2. Plot MMSE by CDR level
 (<code>boxplot(MMSE ~ CDR, data = mmse)</code>) and report the median
 MMSE at each level. Why is CDR an ordinal variable rather than a number,
 and why do we compare medians rather than means across its levels?</p>
 <p><strong>Q29:</strong> You have now run three tests on this dataset:
-the MMSE comparison (Q24), the age–MMSE correlation (Q25) and the
-gender–group association (Q27). Collect their three p-values into a
-vector and apply <code>p.adjust(p_values, method = &quot;bonferroni&quot;)</code>
-(Day 1, Mission 7). Which conclusions change after the adjustment, which
-do not, and what stays exactly the same regardless of the
-adjustment?</p>
+the age comparison (Q23), the MMSE comparison (Q24) and the age–MMSE
+correlation (Q25). Collect their three p-values into a vector and apply
+<code>p.adjust(p_values, method = &quot;bonferroni&quot;)</code> (Day 1, Mission
+7). Which conclusions change after the adjustment, which do not, and
+what stays exactly the same regardless of the adjustment?</p>
 </div>
 <div id="reflection" class="section level2">
 <h2>Reflection</h2>

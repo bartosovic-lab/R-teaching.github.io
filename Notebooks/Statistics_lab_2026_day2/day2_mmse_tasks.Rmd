@@ -134,11 +134,11 @@ mmse
 
 **Q26:** Return to the scatter plot of Q19. Compute the correlation between nWBV and MMSE for all rows, then separately within the demented group and within the non-demented group (`cor.test` on a subset, e.g. `mmse[mmse$Group == "Demented", ]`). Why does the overall coefficient differ from the within-group values, and which of the three numbers answers the question "is brain volume related to cognition"?
 
-**Q27:** Conduct a chi-square test to see if there is an association between gender and the dementia classification (demented vs. non-demented). Use combination of `table` and `chisq.test` functions. *Hint: the Day 1 tutorial, section Extras, shows how; check the expected counts as well.*
+**Q27:** Skipped
 
 **Q28:** The Clinical Dementia Rating (CDR) takes the values 0, 0.5, 1 and 2. Plot MMSE by CDR level (`boxplot(MMSE ~ CDR, data = mmse)`) and report the median MMSE at each level. Why is CDR an ordinal variable rather than a number, and why do we compare medians rather than means across its levels?
 
-**Q29:** You have now run three tests on this dataset: the MMSE comparison (Q24), the age–MMSE correlation (Q25) and the gender–group association (Q27). Collect their three p-values into a vector and apply `p.adjust(p_values, method = "bonferroni")` (Day 1, Mission 7). Which conclusions change after the adjustment, which do not, and what stays exactly the same regardless of the adjustment?
+**Q29:** You have now run three tests on this dataset: the age comparison (Q23), the MMSE comparison (Q24) and the age–MMSE correlation (Q25). Collect their three p-values into a vector and apply `p.adjust(p_values, method = "bonferroni")` (Day 1, Mission 7). Which conclusions change after the adjustment, which do not, and what stays exactly the same regardless of the adjustment?
 
 
 ## Reflection
